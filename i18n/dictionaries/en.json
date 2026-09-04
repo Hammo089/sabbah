@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "siteName": "Cedars Art Production",
+    "tagline": "Seventy Years of Arabic Storytelling",
+    "description": "Cedars Art Production — Sabbah Brothers. Premium Arabic drama, film and format production since 1955. Beirut · Cairo · Casablanca · Dubai."
+  },
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "series": "Series",
+    "movies": "Films",
+    "legacy": "Our Story",
+    "news": "Newsroom",
+    "b2b": "Licensing",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "Est. 1955",
+    "title": "Seven decades of Arabic storytelling.",
+    "subtitle": "From Beirut to the world — the drama library that shaped a region.",
+    "ctaPrimary": "Explore the catalog",
+    "ctaSecondary": "Watch the legacy film",
+    "offices": "Beirut · Cairo · Casablanca · Dubai",
+    "established": "Established 1955",
+    "titlesLine1": "Seven decades",
+    "titlesLine2": "of Arabic",
+    "titlesLine3": "storytelling.",
+    "archive": "From the archive",
+    "featuredCount": "titles in the library"
+  },
+  "legacy": {
+    "title": "The Sabbah Legacy",
+    "subtitle": "70 years. One family. A region's memory.",
+    "watch": "Play the anniversary film"
+  },
+  "b2b": {
+    "title": "Content Licensing",
+    "subtitle": "Acquire premium Arabic drama for your platform.",
+    "downloadPdf": "Download catalog (PDF)"
+  },
+  "common": {
+    "loading": "Loading",
+    "readMore": "Read more",
+    "viewAll": "View all",
+    "toggleTheme": "Toggle theme",
+    "language": "Language"
+  }
+}

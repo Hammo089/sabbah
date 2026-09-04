@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "siteName": "Cedars Art Production",
+    "tagline": "Soixante-dix ans de récits arabes",
+    "description": "Cedars Art Production — Frères Sabbah. Production de drames et de films arabes depuis 1955. Beyrouth · Le Caire · Casablanca · Dubaï."
+  },
+  "nav": {
+    "home": "Accueil",
+    "catalog": "Catalogue",
+    "series": "Séries",
+    "movies": "Films",
+    "legacy": "Notre histoire",
+    "news": "Actualités",
+    "b2b": "Licences",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "Depuis 1955",
+    "title": "Sept décennies de récits arabes.",
+    "subtitle": "De Beyrouth au monde — la bibliothèque dramatique qui a façonné une région.",
+    "ctaPrimary": "Explorer le catalogue",
+    "ctaSecondary": "Voir le film anniversaire",
+    "offices": "Beyrouth · Le Caire · Casablanca · Dubaï",
+    "established": "Fondée en 1955",
+    "titlesLine1": "Sept décennies",
+    "titlesLine2": "de récits",
+    "titlesLine3": "arabes.",
+    "archive": "Depuis les archives",
+    "featuredCount": "titres dans la bibliothèque"
+  },
+  "legacy": {
+    "title": "L'héritage Sabbah",
+    "subtitle": "70 ans. Une famille. La mémoire d'une région.",
+    "watch": "Lancer le film anniversaire"
+  },
+  "b2b": {
+    "title": "Licences de contenu",
+    "subtitle": "Acquérez des drames arabes premium pour votre plateforme.",
+    "downloadPdf": "Télécharger le catalogue (PDF)"
+  },
+  "common": {
+    "loading": "Chargement",
+    "readMore": "Lire la suite",
+    "viewAll": "Tout voir",
+    "toggleTheme": "Changer de thème",
+    "language": "Langue"
+  }
+}
