@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const segments = pathname.split('/');
-  const maybeLocale = segments[1];
+  const maybeLocale = segments[1] ?? '';
   const hasLocale = isLocale(maybeLocale);
 
   // ---- Redirect: inject locale prefix -------------------------------------

@@ -12,7 +12,8 @@
     "legacy": "Notre histoire",
     "news": "Actualités",
     "b2b": "Licences",
-    "contact": "Contact"
+    "contact": "Contact",
+    "search": "Recherche"
   },
   "hero": {
     "eyebrow": "Depuis 1955",
@@ -44,5 +45,25 @@
     "viewAll": "Tout voir",
     "toggleTheme": "Changer de thème",
     "language": "Langue"
+  },
+  "search": {
+    "title": "Recherche",
+    "description": "Explorez le catalogue Cedars Art Production en arabe, anglais et français.",
+    "placeholder": "Rechercher séries, films, acteurs…",
+    "promptTitle": "Que cherchez-vous ?",
+    "resultsFor": "Résultats pour",
+    "noResults": "Aucun titre ne correspond.",
+    "matches": "titres trouvés",
+    "didYouMean": "Vouliez-vous dire",
+    "recent": "Recherches récentes",
+    "seeAll": "Voir tous les résultats",
+    "navigate": "naviguer",
+    "select": "ouvrir",
+    "close": "Fermer la recherche",
+    "hint": "Saisissez au moins deux caractères — arabe, anglais, français ou arabizi.",
+    "all": "Tous",
+    "filterByType": "Filtrer par type",
+    "previous": "Précédent",
+    "next": "Suivant"
   }
 }

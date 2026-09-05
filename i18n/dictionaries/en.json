@@ -12,7 +12,8 @@
     "legacy": "Our Story",
     "news": "Newsroom",
     "b2b": "Licensing",
-    "contact": "Contact"
+    "contact": "Contact",
+    "search": "Search"
   },
   "hero": {
     "eyebrow": "Est. 1955",
@@ -44,5 +45,25 @@
     "viewAll": "View all",
     "toggleTheme": "Toggle theme",
     "language": "Language"
+  },
+  "search": {
+    "title": "Search",
+    "description": "Search the Cedars Art Production catalogue across Arabic, English and French.",
+    "placeholder": "Search series, films, cast…",
+    "promptTitle": "What are you looking for?",
+    "resultsFor": "Results for",
+    "noResults": "No titles matched your search.",
+    "matches": "titles found",
+    "didYouMean": "Did you mean",
+    "recent": "Recent searches",
+    "seeAll": "See all results",
+    "navigate": "navigate",
+    "select": "open",
+    "close": "Close search",
+    "hint": "Type at least two characters — Arabic, English, French, or Arabizi.",
+    "all": "All",
+    "filterByType": "Filter by type",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

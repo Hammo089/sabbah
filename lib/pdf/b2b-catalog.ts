@@ -48,6 +48,30 @@ function sanitize(value: string): string {
   return value.replace(/[^\x20-\x7E -ÿ]/g, '').trim();
 }
 
+/**
+ * pdf-lib exposes no letter-spacing option, so tracked text is drawn glyph by
+ * glyph. `trackedWidth` measures the same run for right-aligned placement.
+ */
+function drawTracked(
+  page: PDFPage,
+  text: string,
+  opts: { x: number; y: number; size: number; font: PDFFont; color: RGB; tracking: number },
+): void {
+  const { x, y, size, font, color, tracking } = opts;
+  let cursor = x;
+
+  for (const char of sanitize(text)) {
+    page.drawText(char, { x: cursor, y, size, font, color });
+    cursor += font.widthOfTextAtSize(char, size) + tracking;
+  }
+}
+
+function trackedWidth(text: string, font: PDFFont, size: number, tracking: number): number {
+  const clean = sanitize(text);
+  if (!clean.length) return 0;
+  return font.widthOfTextAtSize(clean, size) + tracking * (clean.length - 1);
+}
+
 function wrap(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
   const words = sanitize(text).split(/\s+/).filter(Boolean);
   const lines: string[] = [];
@@ -70,12 +94,12 @@ function drawCover(page: PDFPage, fonts: { serif: PDFFont; sans: PDFFont; bold: 
   page.drawRectangle({ x: 0, y: 0, width: PAGE_W, height: PAGE_H, color: INK });
   page.drawRectangle({ x: MARGIN, y: MARGIN, width: PAGE_W - MARGIN * 2, height: PAGE_H - MARGIN * 2, borderColor: GOLD, borderWidth: 0.75 });
 
-  page.drawText('CEDARS ART PRODUCTION', {
-    x: MARGIN + 28, y: PAGE_H - 170, size: 9, font: fonts.bold, color: GOLD, characterSpacing: 4.2,
+  drawTracked(page, 'CEDARS ART PRODUCTION', {
+    x: MARGIN + 28, y: PAGE_H - 170, size: 9, font: fonts.bold, color: GOLD, tracking: 4.2,
   });
 
-  page.drawText('SABBAH BROTHERS', {
-    x: MARGIN + 28, y: PAGE_H - 188, size: 8, font: fonts.sans, color: rgb(0.62, 0.6, 0.57), characterSpacing: 3,
+  drawTracked(page, 'SABBAH BROTHERS', {
+    x: MARGIN + 28, y: PAGE_H - 188, size: 8, font: fonts.sans, color: rgb(0.62, 0.6, 0.57), tracking: 3,
   });
 
   page.drawText('International', { x: MARGIN + 28, y: PAGE_H - 300, size: 40, font: fonts.serif, color: PAPER });
@@ -105,8 +129,8 @@ function drawCover(page: PDFPage, fonts: { serif: PDFFont; sans: PDFFont; bold: 
     });
   });
 
-  page.drawText('Beirut  ·  Cairo  ·  Casablanca  ·  Dubai', {
-    x: MARGIN + 28, y: MARGIN + 24, size: 8, font: fonts.sans, color: GOLD, characterSpacing: 1.6,
+  drawTracked(page, 'Beirut  ·  Cairo  ·  Casablanca  ·  Dubai', {
+    x: MARGIN + 28, y: MARGIN + 24, size: 8, font: fonts.sans, color: GOLD, tracking: 1.6,
   });
 }
 
@@ -117,8 +141,8 @@ function drawPageFurniture(page: PDFPage, sans: PDFFont, pageNumber: number) {
     thickness: 0.5,
     color: HAIRLINE,
   });
-  page.drawText('CEDARS ART PRODUCTION  ·  LICENSING CATALOGUE', {
-    x: MARGIN, y: PAGE_H - 50, size: 7, font: sans, color: MUTED, characterSpacing: 1.8,
+  drawTracked(page, 'CEDARS ART PRODUCTION  ·  LICENSING CATALOGUE', {
+    x: MARGIN, y: PAGE_H - 50, size: 7, font: sans, color: MUTED, tracking: 1.8,
   });
   page.drawText(String(pageNumber).padStart(2, '0'), {
     x: PAGE_W - MARGIN - 12, y: 32, size: 8, font: sans, color: MUTED,
@@ -169,13 +193,13 @@ export async function buildB2BCatalogPdf(input: CatalogInput): Promise<Uint8Arra
     // Year / language chip
     const chip = [item.year ?? '', (item.language ?? '').toUpperCase()].filter(Boolean).join('  ·  ');
     if (chip) {
-      page.drawText(chip, {
-        x: PAGE_W - MARGIN - fonts.sans.widthOfTextAtSize(chip, 8),
+      drawTracked(page, chip, {
+        x: PAGE_W - MARGIN - trackedWidth(chip, fonts.sans, 8, 1.2),
         y: y + 3,
         size: 8,
         font: fonts.sans,
         color: GOLD,
-        characterSpacing: 1.2,
+        tracking: 1.2,
       });
     }
     y -= 16;
@@ -212,7 +236,7 @@ export async function buildB2BCatalogPdf(input: CatalogInput): Promise<Uint8Arra
     ].filter(Boolean) as string[];
 
     for (const line of rights) {
-      page.drawText(sanitize(line), { x: MARGIN, y, size: 7.5, font: fonts.bold, color: rgb(0.32, 0.3, 0.28), characterSpacing: 0.6 });
+      drawTracked(page, line, { x: MARGIN, y, size: 7.5, font: fonts.bold, color: rgb(0.32, 0.3, 0.28), tracking: 0.6 });
       y -= 11;
     }
 
