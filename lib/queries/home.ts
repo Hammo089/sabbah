@@ -1,7 +1,7 @@
 // lib/queries/home.ts
 import 'server-only';
 import { cache } from 'react';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAnonClient } from '@/lib/supabase/server';
 import { t } from '@/lib/utils';
 import type { Locale } from '@/i18n/config';
 
@@ -35,7 +35,7 @@ export const getHeroPosters = cache(async (lang: Locale): Promise<HeroPoster[]> 
 });
 
 const fetchHeroPosters = async (lang: Locale): Promise<HeroPoster[]> => {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
 
   const { data: featured } = await supabase
     .from('series')
@@ -78,7 +78,7 @@ const fetchHeroPosters = async (lang: Locale): Promise<HeroPoster[]> => {
 export const getLibraryCount = cache(async (): Promise<number> => {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return 0;
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabaseAnonClient();
     const { count } = await supabase
       .from('series')
       .select('id', { count: 'exact', head: true })

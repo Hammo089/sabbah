@@ -3,13 +3,16 @@ import type { Locale } from '@/i18n/config';
 import type { AppRole } from '@/lib/auth/rbac';
 import { ThemeToggle } from '@/components/site/theme-toggle';
 import { LocaleSwitcher } from '@/components/site/locale-switcher';
+import { SignOutButton } from '@/components/admin/sign-out-button';
 
 export function AdminTopbar({
   lang,
   user,
+  signOutLabel,
 }: {
   lang: Locale;
   user: { email: string; fullName: string | null; avatarUrl: string | null; role: AppRole };
+  signOutLabel: string;
 }) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-background/80 px-4 backdrop-blur-md md:px-8">
@@ -21,6 +24,7 @@ export function AdminTopbar({
       <div className="flex items-center gap-2">
         <LocaleSwitcher currentLocale={lang} />
         <ThemeToggle />
+        <SignOutButton lang={lang} label={signOutLabel} />
       </div>
     </header>
   );
