@@ -22,6 +22,19 @@ const MIN_POSTERS = 12;
  *    so the marquee never renders with visible gaps.
  */
 export const getHeroPosters = cache(async (lang: Locale): Promise<HeroPoster[]> => {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.error('[home] Supabase env vars missing — hero renders without posters.');
+    return [];
+  }
+  try {
+    return await fetchHeroPosters(lang);
+  } catch (error) {
+    console.error('[home] hero posters failed:', error);
+    return [];
+  }
+});
+
+const fetchHeroPosters = async (lang: Locale): Promise<HeroPoster[]> => {
   const supabase = await createSupabaseServerClient();
 
   const { data: featured } = await supabase
@@ -60,13 +73,19 @@ export const getHeroPosters = cache(async (lang: Locale): Promise<HeroPoster[]> 
     year: row.year,
     posterUrl: row.poster_url as string,
   }));
-});
+};
 
 export const getLibraryCount = cache(async (): Promise<number> => {
-  const supabase = await createSupabaseServerClient();
-  const { count } = await supabase
-    .from('series')
-    .select('id', { count: 'exact', head: true })
-    .eq('status', 'published');
-  return count ?? 0;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return 0;
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { count } = await supabase
+      .from('series')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'published');
+    return count ?? 0;
+  } catch (error) {
+    console.error('[home] library count failed:', error);
+    return 0;
+  }
 });

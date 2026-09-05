@@ -39,6 +39,28 @@ export async function searchCatalog(
 
   if (!q) return { results: [], suggestions: [], query: query ?? '', took: 0 };
 
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.error('[search] Supabase env vars missing — returning empty results.');
+    return { results: [], suggestions: [], query: q, took: Date.now() - started };
+  }
+
+  try {
+    return await runSearch(q, lang, filters, limit, offset, started);
+  } catch (error) {
+    // A search page that 500s is worse than one that says "no results".
+    console.error('[search] failed:', error);
+    return { results: [], suggestions: [], query: q, took: Date.now() - started };
+  }
+}
+
+async function runSearch(
+  q: string,
+  lang: Locale,
+  filters: SearchFilters,
+  limit: number,
+  offset: number,
+  started: number,
+): Promise<SearchResponse> {
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase.rpc('search_catalog', {

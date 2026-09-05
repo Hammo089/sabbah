@@ -28,6 +28,17 @@ function resolveLocale(request: NextRequest): Locale {
 }
 
 export async function middleware(request: NextRequest) {
+  try {
+    return await handle(request);
+  } catch (error) {
+    // Last-resort guard. A crash here returns 500 for EVERY route on the site,
+    // so we log and let the request through rather than taking everything down.
+    console.error('[middleware] unhandled error:', error);
+    return NextResponse.next();
+  }
+}
+
+async function handle(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   // Skip infrastructure paths.
@@ -78,13 +89,15 @@ export async function middleware(request: NextRequest) {
     });
   }
 
-  const { user } = await refreshSupabaseSession(request, response);
+  const { user, ok } = await refreshSupabaseSession(request, response);
 
   // ---- Edge guard: /{lang}/admin and /{lang}/b2b require a session ---------
   const rest = `/${segments.slice(2).join('/')}`;
   const isProtected = rest.startsWith('/admin') || rest.startsWith('/b2b/licensing');
 
-  if (isProtected && !user) {
+  // When Supabase is unreachable we cannot prove a session exists, so protected
+  // routes still redirect to login. The layouts re-check server-side anyway.
+  if (isProtected && (!user || !ok)) {
     const login = request.nextUrl.clone();
     login.pathname = `/${locale}/login`;
     login.search = `?next=${encodeURIComponent(pathname)}`;
