@@ -143,7 +143,9 @@
     "invited": "Invitation saved",
     "attachedTo": "Airs on",
     "noBroadcasters": "No broadcasters yet — add them from the Broadcasters page.",
-    "comingSoonSection": "This section is not built yet."
+    "comingSoonSection": "This section is not built yet.",
+    "creditsHint": "Add the person once under Cast & Crew, then attach them here with their character name.",
+    "noPersonFound": "No match. Add them under Cast & Crew first."
   },
   "footer": {
     "about": "About us",

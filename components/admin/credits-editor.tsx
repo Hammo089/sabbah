@@ -21,7 +21,11 @@ export function CreditsEditor({
 }: {
   seriesId: string;
   lang: Locale;
-  dict: { cast: string; crew: string; addPerson: string; searchPerson: string; character: string; role: string; remove: string; noCredits: string };
+  dict: {
+    cast: string; crew: string; addPerson: string; searchPerson: string;
+    character: string; role: string; remove: string; noCredits: string;
+    creditsHint: string; noPersonFound: string;
+  };
 }) {
   const [credits, setCredits] = React.useState<Credit[]>([]);
   const [query, setQuery] = React.useState('');
@@ -96,8 +100,11 @@ export function CreditsEditor({
   const crew = credits.filter((c) => c.kind === 'crew');
 
   return (
-    <section className="mb-24 rounded-lg border border-border bg-card p-5">
-      <h2 className="text-sm font-medium">{dict.addPerson}</h2>
+    <section id="cast-crew" className="mb-24 rounded-lg border border-primary/25 bg-card p-5">
+      <h2 className="text-base font-medium">
+        {dict.cast} &amp; {dict.crew}
+      </h2>
+      <p className="mt-1 text-xs text-muted-foreground">{dict.creditsHint}</p>
 
       <div className="mt-4 flex flex-wrap items-end gap-3">
         <div className="flex gap-1 rounded-md border border-border p-0.5">
@@ -140,6 +147,12 @@ export function CreditsEditor({
             placeholder={dict.searchPerson}
             className="h-9 ps-9"
           />
+
+          {debounced.trim().length >= 2 && results.length === 0 && !isPending && (
+            <p className="absolute z-20 mt-1 w-full rounded-md border border-border bg-popover px-3 py-2 text-xs text-muted-foreground">
+              {dict.noPersonFound}
+            </p>
+          )}
 
           {results.length > 0 && (
             <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-md border border-border bg-popover shadow-lg">

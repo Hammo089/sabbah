@@ -22,6 +22,7 @@ const NAV: NavItem[] = [
   { href: '/movies',   label: 'Films',     icon: Film,            roles: ['super_admin', 'admin', 'editor'] },
   { href: '/programs', label: 'Programs',  icon: Clapperboard,    roles: ['super_admin', 'admin', 'editor'] },
   { href: '/episodes', label: 'Episodes',  icon: ListVideo,       roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/people',   label: 'Cast & Crew', icon: UserSquare2,   roles: ['super_admin', 'admin', 'editor'] },
   { href: '/drm',      label: 'DRM & Licensing', icon: ShieldCheck, roles: ['super_admin'] },
   { href: '/broadcasters', label: 'Broadcasters', icon: Radio,      roles: ['super_admin', 'admin', 'editor'] },
   { href: '/legacy',   label: 'Legacy',    icon: Landmark,        roles: ['super_admin', 'admin'] },

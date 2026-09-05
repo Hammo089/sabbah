@@ -143,7 +143,9 @@
     "invited": "Invitation enregistrée",
     "attachedTo": "Diffusé sur",
     "noBroadcasters": "Aucun diffuseur — ajoutez-en depuis la page Diffuseurs.",
-    "comingSoonSection": "Cette section n'est pas encore construite."
+    "comingSoonSection": "Cette section n'est pas encore construite.",
+    "creditsHint": "Ajoutez la personne une fois dans Distribution, puis rattachez-la ici avec son personnage.",
+    "noPersonFound": "Aucun résultat. Ajoutez-la d'abord dans Distribution."
   },
   "footer": {
     "about": "À propos",
