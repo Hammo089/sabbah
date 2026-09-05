@@ -239,5 +239,18 @@
     "productions": "Productions",
     "offices": "Bureaux",
     "partners": "Partenaires"
+  },
+  "upload": {
+    "drop": "Glissez une image ici",
+    "browse": "ou choisissez un fichier",
+    "uploading": "Téléversement…",
+    "remove": "Retirer",
+    "tooLarge": "Le fichier dépasse {n} Mo.",
+    "failed": "Échec du téléversement",
+    "orPaste": "coller une URL",
+    "poster": "Affiche (2:3)",
+    "backdrop": "Image de fond (16:9)",
+    "photo": "Photo",
+    "logo": "Logo"
   }
 }

@@ -94,7 +94,12 @@ export default async function TitleEditorPage({
       <h1 className="mt-3 text-display text-2xl font-light">{heading}</h1>
 
       <div className="mt-8">
-        <TitleForm lang={locale} values={values} labels={{ save: dict.admin.save, saved: dict.admin.saved }} />
+        <TitleForm
+          lang={locale}
+          values={values}
+          labels={{ save: dict.admin.save, saved: dict.admin.saved }}
+          upload={{ ...dict.upload }}
+        />
       </div>
 
       {values.id && (

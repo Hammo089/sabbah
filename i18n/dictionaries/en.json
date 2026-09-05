@@ -239,5 +239,18 @@
     "productions": "Productions",
     "offices": "Global offices",
     "partners": "Broadcast partners"
+  },
+  "upload": {
+    "drop": "Drag an image here",
+    "browse": "or choose a file",
+    "uploading": "Uploading…",
+    "remove": "Remove",
+    "tooLarge": "File is larger than {n} MB.",
+    "failed": "Upload failed",
+    "orPaste": "paste a URL",
+    "poster": "Poster (2:3)",
+    "backdrop": "Backdrop (16:9)",
+    "photo": "Photo",
+    "logo": "Logo"
   }
 }

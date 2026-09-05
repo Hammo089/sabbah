@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { ImageUpload } from '@/components/admin/image-upload';
 import { cn } from '@/lib/utils';
 
 export type LegacyRow = {
@@ -27,10 +28,12 @@ const LANGS = ['ar', 'en', 'fr'] as const;
 function Row({
   row,
   labels,
+  upload,
   onDeleted,
 }: {
   row: LegacyRow | null;
   labels: { save: string; saved: string; remove: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { poster: string };
   onDeleted?: () => void;
 }) {
   const [isPending, startTransition] = React.useTransition();
@@ -96,9 +99,15 @@ function Row({
           <Label className="text-xs text-muted-foreground">Video URL</Label>
           <Input name="video_url" type="url" defaultValue={row?.video_url ?? ''} dir="ltr" />
         </div>
-        <div className="min-w-[14rem] flex-1 space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Poster URL</Label>
-          <Input name="poster_url" type="url" defaultValue={row?.poster_url ?? ''} dir="ltr" />
+        <div className="w-44">
+          <ImageUpload
+            name="poster_url"
+            bucket="legacy"
+            defaultValue={row?.poster_url}
+            label={upload.poster}
+            aspect="wide"
+            dict={upload}
+          />
         </div>
         <div className="w-20 space-y-1.5">
           <Label className="text-xs text-muted-foreground">Order</Label>
@@ -141,9 +150,11 @@ function Row({
 export function LegacyManager({
   rows,
   labels,
+  upload,
 }: {
   rows: LegacyRow[];
   labels: { save: string; saved: string; remove: string; add: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { poster: string };
 }) {
   const [items, setItems] = React.useState(rows);
 
@@ -151,7 +162,7 @@ export function LegacyManager({
     <div className="max-w-4xl space-y-6">
       <div>
         <p className="mb-3 text-[0.65rem] uppercase tracking-[0.2em] text-primary">{labels.add}</p>
-        <Row row={null} labels={labels} />
+        <Row row={null} labels={labels} upload={upload} />
       </div>
 
       {items.map((row) => (
@@ -159,6 +170,7 @@ export function LegacyManager({
           key={row.id}
           row={row}
           labels={labels}
+          upload={upload}
           onDeleted={() => setItems((prev) => prev.filter((r) => r.id !== row.id))}
         />
       ))}

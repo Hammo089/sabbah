@@ -31,6 +31,7 @@ export default async function AdminBroadcastersPage({ params }: { params: Promis
             remove: dict.admin.remove,
             add: dict.admin.addBroadcaster,
           }}
+          upload={{ ...dict.upload }}
         />
       </div>
     </div>

@@ -2,13 +2,13 @@
 'use client';
 
 import * as React from 'react';
-import Image from 'next/image';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { saveBroadcaster, deleteBroadcaster } from '@/app/[lang]/admin/(dashboard)/settings-actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { ImageUpload } from '@/components/admin/image-upload';
 
 export type BroadcasterRow = {
   id: string;
@@ -22,10 +22,12 @@ export type BroadcasterRow = {
 function Row({
   row,
   labels,
+  upload,
   onDeleted,
 }: {
   row: BroadcasterRow | null;
   labels: { save: string; saved: string; remove: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { logo: string };
   onDeleted?: () => void;
 }) {
   const [isPending, startTransition] = React.useTransition();
@@ -47,12 +49,6 @@ function Row({
       {row && <input type="hidden" name="id" value={row.id} />}
 
       <div className="flex flex-wrap items-end gap-3">
-        {row?.logo_url && (
-          <div className="relative h-10 w-24 shrink-0">
-            <Image src={row.logo_url} alt={row.name} fill sizes="96px" className="object-contain" />
-          </div>
-        )}
-
         <div className="w-40 space-y-1.5">
           <Label className="text-xs text-muted-foreground">Name</Label>
           <Input name="name" defaultValue={row?.name ?? ''} required />
@@ -63,9 +59,15 @@ function Row({
           <Input name="slug" defaultValue={row?.slug ?? ''} dir="ltr" required pattern="[a-z0-9-]+" />
         </div>
 
-        <div className="min-w-[14rem] flex-1 space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Logo URL</Label>
-          <Input name="logo_url" type="url" defaultValue={row?.logo_url ?? ''} dir="ltr" />
+        <div className="w-40">
+          <ImageUpload
+            name="logo_url"
+            bucket="broadcasters"
+            defaultValue={row?.logo_url}
+            label={upload.logo}
+            aspect="wide"
+            dict={upload}
+          />
         </div>
 
         <div className="min-w-[12rem] flex-1 space-y-1.5">
@@ -109,9 +111,11 @@ function Row({
 export function BroadcasterManager({
   rows,
   labels,
+  upload,
 }: {
   rows: BroadcasterRow[];
   labels: { save: string; saved: string; remove: string; add: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { logo: string };
 }) {
   const [items, setItems] = React.useState(rows);
 
@@ -119,7 +123,7 @@ export function BroadcasterManager({
     <div className="space-y-4">
       <div>
         <p className="mb-3 text-[0.65rem] uppercase tracking-[0.2em] text-primary">{labels.add}</p>
-        <Row row={null} labels={labels} />
+        <Row row={null} labels={labels} upload={upload} />
       </div>
 
       {items.map((row) => (
@@ -127,6 +131,7 @@ export function BroadcasterManager({
           key={row.id}
           row={row}
           labels={labels}
+          upload={upload}
           onDeleted={() => setItems((prev) => prev.filter((r) => r.id !== row.id))}
         />
       ))}

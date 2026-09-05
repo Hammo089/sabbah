@@ -39,6 +39,7 @@ export default async function AdminLegacyPage({ params }: { params: Promise<{ la
             sort_order: r.sort_order,
           }))}
           labels={{ save: dict.admin.save, saved: dict.admin.saved, remove: dict.admin.remove, add: dict.admin.addItem }}
+          upload={{ ...dict.upload }}
         />
       </div>
     </div>

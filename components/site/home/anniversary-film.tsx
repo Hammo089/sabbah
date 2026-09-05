@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Play } from 'lucide-react';
+import { YouTubeTheatre } from '@/components/site/youtube-theatre';
 import { cn } from '@/lib/utils';
 
 type Dict = {
@@ -29,7 +30,7 @@ export function AnniversaryFilm({
   youtubeId: string;
   dict: Dict;
 }) {
-  const [playing, setPlaying] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
@@ -73,44 +74,41 @@ export function AnniversaryFilm({
           style={reduce ? undefined : { scale }}
           className="relative mt-12 aspect-video w-full overflow-hidden border border-primary/[0.12] bg-[#1a1a1a]"
         >
-          {playing ? (
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}
-              title={dict.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 size-full border-0"
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="group absolute inset-0 grid place-items-center"
+            aria-label={dict.cta}
+          >
+            {/* Poster comes from YouTube itself — no extra asset to host */}
+            <img
+              src={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
+              alt=""
+              className="absolute inset-0 size-full object-cover opacity-45 transition-opacity duration-500 group-hover:opacity-60"
             />
-          ) : (
-            <button
-              type="button"
-              onClick={() => setPlaying(true)}
-              className="group absolute inset-0 grid place-items-center"
-              aria-label={dict.cta}
-            >
-              {/* Poster pulled straight from YouTube — no extra asset to host */}
-              <img
-                src={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
-                alt=""
-                className="absolute inset-0 size-full object-cover opacity-45 transition-opacity duration-500 group-hover:opacity-60"
-              />
 
-              <span aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,transparent,rgba(0,0,0,.75))]" />
+            <span aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,transparent,rgba(0,0,0,.75))]" />
 
-              <span className="relative z-10 flex flex-col items-center gap-5">
-                <span
-                  className={cn(
-                    'flex size-20 items-center justify-center rounded-full border border-primary/50',
-                    'transition-all duration-500 group-hover:scale-110 group-hover:border-primary group-hover:bg-primary/10',
-                  )}
-                >
-                  <Play className="size-6 fill-primary text-primary" />
-                </span>
-                <span className="condensed text-[13px] tracking-[0.4em] text-primary">{dict.cta}</span>
+            <span className="relative z-10 flex flex-col items-center gap-5">
+              <span
+                className={cn(
+                  'flex size-20 items-center justify-center rounded-full border border-primary/50',
+                  'transition-all duration-500 group-hover:scale-110 group-hover:border-primary group-hover:bg-primary/10',
+                )}
+              >
+                <Play className="size-6 fill-primary text-primary" />
               </span>
-            </button>
-          )}
+              <span className="condensed text-[13px] tracking-[0.4em] text-primary">{dict.cta}</span>
+            </span>
+          </button>
         </motion.div>
+
+        <YouTubeTheatre
+          videoId={youtubeId}
+          open={open}
+          onClose={() => setOpen(false)}
+          title={dict.title}
+        />
       </div>
     </section>
   );

@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { ImageUpload } from '@/components/admin/image-upload';
 import type { Locale } from '@/i18n/config';
 import { cn } from '@/lib/utils';
 
@@ -71,10 +72,12 @@ export function TitleForm({
   lang,
   values,
   labels,
+  upload,
 }: {
   lang: Locale;
   values: TitleFormValues;
   labels: { save: string; saved: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { poster: string; backdrop: string };
 }) {
   const [state, formAction] = useActionState<ActionResult | null, FormData>(saveTitle, null);
   const [tab, setTab] = React.useState<(typeof LANGS)[number]>('ar');
@@ -167,10 +170,26 @@ export function TitleForm({
       </section>
 
       {/* Media */}
-      <section className="grid gap-5 rounded-lg border border-border bg-card p-5 sm:grid-cols-2">
-        <Field label="Poster URL"><Input name="poster_url" type="url" defaultValue={values.poster_url ?? ''} dir="ltr" /></Field>
-        <Field label="Backdrop URL"><Input name="backdrop_url" type="url" defaultValue={values.backdrop_url ?? ''} dir="ltr" /></Field>
-        <Field label="YouTube ID"><Input name="youtube_id" defaultValue={values.youtube_id ?? ''} dir="ltr" placeholder="dQw4w9WgXcQ" /></Field>
+      <section className="grid gap-6 rounded-lg border border-border bg-card p-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ImageUpload
+          name="poster_url"
+          bucket="posters"
+          defaultValue={values.poster_url}
+          label={upload.poster}
+          aspect="poster"
+          dict={upload}
+        />
+        <ImageUpload
+          name="backdrop_url"
+          bucket="backdrops"
+          defaultValue={values.backdrop_url}
+          label={upload.backdrop}
+          aspect="wide"
+          dict={upload}
+        />
+        <Field label="YouTube ID">
+          <Input name="youtube_id" defaultValue={values.youtube_id ?? ''} dir="ltr" placeholder="R0J7ypYwiDI" />
+        </Field>
       </section>
 
       {/* Flags */}

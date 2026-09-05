@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { ImageUpload } from '@/components/admin/image-upload';
 import { cn } from '@/lib/utils';
 
 export type PersonFormValues = {
@@ -40,9 +41,11 @@ function SaveBar({ label }: { label: string }) {
 export function PersonForm({
   values,
   labels,
+  upload,
 }: {
   values: PersonFormValues;
   labels: { save: string; saved: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { photo: string };
 }) {
   const [state, formAction] = useActionState<ActionResult | null, FormData>(savePerson, null);
   const [tab, setTab] = React.useState<(typeof LANGS)[number]>('ar');
@@ -99,9 +102,15 @@ export function PersonForm({
           <Label className="text-xs text-muted-foreground">Slug</Label>
           <Input name="slug" defaultValue={values.slug} dir="ltr" required pattern="[a-z0-9-]+" />
         </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Photo URL</Label>
-          <Input name="photo_url" type="url" defaultValue={values.photo_url ?? ''} dir="ltr" />
+        <div className="sm:col-span-2">
+          <ImageUpload
+            name="photo_url"
+            bucket="people"
+            defaultValue={values.photo_url}
+            label={upload.photo}
+            aspect="square"
+            dict={upload}
+          />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Birth year</Label>

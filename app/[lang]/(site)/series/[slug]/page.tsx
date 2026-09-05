@@ -3,12 +3,13 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Play } from 'lucide-react';
+
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { buildMetadata, SITE_URL } from '@/lib/seo/metadata';
 import { getTitleBySlug, getAllPublishedSlugs } from '@/lib/queries/catalog';
 import { TitleTabs } from '@/components/site/title-tabs';
+import { WatchButton } from '@/components/site/watch-button';
 import { cn } from '@/lib/utils';
 
 export const revalidate = 900;
@@ -138,18 +139,14 @@ export default async function TitlePage({
             </dl>
 
             {(title.youtubeId || title.trailerUrl) && (
-              <a
-                href={title.youtubeId ? `https://www.youtube.com/watch?v=${title.youtubeId}` : title.trailerUrl!}
-                target="_blank"
-                rel="noreferrer"
-                className={cn(
-                  'mt-8 inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3',
-                  'text-sm font-medium text-primary-foreground transition-all hover:brightness-110',
-                )}
-              >
-                <Play className="size-4 fill-current" />
-                {dict.detail.watch}
-              </a>
+              <div className="mt-8">
+                <WatchButton
+                  youtubeId={title.youtubeId}
+                  fallbackUrl={title.trailerUrl}
+                  label={dict.detail.watch}
+                  title={title.title}
+                />
+              </div>
             )}
 
             {title.broadcasters.length > 0 && (

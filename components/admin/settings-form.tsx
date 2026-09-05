@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { ImageUpload } from '@/components/admin/image-upload';
 
 function SaveBtn({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -27,9 +28,11 @@ function SaveBtn({ label }: { label: string }) {
 export function SettingsForm({
   values,
   labels,
+  upload,
 }: {
   values: SiteSettings;
   labels: { save: string; saved: string };
+  upload: React.ComponentProps<typeof ImageUpload>['dict'] & { backdrop: string };
 }) {
   const [state, formAction] = useActionState<ActionResult | null, FormData>(saveSettings, null);
 
@@ -62,9 +65,15 @@ export function SettingsForm({
           </p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Hero background image URL</Label>
-          <Input name="hero_backdrop_url" type="url" defaultValue={values.hero_backdrop_url ?? ''} dir="ltr" />
+        <div className="max-w-md">
+          <ImageUpload
+            name="hero_backdrop_url"
+            bucket="backdrops"
+            defaultValue={values.hero_backdrop_url}
+            label={upload.backdrop}
+            aspect="wide"
+            dict={upload}
+          />
         </div>
       </section>
 

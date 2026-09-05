@@ -60,7 +60,11 @@ export default async function PersonEditorPage({
       <h1 className="mt-3 text-display text-2xl font-light">{heading}</h1>
 
       <div className="mt-8">
-        <PersonForm values={values} labels={{ save: dict.admin.save, saved: dict.admin.saved }} />
+        <PersonForm
+          values={values}
+          labels={{ save: dict.admin.save, saved: dict.admin.saved }}
+          upload={{ ...dict.upload }}
+        />
       </div>
     </div>
   );

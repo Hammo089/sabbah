@@ -27,6 +27,7 @@ export default async function AdminSettingsPage({ params }: { params: Promise<{ 
         <SettingsForm
           values={{ ...DEFAULT_SETTINGS, ...(data ?? {}) }}
           labels={{ save: dict.admin.save, saved: dict.admin.saved }}
+          upload={{ ...dict.upload }}
         />
       </div>
     </div>
