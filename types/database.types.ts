@@ -40,6 +40,15 @@ export type SeriesRow = {
   id: string;
   slug: string;
   title: Json;
+  subtitle: Json;
+  kind: TitleKind;
+  region: RegionCode;
+  subtitle_langs: string[];
+  is_script: boolean;
+  is_coming_soon: boolean;
+  is_new: boolean;
+  is_hit: boolean;
+  youtube_id: string | null;
   synopsis: Json;
   genres: string[];
   year: number | null;
@@ -65,6 +74,13 @@ export type MoviesRow = {
   id: string;
   slug: string;
   title: Json;
+  subtitle: Json;
+  region: RegionCode;
+  subtitle_langs: string[];
+  is_coming_soon: boolean;
+  is_new: boolean;
+  is_hit: boolean;
+  youtube_id: string | null;
   synopsis: Json;
   genres: string[];
   year: number | null;
@@ -190,6 +206,56 @@ export type SearchResultRow = {
   match_kind: SearchMatchKind;
 };
 
+
+export type TitleKind = 'series' | 'show' | 'movie' | 'animation';
+export type RegionCode = 'levant' | 'egypt' | 'arabia' | 'maghreb' | 'other';
+export type CreditKind = 'cast' | 'crew';
+
+export type PeopleRow = {
+  id: string;
+  slug: string;
+  name: Json;
+  bio: Json;
+  photo_url: string | null;
+  birth_year: number | null;
+  nationality: string | null;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CreditsRow = {
+  id: string;
+  person_id: string;
+  series_id: string | null;
+  movie_id: string | null;
+  kind: CreditKind;
+  role: string | null;
+  character: Json;
+  sort_order: number;
+  created_at: string;
+};
+
+export type BroadcastersRow = {
+  id: string;
+  slug: string;
+  name: string;
+  logo_url: string | null;
+  site_url: string | null;
+  sort_order: number;
+};
+
+export type MediaAssetsRow = {
+  id: string;
+  series_id: string | null;
+  movie_id: string | null;
+  url: string;
+  caption: Json;
+  asset_type: 'poster' | 'still' | 'keyart' | 'logo';
+  sort_order: number;
+  created_at: string;
+};
+
 // ---------------------------------------------------------------------------
 // Schema
 // ---------------------------------------------------------------------------
@@ -239,6 +305,36 @@ export type Database = {
         Update: Partial<NewsTickerRow>;
         Relationships: [];
       };
+      people: {
+        Row: PeopleRow;
+        Insert: Partial<PeopleRow> & { slug: string };
+        Update: Partial<PeopleRow>;
+        Relationships: [];
+      };
+      credits: {
+        Row: CreditsRow;
+        Insert: Partial<CreditsRow> & { person_id: string };
+        Update: Partial<CreditsRow>;
+        Relationships: [];
+      };
+      broadcasters: {
+        Row: BroadcastersRow;
+        Insert: Partial<BroadcastersRow> & { slug: string; name: string };
+        Update: Partial<BroadcastersRow>;
+        Relationships: [];
+      };
+      title_broadcasters: {
+        Row: { broadcaster_id: string; series_id: string | null; movie_id: string | null };
+        Insert: { broadcaster_id: string; series_id?: string | null; movie_id?: string | null };
+        Update: Partial<{ broadcaster_id: string; series_id: string | null; movie_id: string | null }>;
+        Relationships: [];
+      };
+      media_assets: {
+        Row: MediaAssetsRow;
+        Insert: Partial<MediaAssetsRow> & { url: string };
+        Update: Partial<MediaAssetsRow>;
+        Relationships: [];
+      };
       company_legacy: {
         Row: CompanyLegacyRow;
         Insert: Partial<CompanyLegacyRow>;
@@ -278,6 +374,10 @@ export type Database = {
           skip?: number;
         };
         Returns: SearchResultRow[];
+      };
+      search_people: {
+        Args: { q: string; lang?: string; max_results?: number };
+        Returns: { id: string; slug: string; name: string; photo_url: string | null; title_count: number }[];
       };
       search_suggest: {
         Args: { q: string; lang?: string; max_results?: number };

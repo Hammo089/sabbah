@@ -13,6 +13,11 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/object/public/**' },
       { protocol: 'https', hostname: 'image.mux.com' },
+      { protocol: 'https', hostname: 'api.sabbah.com' },
+      { protocol: 'https', hostname: 'sabbah.com' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
+      { protocol: 'https', hostname: 'i.ytimg.com' },
+      { protocol: 'https', hostname: 'placehold.co' },
     ],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },

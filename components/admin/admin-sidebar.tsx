@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import {
   LayoutDashboard, Clapperboard, Film, Tv, ListVideo,
-  ShieldCheck, Landmark, Megaphone, Users, Settings,
+  ShieldCheck, Landmark, Megaphone, Users, Settings, UserSquare2,
 } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';

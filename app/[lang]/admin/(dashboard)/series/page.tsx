@@ -5,6 +5,9 @@ import { Tv } from 'lucide-react';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { FeaturedSliderSwitch } from '@/components/admin/featured-slider-switch';
 import { StatusSelect } from '@/components/admin/status-select';
 import { t, cn } from '@/lib/utils';
@@ -57,6 +60,15 @@ export default async function AdminSeriesPage({
           </p>
         </div>
 
+        <div className="flex items-center gap-3">
+          <Button asChild variant="gold" size="sm">
+            <Link href={`/${locale}/admin/series/new`}>
+              <Plus />
+              {dict.admin.addTitle}
+            </Link>
+          </Button>
+        </div>
+
         <form className="w-full max-w-xs">
           <input
             type="search"
@@ -100,8 +112,12 @@ export default async function AdminSeriesPage({
                   </td>
 
                   <td className="p-3">
-                    <p className="font-medium">{t(row.title, locale, row.slug)}</p>
-                    <p className="mt-0.5 font-mono text-xs text-muted-foreground">{row.slug}</p>
+                    <Link href={`/${locale}/admin/series/${row.id}`} className="group">
+                      <p className="font-medium transition-colors group-hover:text-primary">
+                        {t(row.title, locale, row.slug)}
+                      </p>
+                      <p className="mt-0.5 font-mono text-xs text-muted-foreground">{row.slug}</p>
+                    </Link>
                   </td>
 
                   <td className="p-3 text-muted-foreground">{row.seasons_count}</td>

@@ -37,6 +37,7 @@ const config: Config = {
       },
       keyframes: {
         'marquee-y': { from: { transform: 'translateY(0)' }, to: { transform: 'translateY(-50%)' } },
+        'marquee-x': { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
         'marquee-y-reverse': { from: { transform: 'translateY(-50%)' }, to: { transform: 'translateY(0)' } },
         'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },
         'accordion-up': { from: { height: 'var(--radix-accordion-content-height)' }, to: { height: '0' } },

@@ -434,6 +434,28 @@ create trigger trg_company_legacy_updated
   for each row execute function public.set_updated_at();
 
 -- =============================================================================
+-- 10b. SCHEMA GRANTS
+-- Supabase grants these by default, but a database built from these files
+-- alone would otherwise reject every anonymous request with
+-- "permission denied for schema public".
+-- =============================================================================
+
+grant usage on schema public to anon, authenticated;
+
+grant select on
+  public.series, public.movies, public.programs, public.episodes,
+  public.news_ticker, public.company_legacy, public.users_profiles
+  to anon;
+
+grant select, insert, update, delete on
+  public.series, public.movies, public.programs, public.episodes,
+  public.news_ticker, public.company_legacy, public.users_profiles
+  to authenticated;
+
+-- drm_licenses is deliberately excluded from the anon grant; its own policy
+-- further restricts it to super_admin.
+
+-- =============================================================================
 -- 11. ROW LEVEL SECURITY
 -- =============================================================================
 

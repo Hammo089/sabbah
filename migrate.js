@@ -21,13 +21,23 @@ async function migrateData() {
   console.log(`[+] تم العثور على ${items.length} عملاً. جاري الحقن...`);
 
   for (const item of items) {
+    // توليد slug فريد من عنوان المسلسل
+    const generatedSlug = (item.title || 'series')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') + '-' + Math.random().toString(36).substring(2, 7);
+
+    // جلب رابط الصورة من مختلف الاحتمالات الممكنة في الأرشيف
+    const posterUrl = item.image || item.poster || item.cover || item.img || '';
+
     const { error } = await supabase
       .from('series')
       .insert([
         {
+          slug: generatedSlug,
           title: { ar: item.title, en: item.title },
           synopsis: { ar: item.subtitle || '', en: '' },
-          poster_url: item.image || '',
+          poster_url: posterUrl,
           is_featured_slider: false
         }
       ]);
@@ -35,7 +45,7 @@ async function migrateData() {
     if (error) {
       console.error(`[-] خطأ في إدخال العمل ${item.title}:`, error.message);
     } else {
-      console.log(`[✓] تم إدخال: ${item.title}`);
+      console.log(`[✓] تم إدخال: ${item.title} (مع الصورة)`);
     }
   }
   console.log('[!!!] اكتملت عملية الحقن بنجاح!');
