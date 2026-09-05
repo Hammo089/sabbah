@@ -93,7 +93,7 @@ export default async function TitlePage({
           />
         ) : null}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/85 to-[#0a0a0a]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/85 to-[#000000]/40" />
 
         <div className="relative mx-auto flex w-full max-w-[1600px] flex-col gap-8 px-6 pb-14 pt-24 md:flex-row md:px-10 md:pt-32 xl:px-16">
           <div className="relative aspect-[2/3] w-40 shrink-0 overflow-hidden rounded-lg ring-1 ring-white/10 md:w-56">

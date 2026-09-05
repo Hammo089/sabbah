@@ -27,7 +27,7 @@ export function MediaCard({
         className={cn(
           'relative aspect-[2/3] overflow-hidden rounded-md bg-neutral-900',
           'ring-1 ring-white/[0.06] transition-all duration-500',
-          'group-hover:ring-primary/45 group-hover:shadow-[0_18px_50px_-18px_rgba(203,163,66,0.5)]',
+          'group-hover:ring-primary/45 group-hover:shadow-[0_18px_50px_-18px_rgba(44,132,92,0.5)]',
         )}
       >
         {item.posterUrl ? (

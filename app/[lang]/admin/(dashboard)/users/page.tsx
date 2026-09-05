@@ -7,6 +7,7 @@ import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getCurrentProfile, isSuperAdmin } from '@/lib/auth/rbac';
 import { RoleSelect } from '@/components/admin/role-select';
+import { InviteUser } from '@/components/admin/invite-user';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,10 +23,17 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ lan
   const dict = await getDictionary(locale);
   const supabase = await createSupabaseServerClient();
 
-  const { data } = await supabase
-    .from('users_profiles')
-    .select('id, email, full_name, role, is_active, created_at')
-    .order('created_at', { ascending: true });
+  const [{ data }, { data: invites }] = await Promise.all([
+    supabase
+      .from('users_profiles')
+      .select('id, email, full_name, role, is_active, created_at')
+      .order('created_at', { ascending: true }),
+    supabase
+      .from('user_invitations')
+      .select('email, role, created_at')
+      .is('accepted_at', null)
+      .order('created_at', { ascending: false }),
+  ]);
 
   const rows = data ?? [];
 
@@ -33,6 +41,19 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ lan
     <div>
       <h1 className="text-display text-2xl font-light">{dict.admin.users}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{rows.length}</p>
+
+      <div className="mt-8">
+        <InviteUser
+          pending={invites ?? []}
+          labels={{
+            invite: dict.admin.invite,
+            hint: dict.admin.inviteHint,
+            pending: dict.admin.pendingInvites,
+            cancel: dict.admin.cancel,
+            invited: dict.admin.invited,
+          }}
+        />
+      </div>
 
       <div className="mt-8 overflow-x-auto rounded-lg border border-border">
         <table className="w-full min-w-[640px] text-sm">

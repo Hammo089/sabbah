@@ -335,6 +335,35 @@ export type Database = {
         Update: Partial<MediaAssetsRow>;
         Relationships: [];
       };
+      site_settings: {
+        Row: {
+          id: boolean;
+          ticker_enabled: boolean;
+          anniversary_enabled: boolean;
+          anniversary_youtube: string;
+          hero_backdrop_url: string | null;
+          stat_years: string;
+          stat_productions: string;
+          stat_offices: string;
+          stat_partners: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['site_settings']['Row']>;
+        Update: Partial<Database['public']['Tables']['site_settings']['Row']>;
+        Relationships: [];
+      };
+      user_invitations: {
+        Row: {
+          email: string;
+          role: AppRoleEnum;
+          invited_by: string | null;
+          created_at: string;
+          accepted_at: string | null;
+        };
+        Insert: { email: string; role?: AppRoleEnum; invited_by?: string | null };
+        Update: Partial<{ email: string; role: AppRoleEnum; accepted_at: string | null }>;
+        Relationships: [];
+      };
       company_legacy: {
         Row: CompanyLegacyRow;
         Insert: Partial<CompanyLegacyRow>;

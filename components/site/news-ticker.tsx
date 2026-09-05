@@ -1,6 +1,7 @@
 // components/site/news-ticker.tsx — SERVER COMPONENT
 import Link from 'next/link';
 import { createSupabaseAnonClient } from '@/lib/supabase/server';
+import { getSiteSettings } from '@/lib/queries/settings';
 import { t } from '@/lib/utils';
 import type { Locale } from '@/i18n/config';
 
@@ -8,6 +9,10 @@ export const revalidate = 300;
 
 export async function NewsTicker({ lang }: { lang: Locale }) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return null;
+
+  // Staff can hide the whole strip from Settings without touching the items.
+  const settings = await getSiteSettings();
+  if (!settings.ticker_enabled) return null;
 
   let rows: { id: string; message: unknown; link_url: string | null }[] = [];
 

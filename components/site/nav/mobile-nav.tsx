@@ -45,7 +45,7 @@ export function MobileNav({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] bg-[#0a0a0a] lg:hidden"
+            className="fixed inset-0 z-[80] bg-[#000000] lg:hidden"
           >
             <div className="flex h-16 items-center justify-end px-6">
               <button

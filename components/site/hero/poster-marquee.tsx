@@ -105,7 +105,7 @@ export function PosterMarquee({
       {/* Vignette edges */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-transparent to-transparent rtl:bg-gradient-to-l"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#000000] via-transparent to-transparent rtl:bg-gradient-to-l"
       />
     </div>
   );
@@ -196,7 +196,7 @@ function PosterCard({
       className={cn(
         'group relative block aspect-[2/3] w-full shrink-0 overflow-hidden rounded-md',
         'bg-neutral-900 ring-1 ring-white/[0.06] transition-all duration-500',
-        'hover:ring-primary/45 hover:shadow-[0_18px_50px_-18px_rgba(203,163,66,0.5)]',
+        'hover:ring-primary/45 hover:shadow-[0_18px_50px_-18px_rgba(44,132,92,0.5)]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
       )}
     >

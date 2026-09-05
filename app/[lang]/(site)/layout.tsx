@@ -20,7 +20,7 @@ export default async function SiteLayout({
   const dict = await getDictionary(locale);
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[#0a0a0a]">
+    <div className="flex min-h-dvh flex-col bg-[#000000]">
       <NewsTicker lang={locale} />
       <SiteHeader lang={locale} dict={dict} />
       <div className="flex-1">{children}</div>

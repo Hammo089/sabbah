@@ -20,7 +20,7 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
       className={cn(
         'sticky top-0 z-50 w-full transition-colors duration-300',
         solid
-          ? 'border-b border-white/[0.07] bg-[#0a0a0a]/85 backdrop-blur-md'
+          ? 'border-b border-white/[0.07] bg-[#000000]/85 backdrop-blur-md'
           : 'border-b border-transparent bg-transparent',
       )}
     >

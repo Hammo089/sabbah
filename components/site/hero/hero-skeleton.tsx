@@ -1,7 +1,7 @@
 // components/site/hero/hero-skeleton.tsx — SERVER COMPONENT (streaming fallback)
 export function HeroSkeleton() {
   return (
-    <section className="grain relative min-h-[92svh] w-full overflow-hidden bg-[#0a0a0a]">
+    <section className="grain relative min-h-[92svh] w-full overflow-hidden bg-[#000000]">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
       <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 items-center gap-16 px-6 py-24 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] xl:px-16">

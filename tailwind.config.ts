@@ -13,8 +13,10 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        display: ['var(--font-display)', 'Arial Narrow', 'sans-serif'],
+        serif: ['var(--font-display)', 'Arial Narrow', 'sans-serif'],
         arabic: ['var(--font-arabic)', 'var(--font-sans)', 'sans-serif'],
+        condensed: ['var(--font-condensed)', 'Arial Narrow', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -38,6 +40,7 @@ const config: Config = {
       keyframes: {
         'marquee-y': { from: { transform: 'translateY(0)' }, to: { transform: 'translateY(-50%)' } },
         'marquee-x': { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        'film-scroll': { from: { transform: 'translateY(0)' }, to: { transform: 'translateY(-50%)' } },
         'marquee-y-reverse': { from: { transform: 'translateY(-50%)' }, to: { transform: 'translateY(0)' } },
         'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },
         'accordion-up': { from: { height: 'var(--radix-accordion-content-height)' }, to: { height: '0' } },
@@ -45,6 +48,8 @@ const config: Config = {
       animation: {
         'marquee-y': 'marquee-y var(--marquee-duration, 40s) linear infinite',
         'marquee-y-reverse': 'marquee-y-reverse var(--marquee-duration, 40s) linear infinite',
+        'marquee-x': 'marquee-x var(--marquee-duration, 22s) linear infinite',
+        'film-scroll': 'film-scroll 28s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },

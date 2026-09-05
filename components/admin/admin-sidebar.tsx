@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import {
   LayoutDashboard, Clapperboard, Film, Tv, ListVideo,
-  ShieldCheck, Landmark, Megaphone, Users, Settings, UserSquare2,
+  ShieldCheck, Landmark, Megaphone, Users, Settings, UserSquare2, Radio,
 } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
@@ -23,6 +23,7 @@ const NAV: NavItem[] = [
   { href: '/programs', label: 'Programs',  icon: Clapperboard,    roles: ['super_admin', 'admin', 'editor'] },
   { href: '/episodes', label: 'Episodes',  icon: ListVideo,       roles: ['super_admin', 'admin', 'editor'] },
   { href: '/drm',      label: 'DRM & Licensing', icon: ShieldCheck, roles: ['super_admin'] },
+  { href: '/broadcasters', label: 'Broadcasters', icon: Radio,      roles: ['super_admin', 'admin', 'editor'] },
   { href: '/legacy',   label: 'Legacy',    icon: Landmark,        roles: ['super_admin', 'admin'] },
   { href: '/ticker',   label: 'News Ticker', icon: Megaphone,     roles: ['super_admin', 'admin', 'editor'] },
   { href: '/users',    label: 'Users',     icon: Users,           roles: ['super_admin'] },

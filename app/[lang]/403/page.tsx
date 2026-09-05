@@ -16,7 +16,7 @@ export default async function ForbiddenPage({ params }: { params: Promise<{ lang
   return (
     <main
       dir={localeDirection[lang]}
-      className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[#0a0a0a] px-6 text-center"
+      className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[#000000] px-6 text-center"
     >
       <ShieldAlert className="size-10 text-primary" />
       <h1 className="text-display text-3xl font-light text-neutral-50">{dict.auth.forbidden}</h1>

@@ -31,7 +31,8 @@
     "titlesLine2": "de récits",
     "titlesLine3": "arabes.",
     "archive": "Depuis les archives",
-    "featuredCount": "titres dans la bibliothèque"
+    "featuredCount": "titres dans la bibliothèque",
+    "disciplines": "Médias arabes · Production · Distribution"
   },
   "legacy": {
     "title": "L'héritage Sabbah",
@@ -123,7 +124,26 @@
     "legacy": "Héritage",
     "ticker": "Fil d'actualité",
     "delete": "Supprimer",
-    "confirmDelete": "Supprimer définitivement ?"
+    "confirmDelete": "Supprimer définitivement ?",
+    "settings": "Paramètres",
+    "settingsHint": "Options de la page d'accueil, film anniversaire et barre de chiffres.",
+    "tickerVisible": "Le fil est visible sur toutes les pages.",
+    "tickerHidden": "Le fil est désactivé dans les Paramètres.",
+    "addItem": "Ajouter",
+    "broadcasters": "Diffuseurs",
+    "addBroadcaster": "Ajouter un diffuseur",
+    "drm": "DRM et licences",
+    "movies": "Films",
+    "programs": "Émissions",
+    "episodes": "Épisodes",
+    "invite": "Inviter un utilisateur",
+    "inviteHint": "Attribuez un rôle — il s'applique dès son inscription.",
+    "pendingInvites": "Invitations en attente",
+    "cancel": "Annuler",
+    "invited": "Invitation enregistrée",
+    "attachedTo": "Diffusé sur",
+    "noBroadcasters": "Aucun diffuseur — ajoutez-en depuis la page Diffuseurs.",
+    "comingSoonSection": "Cette section n'est pas encore construite."
   },
   "footer": {
     "about": "À propos",
@@ -205,5 +225,19 @@
     "casablanca": "Création de l'entité marocaine à Casablanca.",
     "dubai": "Création de la société de distribution à Dubaï.",
     "riyadh": "Expansion en Arabie saoudite achevée."
+  },
+  "home": {
+    "showcaseTitle": "Des récits qui ont façonné une région",
+    "anniversaryTag": "70e anniversaire",
+    "anniversaryTitle": "Sept décennies, une soirée",
+    "anniversaryLine": "Le film réalisé pour la soirée anniversaire — les visages, les familles et les plateaux qui ont porté la fiction arabe de Beyrouth au monde.",
+    "anniversaryCta": "Lancer le film",
+    "partners": "Partenaires de diffusion"
+  },
+  "stats": {
+    "years": "Ans d'héritage",
+    "productions": "Productions",
+    "offices": "Bureaux",
+    "partners": "Partenaires"
   }
 }

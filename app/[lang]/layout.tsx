@@ -1,8 +1,8 @@
 // app/[lang]/layout.tsx
 import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
-const Inter=(_o:any)=>({variable:'--font-sans'});const Cormorant_Garamond=(_o:any)=>({variable:'--font-serif'});const Noto_Kufi_Arabic=(_o:any)=>({variable:'--font-arabic'});
 import Script from 'next/script';
+import { Archivo, Barlow_Condensed, Noto_Kufi_Arabic } from 'next/font/google';
 
 import { i18n, isLocale, localeDirection, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
@@ -12,19 +12,33 @@ import { cn } from '@/lib/utils';
 
 import '@/app/globals.css';
 
-const sans = Inter({
+// sabbah.com sets everything in DIN, which is a commercial licence. Archivo is
+// the closest free grotesque — same low-contrast, squarish counters — and
+// Barlow Condensed matches DIN Condensed for display sizes. Swap both for the
+// real DIN .woff2 files if the company licence covers web use.
+const sans = Archivo({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
 });
 
-const serif = Cormorant_Garamond({
+const display = Barlow_Condensed({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-serif',
+  variable: '--font-display',
   display: 'swap',
 });
 
+const condensed = Barlow_Condensed({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-condensed',
+  display: 'swap',
+});
+
+// sabbah.com uses Droid Arabic Kufi. Noto Kufi Arabic is its direct successor
+// from the same foundry — same skeleton, open licence.
 const arabic = Noto_Kufi_Arabic({
   subsets: ['arabic'],
   weight: ['300', '400', '500', '700'],
@@ -40,8 +54,8 @@ export function generateStaticParams() {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#faf8f4' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0b' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -110,7 +124,7 @@ export default async function LocaleLayout({
       lang={locale}
       dir={dir}
       suppressHydrationWarning
-      className={cn(sans.variable, serif.variable, arabic.variable)}
+      className={cn(sans.variable, display.variable, condensed.variable, arabic.variable)}
     >
       <body
         className={cn(

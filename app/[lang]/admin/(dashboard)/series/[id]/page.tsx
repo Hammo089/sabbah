@@ -7,6 +7,7 @@ import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { TitleForm, type TitleFormValues } from '@/components/admin/title-form';
 import { CreditsEditor } from '@/components/admin/credits-editor';
+import { TitleBroadcasters } from '@/components/admin/title-broadcasters';
 import { t } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -35,12 +36,21 @@ export default async function TitleEditorPage({
   const isNew = id === 'new';
 
   let values = EMPTY;
-  let heading = 'New title';
+  let heading = dict.admin.newTitle;
+  let allBroadcasters: { id: string; name: string }[] = [];
+  let attachedIds: string[] = [];
 
   if (!isNew) {
     const supabase = await createSupabaseServerClient();
     const { data } = await supabase.from('series').select('*').eq('id', id).maybeSingle();
     if (!data) notFound();
+
+    const [{ data: bcs }, { data: links }] = await Promise.all([
+      supabase.from('broadcasters').select('id, name').order('sort_order'),
+      supabase.from('title_broadcasters').select('broadcaster_id').eq('series_id', id),
+    ]);
+    allBroadcasters = bcs ?? [];
+    attachedIds = (links ?? []).map((l) => l.broadcaster_id);
 
     values = {
       id: data.id,
@@ -87,7 +97,17 @@ export default async function TitleEditorPage({
         <TitleForm lang={locale} values={values} labels={{ save: dict.admin.save, saved: dict.admin.saved }} />
       </div>
 
-      {values.id && <CreditsEditor seriesId={values.id} lang={locale} dict={dict.admin} />}
+      {values.id && (
+        <>
+          <TitleBroadcasters
+            seriesId={values.id}
+            all={allBroadcasters}
+            attachedIds={attachedIds}
+            labels={{ title: dict.admin.attachedTo, empty: dict.admin.noBroadcasters }}
+          />
+          <CreditsEditor seriesId={values.id} lang={locale} dict={dict.admin} />
+        </>
+      )}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export async function SplitHero({ lang, dict }: { lang: Locale; dict: Dictionary
       aria-labelledby="hero-heading"
       className={cn(
         'grain relative isolate w-full overflow-hidden',
-        'min-h-[92svh] bg-[#0a0a0a] dark:bg-[#0a0a0a]',
+        'min-h-[92svh] bg-[#000000] dark:bg-[#000000]',
       )}
     >
       {/* ── Vintage light bloom ─────────────────────────────────────────── */}
@@ -24,8 +24,8 @@ export async function SplitHero({ lang, dict }: { lang: Locale; dict: Dictionary
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           backgroundImage:
-            'radial-gradient(90% 65% at 12% 6%, rgba(203,163,66,0.16) 0%, rgba(203,163,66,0.04) 34%, transparent 68%),' +
-            'radial-gradient(70% 55% at 92% 100%, rgba(203,163,66,0.09) 0%, transparent 62%)',
+            'radial-gradient(90% 65% at 12% 6%, rgba(44,132,92,0.16) 0%, rgba(44,132,92,0.04) 34%, transparent 68%),' +
+            'radial-gradient(70% 55% at 92% 100%, rgba(44,132,92,0.09) 0%, transparent 62%)',
         }}
       />
 
@@ -63,7 +63,7 @@ export async function SplitHero({ lang, dict }: { lang: Locale; dict: Dictionary
       {/* ── Bottom fade into the next section ───────────────────────────── */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#000000] via-[#000000]/80 to-transparent"
       />
     </section>
   );

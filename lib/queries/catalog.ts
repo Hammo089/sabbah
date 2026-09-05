@@ -279,3 +279,18 @@ export const getAllPublishedSlugs = cache(async (): Promise<string[]> => {
     return [];
   }
 });
+
+export const getAllBroadcasters = cache(async () => {
+  if (!guard()) return [];
+  try {
+    const supabase = createSupabaseAnonClient();
+    const { data } = await supabase
+      .from('broadcasters')
+      .select('id, name, logo_url, site_url')
+      .order('sort_order');
+    return data ?? [];
+  } catch (error) {
+    console.error('[broadcasters]', error);
+    return [];
+  }
+});

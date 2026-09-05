@@ -31,7 +31,8 @@
     "titlesLine2": "of Arabic",
     "titlesLine3": "storytelling.",
     "archive": "From the archive",
-    "featuredCount": "titles in the library"
+    "featuredCount": "titles in the library",
+    "disciplines": "Arabic Media · Production · Distribution"
   },
   "legacy": {
     "title": "The Sabbah Legacy",
@@ -123,7 +124,26 @@
     "legacy": "Legacy",
     "ticker": "News ticker",
     "delete": "Delete",
-    "confirmDelete": "Delete this permanently?"
+    "confirmDelete": "Delete this permanently?",
+    "settings": "Settings",
+    "settingsHint": "Homepage switches, the anniversary film and the stats bar.",
+    "tickerVisible": "The ticker is visible on every page.",
+    "tickerHidden": "The ticker is switched off in Settings.",
+    "addItem": "Add item",
+    "broadcasters": "Broadcasters",
+    "addBroadcaster": "Add broadcaster",
+    "drm": "DRM & licensing",
+    "movies": "Films",
+    "programs": "Programs",
+    "episodes": "Episodes",
+    "invite": "Invite a user",
+    "inviteHint": "Assign a role now — it applies the moment they sign up.",
+    "pendingInvites": "Pending invitations",
+    "cancel": "Cancel",
+    "invited": "Invitation saved",
+    "attachedTo": "Airs on",
+    "noBroadcasters": "No broadcasters yet — add them from the Broadcasters page.",
+    "comingSoonSection": "This section is not built yet."
   },
   "footer": {
     "about": "About us",
@@ -205,5 +225,19 @@
     "casablanca": "Casablanca entity created for Moroccan productions.",
     "dubai": "Dubai theatrical and digital distribution company formed.",
     "riyadh": "Expansion into the Kingdom of Saudi Arabia completed."
+  },
+  "home": {
+    "showcaseTitle": "Stories that shaped a region",
+    "anniversaryTag": "70th anniversary",
+    "anniversaryTitle": "Seven decades, one evening",
+    "anniversaryLine": "The film we made for the anniversary night — the families, the faces and the sets that carried Arabic drama from Beirut to the world.",
+    "anniversaryCta": "Play the film",
+    "partners": "Broadcast partners"
+  },
+  "stats": {
+    "years": "Years of legacy",
+    "productions": "Productions",
+    "offices": "Global offices",
+    "partners": "Broadcast partners"
   }
 }
