@@ -73,7 +73,6 @@ export default async function AdminLayout({
             avatarUrl: profile.avatar_url,
             role: profile.role,
           }}
-          signOutLabel={dict.auth.signOut}
         />
 
         <main className="flex-1 overflow-x-hidden px-4 py-6 md:px-8 md:py-8">
