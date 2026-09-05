@@ -1,7 +1,7 @@
 // app/[lang]/layout.tsx
 import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
-import { Inter, Cormorant_Garamond, Noto_Kufi_Arabic } from 'next/font/google';
+const Inter=(_o:any)=>({variable:'--font-sans'});const Cormorant_Garamond=(_o:any)=>({variable:'--font-serif'});const Noto_Kufi_Arabic=(_o:any)=>({variable:'--font-arabic'});
 import Script from 'next/script';
 
 import { i18n, isLocale, localeDirection, type Locale } from '@/i18n/config';
