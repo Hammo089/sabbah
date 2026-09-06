@@ -10,6 +10,7 @@ import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
 import type { AppRole } from '@/lib/auth/rbac';
 import { cn } from '@/lib/utils';
+import { BrandLogo } from '@/components/site/brand-logo';
 
 type NavItem = {
   href: string;
@@ -64,8 +65,8 @@ export function AdminSidebar({
 
   return (
     <aside className="hidden w-64 shrink-0 border-e border-border bg-background md:flex md:flex-col">
-      <div className="flex h-16 items-center gap-2 border-b border-border px-5">
-        <span className="text-display text-lg font-semibold text-primary">CAP</span>
+      <div className="flex h-16 items-center gap-2.5 border-b border-border px-5">
+        <BrandLogo variant="mark" className="h-8 w-auto" />
         <span className="truncate text-xs uppercase tracking-widest text-muted-foreground">
           {dict.meta.siteName}
         </span>

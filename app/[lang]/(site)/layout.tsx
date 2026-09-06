@@ -41,6 +41,7 @@ export default async function SiteLayout({
           loopUrl={settings.backdrop_loop_url}
           webmUrl={settings.backdrop_webm_url}
           posterUrl={settings.backdrop_poster_url}
+          mobileUrl={settings.backdrop_mobile_url}
           brightness={settings.backdrop_brightness}
           blur={settings.backdrop_blur}
           allowOnMobile={settings.backdrop_on_mobile}
@@ -68,9 +69,17 @@ export default async function SiteLayout({
         dict={dict}
         headerStyle={settings.header_style}
         glass={settings.glass_enabled}
+        logoUrl={settings.logo_url}
       />
       <div className="flex-1">{children}</div>
-      <SiteFooter lang={locale} dict={dict} glass={settings.glass_enabled} />
+      {/* The footer sits on black even in light mode, so it asks for the dark
+          mark first and only falls back to the light one. */}
+      <SiteFooter
+        lang={locale}
+        dict={dict}
+        glass={settings.glass_enabled}
+        logoUrl={settings.logo_dark_url ?? settings.logo_url}
+      />
 
       {settings.assistant_enabled && <AssistantChat lang={locale} dict={dict.assistant} />}
     </div>

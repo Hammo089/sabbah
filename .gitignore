@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# transfer scratch
+.sync-incoming.zip
+Claude outputs/
+.claude/

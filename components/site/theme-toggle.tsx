@@ -20,7 +20,10 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label="Toggle theme"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className={cn(
-        'inline-flex size-9 items-center justify-center rounded-md border border-border',
+        // `theme-toggle` is the hook film-mode uses to hide this: while a film
+        // is the ground, the footage sets the brightness and a light palette
+        // cannot be honoured.
+        'theme-toggle inline-flex size-9 items-center justify-center rounded-md border border-border',
         'text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         className,

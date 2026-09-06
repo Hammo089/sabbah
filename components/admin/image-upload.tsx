@@ -8,7 +8,8 @@ import { toast } from 'sonner';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 
-export type Bucket = 'posters' | 'backdrops' | 'people' | 'broadcasters' | 'legacy' | 'gallery';
+export type Bucket =
+  | 'posters' | 'backdrops' | 'people' | 'broadcasters' | 'legacy' | 'gallery' | 'brand';
 
 const LIMITS: Record<Bucket, number> = {
   posters: 10,
@@ -17,6 +18,8 @@ const LIMITS: Record<Bucket, number> = {
   broadcasters: 2,
   legacy: 25,
   gallery: 15,
+  // Matches the 10 MB ceiling the `brand` bucket enforces in migration 0013.
+  brand: 10,
 };
 
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/avif,image/svg+xml';

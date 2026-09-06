@@ -95,6 +95,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           loopUrl={settings.backdrop_loop_url}
           webmUrl={settings.backdrop_webm_url}
           posterUrl={settings.backdrop_poster_url}
+          mobileUrl={settings.backdrop_mobile_url}
           brightness={settings.backdrop_brightness}
           blur={settings.backdrop_blur}
           allowOnMobile={settings.backdrop_on_mobile}
@@ -109,20 +110,31 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
       {filmMode ? (
         <>
-          <GlassHero
-            lang={locale}
-            dict={dict}
-            align={settings.hero_align}
-            anniversary={
-              settings.anniversary_cta && settings.anniversary_url
-                ? {
-                    filmUrl: settings.anniversary_url,
-                    posterUrl: settings.backdrop_poster_url,
-                    label: settings.anniversary_label,
-                  }
-                : null
-            }
-          />
+          {settings.hero_enabled && (
+            <GlassHero
+              lang={locale}
+              dict={dict}
+              align={settings.hero_align}
+              copy={{
+                // Operator copy first, the dictionary as the fallback — so the
+                // hero is never blank on a fresh install or an empty language.
+                eyebrow: settings.hero_eyebrow[locale] || dict.hero.established,
+                headline: settings.hero_headline[locale] || dict.meta.tagline,
+                highlight: settings.hero_highlight[locale] || '',
+                body: settings.hero_body[locale] || dict.hero.subtitle,
+              }}
+              anniversary={
+                settings.anniversary_cta && settings.anniversary_url
+                  ? {
+                      filmUrl: settings.anniversary_url,
+                      posterUrl: settings.backdrop_poster_url,
+                      label: settings.anniversary_label,
+                      artworkUrl: settings.anniversary_art_url,
+                    }
+                  : null
+              }
+            />
+          )}
 
           {/* The curated cluster gets its own quiet section below the film
               hero, rather than fighting the footage inside it. */}

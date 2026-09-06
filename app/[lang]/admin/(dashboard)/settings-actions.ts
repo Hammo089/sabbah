@@ -539,7 +539,39 @@ const ThemeSchema = z.object({
   glass_blur: z.coerce.number().int().min(0).max(40),
   glass_opacity: z.coerce.number().int().min(0).max(40),
   glass_border: z.coerce.number().int().min(0).max(60),
+  hero_enabled: z.boolean(),
+  backdrop_mobile_url: z.string().url().max(600).nullable().or(z.literal('')),
+  logo_url: z.string().url().max(600).nullable().or(z.literal('')),
+  logo_dark_url: z.string().url().max(600).nullable().or(z.literal('')),
+  anniversary_art_url: z.string().url().max(600).nullable().or(z.literal('')),
 });
+
+/**
+ * Hero copy is stored per language, one jsonb column per field. The form posts
+ * `hero_headline_ar`, `hero_headline_en`, … so an operator edits Arabic without
+ * touching French. Empty strings are kept as empty strings rather than dropped:
+ * the renderer falls back to the dictionary when a language is blank, and an
+ * operator who deliberately clears a line should see it cleared.
+ */
+const HERO_LOCALES = ['ar', 'en', 'fr'] as const;
+const HERO_FIELDS = ['hero_eyebrow', 'hero_headline', 'hero_highlight', 'hero_body'] as const;
+const HERO_MAX = 400;
+
+function heroCopy(formData: FormData): Record<string, Record<string, string>> | null {
+  const out: Record<string, Record<string, string>> = {};
+
+  for (const field of HERO_FIELDS) {
+    const bag: Record<string, string> = {};
+    for (const locale of HERO_LOCALES) {
+      const value = String(formData.get(`${field}_${locale}`) ?? '').trim();
+      if (value.length > HERO_MAX) return null;
+      bag[locale] = value;
+    }
+    out[field] = bag;
+  }
+
+  return out;
+}
 
 export async function saveTheme(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const profile = await getCurrentProfile();
@@ -586,22 +618,37 @@ export async function saveTheme(_prev: ActionResult | null, formData: FormData):
     glass_blur: formData.get('glass_blur') ?? 18,
     glass_opacity: formData.get('glass_opacity') ?? 6,
     glass_border: formData.get('glass_border') ?? 14,
+    hero_enabled: formData.get('hero_enabled') === 'on',
+    backdrop_mobile_url: String(formData.get('backdrop_mobile_url') ?? '').trim(),
+    logo_url: String(formData.get('logo_url') ?? '').trim(),
+    logo_dark_url: String(formData.get('logo_dark_url') ?? '').trim(),
+    anniversary_art_url: String(formData.get('anniversary_art_url') ?? '').trim(),
   });
 
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'INVALID_APPEARANCE' };
   }
 
+  const copy = heroCopy(formData);
+  if (!copy) return { ok: false, error: 'HERO_COPY_TOO_LONG' };
+
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase
     .from('site_settings')
     .update({
       ...parsed.data,
+      ...copy,
+      // Empty string is not a URL. The columns carry a regex CHECK, so a blank
+      // field has to reach the database as null or the whole save is rejected.
       loader_logo_url: parsed.data.loader_logo_url || null,
       backdrop_loop_url: parsed.data.backdrop_loop_url || null,
       backdrop_webm_url: parsed.data.backdrop_webm_url || null,
       backdrop_poster_url: parsed.data.backdrop_poster_url || null,
+      backdrop_mobile_url: parsed.data.backdrop_mobile_url || null,
       anniversary_url: parsed.data.anniversary_url || null,
+      logo_url: parsed.data.logo_url || null,
+      logo_dark_url: parsed.data.logo_dark_url || null,
+      anniversary_art_url: parsed.data.anniversary_art_url || null,
     })
     .eq('id', true);
   if (error) return { ok: false, error: error.message };

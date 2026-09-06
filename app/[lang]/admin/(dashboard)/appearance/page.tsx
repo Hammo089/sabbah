@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { DEFAULT_SETTINGS } from '@/lib/queries/settings';
+import { DEFAULT_SETTINGS, mergeSettings } from '@/lib/queries/settings';
 import { AppearanceForm } from '@/components/admin/appearance-form';
 import { HeroPicks, type PickCard } from '@/components/admin/hero-picks';
 import { t } from '@/lib/utils';
@@ -58,7 +58,7 @@ export default async function AppearancePage({ params }: { params: Promise<{ lan
 
       <div className="mt-8">
         <AppearanceForm
-          values={{ ...DEFAULT_SETTINGS, ...(data ?? {}) }}
+          values={data ? mergeSettings(data) : DEFAULT_SETTINGS}
           dict={dict.appearance}
           labels={{ save: dict.admin.save, saved: dict.admin.saved }}
           uploadDict={dict.upload}

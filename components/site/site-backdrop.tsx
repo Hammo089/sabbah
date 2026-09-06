@@ -11,6 +11,12 @@
 //  - Phones get the POSTER IMAGE, not the video, unless the operator has
 //    explicitly opted in. A looping background on mobile data, decoded behind
 //    every page, is a battery and bandwidth bill the visitor did not agree to.
+//  - Even opted in, a phone only ever gets a FILE source. A YouTube iframe will
+//    not autoplay inline on iOS — it hands back a tap-to-play plate, which is
+//    why the background looked broken on mobile. Serve an MP4 for mobile, or
+//    the poster stands in.
+//  - `mobileUrl` is the lighter cut. A phone should not pull the desktop
+//    master; when it is set, that is what narrow screens load.
 //  - `prefers-reduced-motion` and Save-Data always get the poster.
 //  - The video pauses the moment the tab is hidden.
 //  - Nothing is requested at all on a device that will never show it — the
@@ -27,12 +33,15 @@ export function SiteBackdrop({
   loopUrl,
   webmUrl,
   posterUrl,
+  mobileUrl,
   brightness,
   blur,
   allowOnMobile,
 }: {
   /** YouTube link or direct MP4 URL. */
   loopUrl: string | null;
+  /** Optional lighter MP4 for phones. Null = use `loopUrl`. */
+  mobileUrl?: string | null;
   webmUrl: string | null;
   posterUrl: string | null;
   brightness: number;
@@ -45,19 +54,38 @@ export function SiteBackdrop({
   const frameRef = React.useRef<HTMLIFrameElement>(null);
 
   const [play, setPlay] = React.useState(false);
+  // Which cut this device gets. Resolved in an effect, because the answer
+  // depends on the viewport and must not differ between server and first paint.
+  const [small, setSmall] = React.useState(false);
 
-  const source = React.useMemo(() => resolveVideo(loopUrl), [loopUrl]);
-  const still = posterUrl ?? (source?.kind === 'youtube' ? youtubeThumb(source.id) : null);
+  const desktop = React.useMemo(() => resolveVideo(loopUrl), [loopUrl]);
+  const handheld = React.useMemo(() => resolveVideo(mobileUrl ?? null), [mobileUrl]);
+
+  const source = small ? (handheld ?? desktop) : desktop;
+  const still =
+    posterUrl ?? (desktop?.kind === 'youtube' ? youtubeThumb(desktop.id) : null);
 
   React.useEffect(() => {
-    if (!source || !ambient) return;
+    if (!ambient) return;
 
     const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     const narrow = window.matchMedia('(max-width: 767px)').matches;
-    if ((coarse || narrow) && !allowOnMobile) return;
+    const phone = coarse || narrow;
+    setSmall(phone);
+
+    if (phone) {
+      if (!allowOnMobile) return;
+      // A phone plays a file or nothing. See the header note: an inline
+      // YouTube iframe does not autoplay on iOS, so playing it here would
+      // paint a dead tap-to-play plate over the poster.
+      const pick = handheld ?? desktop;
+      if (pick?.kind !== 'file') return;
+    } else if (!desktop) {
+      return;
+    }
 
     setPlay(true);
-  }, [source, ambient, allowOnMobile]);
+  }, [desktop, handheld, ambient, allowOnMobile]);
 
   // A hidden tab must not decode video. The file player is paused directly; the
   // YouTube iframe is asked over postMessage, which is why the embed carries
@@ -99,6 +127,9 @@ export function SiteBackdrop({
       {play && source?.kind === 'file' && (
         <video
           ref={videoRef}
+          // Remount when the chosen cut changes, so a <source> swap actually
+          // reloads instead of leaving the old file playing.
+          key={source.url}
           autoPlay
           muted
           loop
@@ -108,7 +139,9 @@ export function SiteBackdrop({
           className="absolute inset-0 size-full object-cover"
           style={{ filter }}
         >
-          {webmUrl && <source src={webmUrl} type="video/webm" />}
+          {/* The webm alternative belongs to the desktop cut only — offering
+              it beside the mobile file would hand phones the heavy one back. */}
+          {webmUrl && !small && <source src={webmUrl} type="video/webm" />}
           <source src={source.url} type="video/mp4" />
         </video>
       )}

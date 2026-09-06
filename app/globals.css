@@ -75,8 +75,12 @@
 
   /* Any block that paints text over imagery or a forced-dark scrim. Re-declares
      the tokens locally so the SAME markup stays legible in light mode without a
-     single hardcoded colour. */
-  .on-media {
+     single hardcoded colour.
+     `.film-mode` gets the identical treatment: once a film is the ground, the
+     whole page is a media surface, and light-on-dark is the only legible
+     answer — see the note on the theme toggle in film-mode below. */
+  .on-media,
+  .film-mode {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --card: 0 0% 5%;
@@ -192,10 +196,53 @@
     background-color: hsl(0 0% 0% / 0.4);
   }
 
-  /* Text sits directly on moving footage here, so it needs a shadow the dark
-     palette never required. */
+  /* ---- READABILITY OVER MOVING FOOTAGE ----------------------------------
+     A still background can be dimmed once and forgotten. A film cannot: a
+     bright frame arrives every few seconds and, without help, body copy
+     disappears into it. So every text-bearing block gets treatment, not just
+     the headings.
+
+     Three layers, cheapest first:
+       1. a shadow on every text element — costs nothing, catches most frames;
+       2. a scrim behind long-form content, so paragraphs sit on their own
+          ground rather than on the footage;
+       3. glass panels for the chrome (declared above).
+     -------------------------------------------------------------------- */
   .film-mode :where(h1, h2, h3, .sec-title, .display-title) {
-    text-shadow: 0 2px 24px rgb(0 0 0 / 0.55);
+    text-shadow: 0 2px 24px rgb(0 0 0 / 0.7), 0 1px 3px rgb(0 0 0 / 0.5);
+  }
+
+  .film-mode :where(p, li, dd, dt, span, a, label, td, th, figcaption, blockquote) {
+    text-shadow: 0 1px 10px rgb(0 0 0 / 0.65);
+  }
+
+  /* The scrim. `main` on a content page and any block that opts in with
+     `.readable` gets a dark, blurred ground under its text. Without this a
+     catalogue or a title page is legible on one frame and gone on the next. */
+  .film-mode :where(main) > :where(section, div, article, header):not(:has(> section)) {
+    position: relative;
+  }
+
+  .film-mode .readable,
+  .film-mode :where(.prose, .sec-body) {
+    background: hsl(0 0% 0% / 0.42);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(1.15);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(1.15);
+    border-radius: 16px;
+  }
+
+  /* Form fields over footage need a real fill — a transparent input on video
+     is unusable no matter how good the shadow is. */
+  .film-mode :where(input, textarea, select) {
+    background-color: hsl(0 0% 0% / 0.55);
+  }
+
+  /* The theme toggle is hidden while a film is the ground: the footage decides
+     the brightness, so a light palette cannot be honoured and a control that
+     silently does nothing is worse than no control. Turning the backdrop off
+     in /admin/appearance brings light mode straight back. */
+  .film-mode .theme-toggle {
+    display: none;
   }
 
   /* Browsers without backdrop-filter (older Firefox with the flag off) would

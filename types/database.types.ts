@@ -521,6 +521,15 @@ export type Database = {
           glass_blur: number;
           glass_opacity: number;
           glass_border: number;
+          hero_enabled: boolean;
+          hero_eyebrow: Json;
+          hero_headline: Json;
+          hero_highlight: Json;
+          hero_body: Json;
+          logo_url: string | null;
+          logo_dark_url: string | null;
+          anniversary_art_url: string | null;
+          backdrop_mobile_url: string | null;
           updated_at: string;
         };
         Insert: Partial<Database['public']['Tables']['site_settings']['Row']>;

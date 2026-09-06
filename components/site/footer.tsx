@@ -3,15 +3,18 @@ import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
 import { cn } from '@/lib/utils';
+import { BrandLogo } from '@/components/site/brand-logo';
 
 export function SiteFooter({
   lang,
   dict,
   glass = false,
+  logoUrl,
 }: {
   lang: Locale;
   dict: Dictionary;
   glass?: boolean;
+  logoUrl?: string | null;
 }) {
   const columns = [
     {
@@ -48,7 +51,13 @@ export function SiteFooter({
       <div className="mx-auto w-full max-w-[1600px] px-6 py-16 md:px-10 xl:px-16">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
-            <p className="text-display text-xl font-semibold text-primary">CAP</p>
+            {/* The dark lockup: the wordmark is recoloured white so it reads on
+                the black ground the original black type disappears into. */}
+            <BrandLogo
+              variant="lockup"
+              src={logoUrl ?? '/brand/cap-lockup-dark.png'}
+              className="h-20 w-auto"
+            />
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
               {dict.meta.description}
             </p>

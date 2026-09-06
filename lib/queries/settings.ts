@@ -52,6 +52,15 @@ export type SiteSettings = {
   glass_blur: number;
   glass_opacity: number;
   glass_border: number;
+  hero_enabled: boolean;
+  hero_eyebrow: Record<string, string>;
+  hero_headline: Record<string, string>;
+  hero_highlight: Record<string, string>;
+  hero_body: Record<string, string>;
+  logo_url: string | null;
+  logo_dark_url: string | null;
+  anniversary_art_url: string | null;
+  backdrop_mobile_url: string | null;
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -103,7 +112,44 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   glass_blur: 18,
   glass_opacity: 6,
   glass_border: 14,
+  hero_enabled: true,
+  hero_eyebrow: {},
+  hero_headline: {},
+  hero_highlight: {},
+  hero_body: {},
+  logo_url: null,
+  logo_dark_url: null,
+  anniversary_art_url: null,
+  backdrop_mobile_url: null,
 };
+
+/**
+ * A jsonb column is typed `Json` by the generated types — it could be a string,
+ * a number, or null as far as PostgREST is concerned. The hero copy columns are
+ * always an object of language → text, but that is a schema guarantee (a
+ * `default '{}'` and a not-null), not a type-system one, so it is asserted here
+ * once, at the single point where a raw row enters the app.
+ */
+export function heroBag(value: unknown): Record<string, string> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof v === 'string') out[k] = v;
+  }
+  return out;
+}
+
+/** Row → SiteSettings, with the jsonb copy columns narrowed to string maps. */
+export function mergeSettings(row: Record<string, unknown>): SiteSettings {
+  return {
+    ...DEFAULT_SETTINGS,
+    ...(row as Partial<SiteSettings>),
+    hero_eyebrow: heroBag(row.hero_eyebrow),
+    hero_headline: heroBag(row.hero_headline),
+    hero_highlight: heroBag(row.hero_highlight),
+    hero_body: heroBag(row.hero_body),
+  };
+}
 
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -113,7 +159,7 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   try {
     const supabase = createSupabaseAnonClient();
     const { data } = await supabase.from('site_settings').select('*').eq('id', true).maybeSingle();
-    return data ? ({ ...DEFAULT_SETTINGS, ...data } as SiteSettings) : DEFAULT_SETTINGS;
+    return data ? mergeSettings(data) : DEFAULT_SETTINGS;
   } catch (error) {
     console.error('[settings]', error);
     return DEFAULT_SETTINGS;

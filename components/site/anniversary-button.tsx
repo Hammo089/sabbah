@@ -12,6 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { X, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { resolveVideo, filmEmbedUrl, youtubeThumb } from '@/lib/media/video-source';
+import { AnniversaryMark } from './anniversary-mark';
 
 /** Locks the page behind the takeover. position:fixed, because iOS ignores overflow:hidden. */
 function useScrollLock(active: boolean) {
@@ -39,6 +40,7 @@ export function AnniversaryButton({
   filmUrl,
   posterUrl,
   label,
+  artworkUrl,
   cta,
   backLabel,
   className,
@@ -48,6 +50,8 @@ export function AnniversaryButton({
   posterUrl: string | null;
   /** The number on the button — "71" today, "72" next year. */
   label: string;
+  /** Custom artwork for the button; the number is used when absent. */
+  artworkUrl?: string | null;
   cta: string;
   backLabel: string;
   className?: string;
@@ -110,24 +114,16 @@ export function AnniversaryButton({
   return (
     <>
       <div className={cn('flex items-center gap-5', className)}>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label={cta}
-          className={cn(
-            'grid size-[74px] shrink-0 place-items-center rounded-full',
-            'border border-white/30 bg-white/10 backdrop-blur-md',
-            'text-2xl font-bold text-white',
-            'shadow-[0_10px_30px_rgba(0,0,0,0.35)]',
-            'transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
-            'hover:scale-110 hover:border-white hover:bg-white hover:text-black',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70',
-          )}
-        >
-          {label}
-        </button>
+        <AnniversaryMark
+          label={label}
+          artworkUrl={artworkUrl}
+          cta={cta}
+          onOpen={() => setOpen(true)}
+        />
 
-        <span className="text-[0.85rem] uppercase tracking-[0.2em] text-white/80">{cta}</span>
+        <span className="text-[0.85rem] uppercase tracking-[0.2em] text-muted-foreground">
+          {cta}
+        </span>
       </div>
 
       <AnimatePresence>

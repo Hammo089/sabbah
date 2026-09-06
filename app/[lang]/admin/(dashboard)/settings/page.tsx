@@ -4,7 +4,7 @@ import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SettingsForm } from '@/components/admin/settings-form';
-import { DEFAULT_SETTINGS } from '@/lib/queries/settings';
+import { DEFAULT_SETTINGS, mergeSettings } from '@/lib/queries/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +25,7 @@ export default async function AdminSettingsPage({ params }: { params: Promise<{ 
 
       <div className="mt-8">
         <SettingsForm
-          values={{ ...DEFAULT_SETTINGS, ...(data ?? {}) }}
+          values={data ? mergeSettings(data) : DEFAULT_SETTINGS}
           labels={{ save: dict.admin.save, saved: dict.admin.saved }}
           upload={{ ...dict.upload }}
         />

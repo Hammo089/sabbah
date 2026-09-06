@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/site/theme-toggle';
 import { LocaleSwitcher } from '@/components/site/locale-switcher';
 import { MobileNav } from '@/components/site/nav/mobile-nav';
 import { HeaderShell } from '@/components/site/nav/header-shell';
+import { BrandLogo } from '@/components/site/brand-logo';
 
 export type NavItem = { href: string; label: string };
 
@@ -28,19 +29,22 @@ export function SiteHeader({
   dict,
   headerStyle = 'transparent',
   glass = false,
+  logoUrl,
 }: {
   lang: Locale;
   dict: Dictionary;
   headerStyle?: 'transparent' | 'solid';
   glass?: boolean;
+  /** Overrides the bundled mark, set from /admin/appearance. */
+  logoUrl?: string | null;
 }) {
   const nav = buildNav(lang, dict);
 
   return (
     <HeaderShell alwaysSolid={headerStyle === 'solid'} glass={glass}>
       <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-6 px-6 md:px-10 xl:px-16">
-        <Link href={`/${lang}`} className="flex shrink-0 items-baseline gap-2">
-          <span className="text-display text-lg font-semibold text-primary">CAP</span>
+        <Link href={`/${lang}`} className="flex shrink-0 items-center gap-3">
+          <BrandLogo variant="mark" priority className="h-9 w-auto" src={logoUrl} />
           <span className="hidden text-[0.6rem] uppercase tracking-[0.24em] text-muted-foreground lg:block">
             {dict.meta.siteName}
           </span>

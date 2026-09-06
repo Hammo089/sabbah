@@ -41,7 +41,90 @@ type Dict = {
   filmUrl: string; filmLabel: string; showButton: string;
   glass: string; glassOn: string; glassBlur: string; glassOpacity: string;
   glassBorder: string; glassNote: string;
+  heroCopy: string; heroCopyHint: string; heroOn: string;
+  eyebrow: string; headline: string; highlight: string; highlightHint: string; body: string;
+  brand: string; brandNote: string; logoLight: string; logoDark: string;
+  buttonArt: string; buttonArtHint: string;
+  mobileUrl: string; mobileUrlHint: string;
 };
+
+/**
+ * Copy is per language, so the operator edits Arabic without disturbing the
+ * other two. Tabs rather than three stacked columns: one language is what a
+ * person actually proof-reads at a time, and every field stays mounted so an
+ * unsaved edit is not lost when the tab changes.
+ */
+const COPY_LOCALES = [
+  { code: 'ar', label: 'العربية', dir: 'rtl' as const },
+  { code: 'en', label: 'English', dir: 'ltr' as const },
+  { code: 'fr', label: 'Français', dir: 'ltr' as const },
+];
+
+const FIELD_CLASS =
+  'w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+
+function CopyPane({
+  locale,
+  dir,
+  active,
+  dict,
+  values,
+}: {
+  locale: string;
+  dir: 'rtl' | 'ltr';
+  active: boolean;
+  dict: Dict;
+  values: SiteSettings;
+}) {
+  // `hidden` rather than unmounting: the inputs stay in the form, so switching
+  // language never silently discards what was typed in another one.
+  return (
+    <div className={cn('space-y-4', !active && 'hidden')} dir={dir}>
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{dict.eyebrow}</Label>
+        <input
+          name={`hero_eyebrow_${locale}`}
+          defaultValue={values.hero_eyebrow?.[locale] ?? ''}
+          maxLength={400}
+          className={FIELD_CLASS}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{dict.headline}</Label>
+        <textarea
+          name={`hero_headline_${locale}`}
+          defaultValue={values.hero_headline?.[locale] ?? ''}
+          maxLength={400}
+          rows={2}
+          className={cn(FIELD_CLASS, 'resize-y text-base leading-snug')}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{dict.highlight}</Label>
+        <input
+          name={`hero_highlight_${locale}`}
+          defaultValue={values.hero_highlight?.[locale] ?? ''}
+          maxLength={400}
+          className={FIELD_CLASS}
+        />
+        <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.highlightHint}</p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{dict.body}</Label>
+        <textarea
+          name={`hero_body_${locale}`}
+          defaultValue={values.hero_body?.[locale] ?? ''}
+          maxLength={400}
+          rows={3}
+          className={cn(FIELD_CLASS, 'resize-y')}
+        />
+      </div>
+    </div>
+  );
+}
 
 function SaveBtn({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -111,6 +194,7 @@ export function AppearanceForm({
   const [muted, setMuted] = React.useState(values.theme_muted);
   const [radius, setRadius] = React.useState(values.theme_radius);
   const [tickerSpeed, setTickerSpeed] = React.useState(values.ticker_speed);
+  const [copyTab, setCopyTab] = React.useState(COPY_LOCALES[0]!.code);
 
   React.useEffect(() => {
     if (!state) return;
@@ -171,6 +255,87 @@ export function AppearanceForm({
                 <option value="1rem" className="bg-background">16px</option>
               </select>
             </div>
+          </div>
+        </section>
+
+        {/* Hero copy — the words on the glass, per language */}
+        <section className="space-y-5 rounded-lg border border-border bg-card p-5">
+          <p className="text-[0.65rem] uppercase tracking-[0.2em] text-primary">{dict.heroCopy}</p>
+
+          <label className="flex cursor-pointer items-center justify-between gap-4">
+            <span className="text-sm">{dict.heroOn}</span>
+            <Switch name="hero_enabled" defaultChecked={values.hero_enabled} />
+          </label>
+
+          <div className="flex gap-1 border-b border-border">
+            {COPY_LOCALES.map((l) => (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => setCopyTab(l.code)}
+                className={cn(
+                  '-mb-px border-b-2 px-4 py-2 text-xs transition-colors',
+                  copyTab === l.code
+                    ? 'border-primary text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
+          {COPY_LOCALES.map((l) => (
+            <CopyPane
+              key={l.code}
+              locale={l.code}
+              dir={l.dir}
+              active={copyTab === l.code}
+              dict={dict}
+              values={values}
+            />
+          ))}
+
+          <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.heroCopyHint}</p>
+        </section>
+
+        {/* Brand marks */}
+        <section className="space-y-5 rounded-lg border border-border bg-card p-5">
+          <p className="text-[0.65rem] uppercase tracking-[0.2em] text-primary">{dict.brand}</p>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <ImageUpload
+              name="logo_url"
+              bucket="brand"
+              defaultValue={values.logo_url}
+              label={dict.logoLight}
+              aspect="wide"
+              dict={uploadDict}
+            />
+            <ImageUpload
+              name="logo_dark_url"
+              bucket="brand"
+              defaultValue={values.logo_dark_url}
+              label={dict.logoDark}
+              aspect="wide"
+              dict={uploadDict}
+            />
+          </div>
+
+          <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.brandNote}</p>
+
+          <div className="border-t border-border pt-5">
+            <ImageUpload
+              name="anniversary_art_url"
+              bucket="brand"
+              defaultValue={values.anniversary_art_url}
+              label={dict.buttonArt}
+              aspect="square"
+              dict={uploadDict}
+            />
+            <p className="mt-2 text-[0.7rem] leading-relaxed text-muted-foreground/70">
+              {dict.buttonArtHint}
+            </p>
           </div>
         </section>
 
@@ -372,6 +537,19 @@ export function AppearanceForm({
               <Label className="text-xs text-muted-foreground">{dict.posterUrl}</Label>
               <input name="backdrop_poster_url" type="url" defaultValue={values.backdrop_poster_url ?? ''} dir="ltr" className={SELECT_CLASS} />
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{dict.mobileUrl}</Label>
+            <input
+              name="backdrop_mobile_url"
+              type="url"
+              defaultValue={values.backdrop_mobile_url ?? ''}
+              dir="ltr"
+              placeholder="https://….supabase.co/storage/v1/object/public/video/loop-720.mp4"
+              className={SELECT_CLASS}
+            />
+            <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.mobileUrlHint}</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
