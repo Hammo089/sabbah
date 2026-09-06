@@ -35,6 +35,12 @@ type Dict = {
   bgVideo: string; bgVideoOn: string; bgVideoId: string; bgVideoOpacity: string;
   bgVideoScope: string; scopeHome: string; scopeAll: string; bgVideoNote: string;
   publicPages: string; submissionsOpen: string; assistantOn: string;
+  backdrop: string; backdropOn: string; backdropNote: string; loopUrl: string;
+  webmUrl: string; posterUrl: string; brightness: string; blurAmount: string;
+  onMobile: string; onMobileNote: string; anniversaryFilm: string;
+  filmUrl: string; filmLabel: string; showButton: string;
+  glass: string; glassOn: string; glassBlur: string; glassOpacity: string;
+  glassBorder: string; glassNote: string;
 };
 
 function SaveBtn({ label }: { label: string }) {
@@ -333,6 +339,124 @@ export function AppearanceForm({
 
             <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.bgVideoNote}</p>
           </div>
+        </section>
+
+        {/* Backdrop film */}
+        <section className="space-y-5 rounded-lg border border-border bg-card p-5">
+          <p className="text-[0.65rem] uppercase tracking-[0.2em] text-primary">{dict.backdrop}</p>
+
+          <label className="flex cursor-pointer items-center justify-between gap-4">
+            <span className="text-sm">{dict.backdropOn}</span>
+            <Switch name="backdrop_enabled" defaultChecked={values.backdrop_enabled} />
+          </label>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{dict.loopUrl}</Label>
+            <input
+              name="backdrop_loop_url"
+              type="url"
+              defaultValue={values.backdrop_loop_url ?? ''}
+              dir="ltr"
+              placeholder="https://….supabase.co/storage/v1/object/public/video/71th-bg.mp4"
+              className={SELECT_CLASS}
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.webmUrl}</Label>
+              <input name="backdrop_webm_url" type="url" defaultValue={values.backdrop_webm_url ?? ''} dir="ltr" className={SELECT_CLASS} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.posterUrl}</Label>
+              <input name="backdrop_poster_url" type="url" defaultValue={values.backdrop_poster_url ?? ''} dir="ltr" className={SELECT_CLASS} />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.brightness}</Label>
+              <input name="backdrop_brightness" type="number" min={10} max={100} defaultValue={values.backdrop_brightness} dir="ltr" className={SELECT_CLASS} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.blurAmount}</Label>
+              <input name="backdrop_blur" type="number" min={0} max={20} defaultValue={values.backdrop_blur} dir="ltr" className={SELECT_CLASS} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.bgVideoScope}</Label>
+              <select name="backdrop_scope" defaultValue={values.backdrop_scope} className={SELECT_CLASS}>
+                <option value="all" className="bg-background">{dict.scopeAll}</option>
+                <option value="home" className="bg-background">{dict.scopeHome}</option>
+              </select>
+            </div>
+          </div>
+
+          <label className="flex cursor-pointer items-start justify-between gap-4 border-t border-border pt-4">
+            <span className="min-w-0">
+              <span className="block text-sm">{dict.onMobile}</span>
+              <span className="mt-1 block text-[0.7rem] leading-relaxed text-muted-foreground/70">
+                {dict.onMobileNote}
+              </span>
+            </span>
+            <Switch name="backdrop_on_mobile" defaultChecked={values.backdrop_on_mobile} />
+          </label>
+
+          <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.backdropNote}</p>
+        </section>
+
+        {/* The 71 film */}
+        <section className="space-y-5 rounded-lg border border-border bg-card p-5">
+          <p className="text-[0.65rem] uppercase tracking-[0.2em] text-primary">{dict.anniversaryFilm}</p>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{dict.filmUrl}</Label>
+            <input
+              name="anniversary_url"
+              type="url"
+              defaultValue={values.anniversary_url ?? ''}
+              dir="ltr"
+              placeholder="https://….supabase.co/storage/v1/object/public/video/71th-full.mp4"
+              className={SELECT_CLASS}
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.filmLabel}</Label>
+              <input name="anniversary_label" maxLength={8} defaultValue={values.anniversary_label} dir="ltr" className={SELECT_CLASS} />
+            </div>
+            <label className="flex cursor-pointer items-center justify-between gap-4 self-end pb-2">
+              <span className="text-sm">{dict.showButton}</span>
+              <Switch name="anniversary_cta" defaultChecked={values.anniversary_cta} />
+            </label>
+          </div>
+        </section>
+
+        {/* Glass */}
+        <section className="space-y-5 rounded-lg border border-border bg-card p-5">
+          <p className="text-[0.65rem] uppercase tracking-[0.2em] text-primary">{dict.glass}</p>
+
+          <label className="flex cursor-pointer items-center justify-between gap-4">
+            <span className="text-sm">{dict.glassOn}</span>
+            <Switch name="glass_enabled" defaultChecked={values.glass_enabled} />
+          </label>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.glassBlur}</Label>
+              <input name="glass_blur" type="number" min={0} max={40} defaultValue={values.glass_blur} dir="ltr" className={SELECT_CLASS} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.glassOpacity}</Label>
+              <input name="glass_opacity" type="number" min={0} max={40} defaultValue={values.glass_opacity} dir="ltr" className={SELECT_CLASS} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{dict.glassBorder}</Label>
+              <input name="glass_border" type="number" min={0} max={60} defaultValue={values.glass_border} dir="ltr" className={SELECT_CLASS} />
+            </div>
+          </div>
+
+          <p className="text-[0.7rem] leading-relaxed text-muted-foreground/70">{dict.glassNote}</p>
         </section>
 
         {/* Public pages */}

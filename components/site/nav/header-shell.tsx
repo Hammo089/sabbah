@@ -8,9 +8,12 @@ import { cn } from '@/lib/utils';
 export function HeaderShell({
   children,
   alwaysSolid = false,
+  glass = false,
 }: {
   children: React.ReactNode;
   alwaysSolid?: boolean;
+  /** Frosted bar over the backdrop film instead of a flat colour. */
+  glass?: boolean;
 }) {
   const [solid, setSolid] = React.useState(alwaysSolid);
 

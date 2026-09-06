@@ -8,6 +8,7 @@ import { NewsTicker } from '@/components/site/news-ticker';
 import { getSiteSettings } from '@/lib/queries/settings';
 import { BrandLoader } from '@/components/site/brand-loader';
 import { AmbientFilm } from '@/components/site/ambient-film';
+import { SiteBackdrop } from '@/components/site/site-backdrop';
 import { AssistantChat } from '@/components/site/assistant-chat';
 
 export default async function SiteLayout({
@@ -25,9 +26,24 @@ export default async function SiteLayout({
 
   return (
     <div className="relative flex min-h-dvh flex-col">
-      {settings.bg_video_enabled && settings.bg_video_scope === 'all' && (
-        <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
+      {/* The self-hosted anniversary film. Takes precedence over the older
+          YouTube ambient layer — running both would decode two videos at once. */}
+      {settings.backdrop_enabled && settings.backdrop_scope === 'all' && (
+        <SiteBackdrop
+          loopUrl={settings.backdrop_loop_url}
+          webmUrl={settings.backdrop_webm_url}
+          posterUrl={settings.backdrop_poster_url}
+          brightness={settings.backdrop_brightness}
+          blur={settings.backdrop_blur}
+          allowOnMobile={settings.backdrop_on_mobile}
+        />
       )}
+
+      {!settings.backdrop_enabled &&
+        settings.bg_video_enabled &&
+        settings.bg_video_scope === 'all' && (
+          <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
+        )}
 
       {settings.loader_enabled && (
         <BrandLoader
@@ -39,9 +55,14 @@ export default async function SiteLayout({
       )}
 
       <NewsTicker lang={locale} />
-      <SiteHeader lang={locale} dict={dict} headerStyle={settings.header_style} />
+      <SiteHeader
+        lang={locale}
+        dict={dict}
+        headerStyle={settings.header_style}
+        glass={settings.glass_enabled}
+      />
       <div className="flex-1">{children}</div>
-      <SiteFooter lang={locale} dict={dict} />
+      <SiteFooter lang={locale} dict={dict} glass={settings.glass_enabled} />
 
       {settings.assistant_enabled && <AssistantChat lang={locale} dict={dict.assistant} />}
     </div>

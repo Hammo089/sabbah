@@ -27,15 +27,17 @@ export function SiteHeader({
   lang,
   dict,
   headerStyle = 'transparent',
+  glass = false,
 }: {
   lang: Locale;
   dict: Dictionary;
   headerStyle?: 'transparent' | 'solid';
+  glass?: boolean;
 }) {
   const nav = buildNav(lang, dict);
 
   return (
-    <HeaderShell alwaysSolid={headerStyle === 'solid'}>
+    <HeaderShell alwaysSolid={headerStyle === 'solid'} glass={glass}>
       <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-6 px-6 md:px-10 xl:px-16">
         <Link href={`/${lang}`} className="flex shrink-0 items-baseline gap-2">
           <span className="text-display text-lg font-semibold text-primary">CAP</span>

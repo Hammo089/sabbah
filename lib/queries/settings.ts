@@ -37,6 +37,21 @@ export type SiteSettings = {
   bg_video_scope: 'home' | 'all';
   submissions_open: boolean;
   assistant_enabled: boolean;
+  backdrop_enabled: boolean;
+  backdrop_loop_url: string | null;
+  backdrop_webm_url: string | null;
+  backdrop_poster_url: string | null;
+  backdrop_scope: 'home' | 'all';
+  backdrop_brightness: number;
+  backdrop_blur: number;
+  backdrop_on_mobile: boolean;
+  anniversary_url: string | null;
+  anniversary_label: string;
+  anniversary_cta: boolean;
+  glass_enabled: boolean;
+  glass_blur: number;
+  glass_opacity: number;
+  glass_border: number;
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -73,6 +88,21 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   bg_video_scope: 'home',
   submissions_open: true,
   assistant_enabled: true,
+  backdrop_enabled: false,
+  backdrop_loop_url: null,
+  backdrop_webm_url: null,
+  backdrop_poster_url: null,
+  backdrop_scope: 'all',
+  backdrop_brightness: 45,
+  backdrop_blur: 0,
+  backdrop_on_mobile: false,
+  anniversary_url: null,
+  anniversary_label: '71',
+  anniversary_cta: true,
+  glass_enabled: false,
+  glass_blur: 18,
+  glass_opacity: 6,
+  glass_border: 14,
 };
 
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {

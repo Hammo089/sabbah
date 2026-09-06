@@ -1,7 +1,9 @@
 // components/site/page-shell.tsx — SERVER COMPONENT (Reveal is the client leaf)
 import { Reveal } from '@/components/motion/reveal';
+import { getSiteSettings } from '@/lib/queries/settings';
+import { cn } from '@/lib/utils';
 
-export function PageShell({
+export async function PageShell({
   eyebrow,
   title,
   lead,
@@ -12,8 +14,18 @@ export function PageShell({
   lead?: string;
   children?: React.ReactNode;
 }) {
+  // One frosted surface per page. Glass on every card would mean dozens of
+  // backdrop-filter layers re-blurring the film on every frame.
+  const settings = await getSiteSettings();
+  const glass = settings.glass_enabled && settings.backdrop_enabled;
   return (
-    <main className="mx-auto w-full max-w-[1200px] px-6 py-20 md:px-10 md:py-28">
+    <main
+      className={cn(
+        'mx-auto w-full max-w-[1200px] px-6 py-20 md:px-10 md:py-28',
+        glass && 'my-10 rounded-[20px] md:my-16',
+        glass && 'glass',
+      )}
+    >
       <Reveal>
         {eyebrow && (
           <p className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.3em] text-primary">

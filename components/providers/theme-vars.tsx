@@ -62,9 +62,22 @@ export function ThemeVars({ settings }: { settings: SiteSettings }) {
     ['--muted-foreground', hexToHsl(settings.theme_muted)],
   ]);
 
-  if (!root && !dark) return null;
+  // Glass knobs. Clamped here as well as in the database so a value can never
+  // reach the stylesheet as anything but a plain number.
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(Math.round(Number(value) || 0), min), max);
+
+  const glass = settings.glass_enabled
+    ? `--glass-blur:${clamp(settings.glass_blur, 0, 40)}px;` +
+      `--glass-bg:${clamp(settings.glass_opacity, 0, 40)};` +
+      `--glass-border:${clamp(settings.glass_border, 0, 60)};`
+    : '';
+
+  const rootBody = `${root}${glass}`;
+
+  if (!rootBody && !dark) return null;
 
   return (
-    <style>{`${root ? `:root{${root}}` : ''}${dark ? `.dark{${dark}}` : ''}`}</style>
+    <style>{`${rootBody ? `:root{${rootBody}}` : ''}${dark ? `.dark{${dark}}` : ''}`}</style>
   );
 }

@@ -2,8 +2,17 @@
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
+import { cn } from '@/lib/utils';
 
-export function SiteFooter({ lang, dict }: { lang: Locale; dict: Dictionary }) {
+export function SiteFooter({
+  lang,
+  dict,
+  glass = false,
+}: {
+  lang: Locale;
+  dict: Dictionary;
+  glass?: boolean;
+}) {
   const columns = [
     {
       title: dict.nav.catalog,
@@ -35,7 +44,7 @@ export function SiteFooter({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   ];
 
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className={cn('border-t', glass ? 'glass-bar' : 'border-border bg-background')}>
       <div className="mx-auto w-full max-w-[1600px] px-6 py-16 md:px-10 xl:px-16">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>

@@ -509,6 +509,21 @@ const ThemeSchema = z.object({
   bg_video_scope: z.enum(['home', 'all']),
   submissions_open: z.boolean(),
   assistant_enabled: z.boolean(),
+  backdrop_enabled: z.boolean(),
+  backdrop_loop_url: z.string().url().max(600).nullable().or(z.literal('')),
+  backdrop_webm_url: z.string().url().max(600).nullable().or(z.literal('')),
+  backdrop_poster_url: z.string().url().max(600).nullable().or(z.literal('')),
+  backdrop_scope: z.enum(['home', 'all']),
+  backdrop_brightness: z.coerce.number().int().min(10).max(100),
+  backdrop_blur: z.coerce.number().int().min(0).max(20),
+  backdrop_on_mobile: z.boolean(),
+  anniversary_url: z.string().url().max(600).nullable().or(z.literal('')),
+  anniversary_label: z.string().trim().max(8),
+  anniversary_cta: z.boolean(),
+  glass_enabled: z.boolean(),
+  glass_blur: z.coerce.number().int().min(0).max(40),
+  glass_opacity: z.coerce.number().int().min(0).max(40),
+  glass_border: z.coerce.number().int().min(0).max(60),
 });
 
 export async function saveTheme(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
@@ -541,6 +556,21 @@ export async function saveTheme(_prev: ActionResult | null, formData: FormData):
     bg_video_scope: formData.get('bg_video_scope') ?? 'home',
     submissions_open: formData.get('submissions_open') === 'on',
     assistant_enabled: formData.get('assistant_enabled') === 'on',
+    backdrop_enabled: formData.get('backdrop_enabled') === 'on',
+    backdrop_loop_url: String(formData.get('backdrop_loop_url') ?? '').trim(),
+    backdrop_webm_url: String(formData.get('backdrop_webm_url') ?? '').trim(),
+    backdrop_poster_url: String(formData.get('backdrop_poster_url') ?? '').trim(),
+    backdrop_scope: formData.get('backdrop_scope') ?? 'all',
+    backdrop_brightness: formData.get('backdrop_brightness') ?? 45,
+    backdrop_blur: formData.get('backdrop_blur') ?? 0,
+    backdrop_on_mobile: formData.get('backdrop_on_mobile') === 'on',
+    anniversary_url: String(formData.get('anniversary_url') ?? '').trim(),
+    anniversary_label: String(formData.get('anniversary_label') ?? '71').trim(),
+    anniversary_cta: formData.get('anniversary_cta') === 'on',
+    glass_enabled: formData.get('glass_enabled') === 'on',
+    glass_blur: formData.get('glass_blur') ?? 18,
+    glass_opacity: formData.get('glass_opacity') ?? 6,
+    glass_border: formData.get('glass_border') ?? 14,
   });
 
   if (!parsed.success) {
@@ -550,7 +580,14 @@ export async function saveTheme(_prev: ActionResult | null, formData: FormData):
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase
     .from('site_settings')
-    .update({ ...parsed.data, loader_logo_url: parsed.data.loader_logo_url || null })
+    .update({
+      ...parsed.data,
+      loader_logo_url: parsed.data.loader_logo_url || null,
+      backdrop_loop_url: parsed.data.backdrop_loop_url || null,
+      backdrop_webm_url: parsed.data.backdrop_webm_url || null,
+      backdrop_poster_url: parsed.data.backdrop_poster_url || null,
+      anniversary_url: parsed.data.anniversary_url || null,
+    })
     .eq('id', true);
   if (error) return { ok: false, error: error.message };
 

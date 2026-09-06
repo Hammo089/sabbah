@@ -331,7 +331,8 @@
     "anniversaryCta": "Lancer le film",
     "partners": "Partenaires de diffusion",
     "rowsTitle": "Soixante-dix ans d'histoires,",
-    "rowsHighlight": "prêtes à licencier"
+    "rowsHighlight": "prêtes à licencier",
+    "backToSite": "Retour au site"
   },
   "stats": {
     "years": "Ans d'héritage",
@@ -429,7 +430,27 @@
     "bgVideoNote": "Ordinateur uniquement. Jamais chargé sur mobile, en mode animation réduite, en économie de données, ou sur un appareil à faible mémoire.",
     "publicPages": "Pages publiques",
     "submissionsOpen": "Accepter les soumissions",
-    "assistantOn": "Afficher l'assistant IA"
+    "assistantOn": "Afficher l'assistant IA",
+    "backdrop": "Film d'arrière-plan",
+    "backdropOn": "Lancer le film derrière tout le site",
+    "backdropNote": "Utilisez ici une BOUCLE courte et muette (20–30 s, moins de 15 Mo). Chaque visiteur la télécharge sur chaque page — le film complet va dans le champ ci-dessous.",
+    "loopUrl": "URL de la boucle (MP4)",
+    "webmUrl": "URL de la boucle (WebM, facultatif)",
+    "posterUrl": "URL de l'image fixe",
+    "brightness": "Luminosité du film (%)",
+    "blurAmount": "Flou du film (px)",
+    "onMobile": "Lire le film aussi sur mobile",
+    "onMobileNote": "Désactivé par défaut. En données mobiles, une boucle de fond consomme batterie et forfait — l'image fixe s'affiche à la place.",
+    "anniversaryFilm": "Le film 71",
+    "filmUrl": "URL du film complet (avec son)",
+    "filmLabel": "Libellé du bouton",
+    "showButton": "Afficher le bouton dans le hero",
+    "glass": "Surfaces en verre",
+    "glassOn": "Dépolir les panneaux sur le film",
+    "glassBlur": "Flou (px)",
+    "glassOpacity": "Remplissage (%)",
+    "glassBorder": "Bordure (%)",
+    "glassNote": "Appliqué à l'en-tête, au pied de page et à un panneau par page — jamais aux cartes individuelles, qui re-flouteraient le film des dizaines de fois par image."
   },
   "legal": {
     "termsTitle": "Conditions d'utilisation",

@@ -15,6 +15,7 @@ import { AnniversaryFilm } from '@/components/site/home/anniversary-film';
 import { BroadcasterStrip } from '@/components/site/home/broadcaster-strip';
 import { MediaRail } from '@/components/site/media-rail';
 import { AmbientFilm } from '@/components/site/ambient-film';
+import { SiteBackdrop } from '@/components/site/site-backdrop';
 import { PosterRows } from '@/components/site/home/poster-rows';
 import { Reveal } from '@/components/motion/reveal';
 
@@ -64,9 +65,22 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
-      {settings.bg_video_enabled && settings.bg_video_scope === 'home' && (
-        <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
+      {settings.backdrop_enabled && settings.backdrop_scope === 'home' && (
+        <SiteBackdrop
+          loopUrl={settings.backdrop_loop_url}
+          webmUrl={settings.backdrop_webm_url}
+          posterUrl={settings.backdrop_poster_url}
+          brightness={settings.backdrop_brightness}
+          blur={settings.backdrop_blur}
+          allowOnMobile={settings.backdrop_on_mobile}
+        />
       )}
+
+      {!settings.backdrop_enabled &&
+        settings.bg_video_enabled &&
+        settings.bg_video_scope === 'home' && (
+          <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
+        )}
 
       <CinematicHero
         lang={locale}
@@ -75,6 +89,16 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         backdropUrl={settings.hero_backdrop_url ?? posters[0]?.posterUrl ?? null}
         align={settings.hero_align}
         showStrip={settings.hero_show_strip}
+        glass={settings.glass_enabled && settings.backdrop_enabled}
+        anniversary={
+          settings.anniversary_cta && settings.anniversary_url
+            ? {
+                filmUrl: settings.anniversary_url,
+                posterUrl: settings.backdrop_poster_url,
+                label: settings.anniversary_label,
+              }
+            : null
+        }
       />
 
       {settings.show_stats && (
