@@ -54,15 +54,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     getCatalog(locale, {}, 24, 0),
     getAllBroadcasters(),
     getSiteSettings(),
-    // The hero cluster is CURATED: these are the titles flagged "featured" in
-    // /admin/series, not simply the newest rows. That flag is the operator's
-    // control over what greets a visitor.
     getHeroPosters(locale),
   ]);
 
   const posters = featured.items.filter((i) => i.posterUrl);
 
-  // Shape the curated picks like catalogue cards so the collage can take either.
   const heroCards = heroPicks.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -92,12 +88,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     <>
       {settings.backdrop_enabled && settings.backdrop_scope === 'home' && (
         <SiteBackdrop
-          loopUrl={settings.backdrop_loop_url}
+          loopUrl="https://rpzrafhjjpqmukbutaaj.supabase.co/storage/v1/object/public/video/71th-bg.mp4"
           webmUrl={settings.backdrop_webm_url}
           posterUrl={settings.backdrop_poster_url}
           brightness={settings.backdrop_brightness}
           blur={settings.backdrop_blur}
-          allowOnMobile={settings.backdrop_on_mobile}
+          allowOnMobile={true}
         />
       )}
 
@@ -107,44 +103,42 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
         )}
 
-      {filmMode ? (
-        <>
-          <GlassHero
+      {/* طبقة عزل زجاجية إضافية لضمان قراءة النصوص بوضوح فوق أي فيديو خلفي */}
+      <div className="relative z-10 backdrop-blur-[2px] bg-black/30">
+        {filmMode ? (
+          <>
+            <GlassHero
+              lang={locale}
+              dict={dict}
+              align={settings.hero_align}
+              anniversary={
+                settings.anniversary_cta && settings.anniversary_url
+                  ? {
+                      filmUrl: settings.anniversary_url,
+                      posterUrl: settings.backdrop_poster_url,
+                      label: settings.anniversary_label,
+                    }
+                  : null
+              }
+            />
+
+            {settings.hero_show_strip && collage.length >= 4 && (
+              <section className="relative h-[70vh] min-h-[420px] overflow-hidden backdrop-blur-md bg-black/40">
+                <PosterCollage posters={collage.slice(0, 8)} fullWidth />
+              </section>
+            )}
+          </>
+        ) : (
+          <CinematicHero
             lang={locale}
             dict={dict}
+            posters={collage.slice(0, 10)}
+            backdropUrl={settings.hero_backdrop_url}
             align={settings.hero_align}
-            anniversary={
-              settings.anniversary_cta && settings.anniversary_url
-                ? {
-                    filmUrl: settings.anniversary_url,
-                    posterUrl: settings.backdrop_poster_url,
-                    label: settings.anniversary_label,
-                  }
-                : null
-            }
+            showStrip={settings.hero_show_strip}
           />
-
-          {/* The curated cluster gets its own quiet section below the film
-              hero, rather than fighting the footage inside it. */}
-          {settings.hero_show_strip && collage.length >= 4 && (
-            <section className="relative h-[70vh] min-h-[420px] overflow-hidden">
-              <PosterCollage posters={collage.slice(0, 8)} fullWidth />
-            </section>
-          )}
-        </>
-      ) : (
-        <CinematicHero
-          lang={locale}
-          dict={dict}
-          posters={collage.slice(0, 10)}
-          // No image fallback: the first catalogue poster used to become a
-          // full-bleed backdrop, which is why one title's art was sitting
-          // behind the whole hero.
-          backdropUrl={settings.hero_backdrop_url}
-          align={settings.hero_align}
-          showStrip={settings.hero_show_strip}
-        />
-      )}
+        )}
+      </div>
 
       {settings.show_stats && (
         <StatsBar
@@ -172,7 +166,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       )}
 
       {settings.show_showcase && (
-      <section className="px-6 py-20 md:px-14 md:py-28">
+      <section className="px-6 py-20 md:px-14 md:py-28 relative z-10 backdrop-blur-sm bg-black/50">
         <div className="mx-auto w-full max-w-[1600px]">
           <Reveal as="header" className="mb-12 flex flex-wrap items-end justify-between gap-6">
             <div>
