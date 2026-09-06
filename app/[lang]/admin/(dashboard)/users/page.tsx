@@ -8,6 +8,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getCurrentProfile, isSuperAdmin } from '@/lib/auth/rbac';
 import { RoleSelect } from '@/components/admin/role-select';
 import { InviteUser } from '@/components/admin/invite-user';
+import { CreateUser } from '@/components/admin/create-user';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,24 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ lan
       <p className="mt-1 text-sm text-muted-foreground">{rows.length}</p>
 
       <div className="mt-8">
+        <CreateUser
+          labels={{
+            title: dict.admin.addUser,
+            hint: dict.admin.addUserHint,
+            email: 'Email',
+            fullName: dict.admin.fullName,
+            role: dict.admin.role,
+            password: dict.admin.tempPassword,
+            passwordHint: dict.admin.tempPasswordHint,
+            create: dict.admin.createUser,
+            created: dict.admin.userCreated,
+            copy: dict.admin.copyPassword,
+            copied: dict.admin.copied,
+          }}
+        />
+      </div>
+
+      <div className="mt-6">
         <InviteUser
           pending={invites ?? []}
           labels={{

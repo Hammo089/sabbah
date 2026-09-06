@@ -3,7 +3,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { randomBytes } from 'node:crypto';
+import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 import { getCurrentProfile, isStaff, isSuperAdmin } from '@/lib/auth/rbac';
 import type { ActionResult } from './actions';
 
@@ -623,4 +624,93 @@ export async function getSubmissionFileUrl(
   if (error || !data) return { ok: false, error: error?.message ?? 'SIGN_FAILED' };
 
   return { ok: true, url: data.signedUrl };
+}
+
+// ---------------------------------------------------------------------------
+// Direct user creation — no invitation, no waiting for the person to sign up.
+//
+// This needs the service-role key because creating an auth user is an admin
+// operation. The temporary password is returned exactly once so the super_admin
+// can hand it over; it is never stored anywhere by us.
+// ---------------------------------------------------------------------------
+
+const CreateUserSchema = z.object({
+  email: z.string().trim().email().max(160),
+  full_name: z.string().trim().max(120).nullable(),
+  role: z.enum(['super_admin', 'admin', 'editor', 'b2b_client', 'viewer']),
+  password: z.string().min(10).max(72).nullable(),
+});
+
+/** Readable, high-entropy temporary password. */
+function generatePassword(): string {
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+  const bytes = randomBytes(20);
+  let out = '';
+  for (const byte of bytes) out += alphabet[byte % alphabet.length];
+  return `${out.slice(0, 5)}-${out.slice(5, 10)}-${out.slice(10, 15)}-${out.slice(15, 20)}`;
+}
+
+export async function createUserDirect(
+  _prev: (ActionResult & { password?: string }) | null,
+  formData: FormData,
+): Promise<ActionResult & { password?: string }> {
+  const profile = await getCurrentProfile();
+  if (!isSuperAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const parsed = CreateUserSchema.safeParse({
+    email: formData.get('email'),
+    full_name: String(formData.get('full_name') ?? '').trim() || null,
+    role: formData.get('role'),
+    password: String(formData.get('password') ?? '').trim() || null,
+  });
+
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? 'INVALID_INPUT' };
+  }
+
+  let admin;
+  try {
+    admin = createSupabaseAdminClient();
+  } catch {
+    return { ok: false, error: 'SERVICE_ROLE_MISSING' };
+  }
+
+  const password = parsed.data.password ?? generatePassword();
+
+  const { data, error } = await admin.auth.admin.createUser({
+    email: parsed.data.email,
+    password,
+    email_confirm: true,
+    user_metadata: { full_name: parsed.data.full_name },
+  });
+
+  if (error || !data.user) {
+    return { ok: false, error: error?.message ?? 'CREATE_FAILED' };
+  }
+
+  // handle_new_user() has already inserted the profile row; set the role and
+  // name on it. Done with the service-role client so the role guard trigger
+  // sees current_user = 'service_role' and allows the assignment.
+  const { error: profileError } = await admin
+    .from('users_profiles')
+    .update({
+      role: parsed.data.role,
+      full_name: parsed.data.full_name,
+      is_active: true,
+    })
+    .eq('id', data.user.id);
+
+  if (profileError) return { ok: false, error: profileError.message };
+
+  await admin.from('tracking_events').insert({
+    entity: 'users_profiles',
+    entity_id: data.user.id,
+    action: 'create',
+    summary: `Created ${parsed.data.email} as ${parsed.data.role}`,
+    actor_id: profile?.id ?? null,
+    actor_email: profile?.email ?? null,
+  });
+
+  revalidatePath('/[lang]/admin/users', 'page');
+  return { ok: true, password };
 }

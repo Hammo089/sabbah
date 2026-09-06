@@ -5,6 +5,8 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildB2BCatalogPdf, type CatalogTitle } from '@/lib/pdf/b2b-catalog';
 import { t } from '@/lib/utils';
 import { limitRequest, tooMany } from '@/lib/security/rate-limit';
+import { readAccessCookie } from '@/lib/b2b/access';
+import { createSupabaseAdminClient } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -50,25 +52,57 @@ export async function GET(request: NextRequest) {
   const { lang, status, territory } = parsed.data;
   const supabase = await createSupabaseServerClient();
 
-  // ---- AuthN ---------------------------------------------------------------
+  // ---- Who is asking -------------------------------------------------------
+  // Two ways in, and only two. Either a signed-in staff/B2B account, or an
+  // identified buyer holding a valid lead cookie. Buyers are deliberately NOT
+  // made to register: they gave us name, company, position and phone once, and
+  // that is the whole gate.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json({ error: 'UNAUTHENTICATED' }, { status: 401 });
-  }
+  let profile: { full_name: string | null; company_name: string | null; email: string | null } | null = null;
 
-  // ---- AuthZ ---------------------------------------------------------------
-  const { data: profile } = await supabase
-    .from('users_profiles')
-    .select('role, is_active, full_name, company_name, email')
-    .eq('id', user.id)
-    .single();
+  if (user) {
+    const { data } = await supabase
+      .from('users_profiles')
+      .select('role, is_active, full_name, company_name, email')
+      .eq('id', user.id)
+      .single();
 
-  const allowed = ['super_admin', 'admin', 'b2b_client'];
-  if (!profile?.is_active || !allowed.includes(profile.role)) {
-    return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+    const allowed = ['super_admin', 'admin', 'b2b_client'];
+    if (!data?.is_active || !allowed.includes(data.role)) {
+      return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+    }
+
+    profile = { full_name: data.full_name, company_name: data.company_name, email: data.email };
+  } else {
+    const claim = await readAccessCookie();
+    if (!claim) {
+      // 403, not 401: there is no login to send them to. The page shows the
+      // identify-yourself form instead.
+      return NextResponse.json({ error: 'IDENTIFY_REQUIRED' }, { status: 403 });
+    }
+
+    try {
+      const admin = createSupabaseAdminClient();
+      const { data: lead } = await admin
+        .from('b2b_leads')
+        .select('id, full_name, company, downloads')
+        .eq('id', claim.leadId)
+        .maybeSingle();
+
+      if (!lead) return NextResponse.json({ error: 'IDENTIFY_REQUIRED' }, { status: 403 });
+
+      profile = { full_name: lead.full_name, company_name: lead.company, email: null };
+
+      await admin
+        .from('b2b_leads')
+        .update({ downloads: (lead.downloads ?? 0) + 1, last_seen: new Date().toISOString() })
+        .eq('id', lead.id);
+    } catch {
+      return NextResponse.json({ error: 'UNAVAILABLE' }, { status: 503 });
+    }
   }
 
   // ---- Data ----------------------------------------------------------------
@@ -118,7 +152,7 @@ export async function GET(request: NextRequest) {
 
   // ---- Render --------------------------------------------------------------
   const bytes = await buildB2BCatalogPdf({
-    generatedFor: profile.company_name || profile.full_name || profile.email,
+    generatedFor: profile?.company_name || profile?.full_name || profile?.email || 'Cedars Art Production',
     generatedAt: new Date(),
     locale: lang,
     titles,

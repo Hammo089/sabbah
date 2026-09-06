@@ -65,6 +65,16 @@ export type SeriesRow = {
   is_featured_slider: boolean;
   sort_order: number;
   seo: Json;
+  seas_code: string | null;
+  prog_code: string | null;
+  remarks: string | null;
+  audio_langs: string[];
+  dubbing_langs: string[];
+  subtitling_langs: string[];
+  genres_ar: string[];
+  watch_url: string | null;
+  website_url: string | null;
+  press_kit_url: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
@@ -318,6 +328,71 @@ export type AssistantKnowledgeRow = {
   updated_at: string;
 };
 
+export type LibraryKindEnum = 'master' | 'mezzanine' | 'proxy' | 'audio' | 'subtitle' | 'document' | 'artwork' | 'other';
+export type SocialPlatformEnum = 'instagram' | 'youtube' | 'facebook' | 'twitter' | 'tiktok' | 'linkedin';
+export type PostStatusEnum = 'draft' | 'scheduled' | 'published' | 'archived';
+export type NotificationLevelEnum = 'info' | 'success' | 'warning' | 'danger';
+
+export type TagRow = {
+  id: string; slug: string; label: Json; color: string; sort_order: number; created_at: string;
+};
+
+export type LibraryItemRow = {
+  id: string; series_id: string | null; episode_id: string | null; kind: LibraryKindEnum;
+  label: string; format: string | null; resolution: string | null; duration_s: number | null;
+  size_mb: number | null; location: string | null; barcode: string | null; file_url: string | null;
+  notes: string | null; created_at: string; updated_at: string;
+};
+
+export type MasterSceneRow = {
+  id: string; series_id: string | null; episode_id: string | null; scene_no: number | null;
+  tc_in: string | null; tc_out: string | null; heading: string | null; description: string | null;
+  location: string | null; characters: string[]; keywords: string[]; still_url: string | null;
+  created_at: string; updated_at: string;
+};
+
+export type NewsPressRow = {
+  id: string; slug: string; title: Json; excerpt: Json; body: Json; cover_url: string | null;
+  outlet: string | null; external_url: string | null; published_on: string | null;
+  is_published: boolean; series_id: string | null; sort_order: number;
+  created_at: string; updated_at: string;
+};
+
+export type SocialAccountRow = {
+  id: string; platform: SocialPlatformEnum; handle: string; profile_url: string | null;
+  followers: number | null; is_primary: boolean; series_id: string | null;
+  created_at: string; updated_at: string;
+};
+
+export type SocialPostRow = {
+  id: string; account_id: string | null; platform: SocialPlatformEnum; series_id: string | null;
+  caption: string | null; media_url: string | null; post_url: string | null; status: PostStatusEnum;
+  scheduled_for: string | null; published_at: string | null;
+  likes: number | null; comments: number | null; views: number | null;
+  created_at: string; updated_at: string;
+};
+
+export type ExportRow = {
+  id: string; kind: string; format: string; params: Json; file_url: string | null;
+  row_count: number | null; requested_by: string | null; created_at: string;
+};
+
+export type TrackingEventRow = {
+  id: string; entity: string; entity_id: string | null; action: string; summary: string | null;
+  meta: Json; actor_id: string | null; actor_email: string | null; created_at: string;
+};
+
+export type NotificationRow = {
+  id: string; level: NotificationLevelEnum; title: string; body: string | null; href: string | null;
+  audience: AppRoleEnum | null; is_read: boolean; created_at: string;
+};
+
+export type B2BLeadRow = {
+  id: string; full_name: string; company: string; position: string; phone: string;
+  email: string | null; country: string | null; interest: string | null;
+  downloads: number; last_seen: string; created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -449,6 +524,74 @@ export type Database = {
         Update: Partial<{ email: string; role: AppRoleEnum; accepted_at: string | null }>;
         Relationships: [];
       };
+      tags: {
+        Row: TagRow;
+        Insert: Partial<TagRow> & { slug: string };
+        Update: Partial<TagRow>;
+        Relationships: [];
+      };
+      title_tags: {
+        Row: { tag_id: string; series_id: string };
+        Insert: { tag_id: string; series_id: string };
+        Update: Partial<{ tag_id: string; series_id: string }>;
+        Relationships: [];
+      };
+      library_items: {
+        Row: LibraryItemRow;
+        Insert: Partial<LibraryItemRow> & { label: string };
+        Update: Partial<LibraryItemRow>;
+        Relationships: [];
+      };
+      master_scenes: {
+        Row: MasterSceneRow;
+        Insert: Partial<MasterSceneRow>;
+        Update: Partial<MasterSceneRow>;
+        Relationships: [];
+      };
+      news_press: {
+        Row: NewsPressRow;
+        Insert: Partial<NewsPressRow> & { slug: string };
+        Update: Partial<NewsPressRow>;
+        Relationships: [];
+      };
+      social_accounts: {
+        Row: SocialAccountRow;
+        Insert: Partial<SocialAccountRow> & { platform: SocialPlatformEnum; handle: string };
+        Update: Partial<SocialAccountRow>;
+        Relationships: [];
+      };
+      social_posts: {
+        Row: SocialPostRow;
+        Insert: Partial<SocialPostRow> & { platform: SocialPlatformEnum };
+        Update: Partial<SocialPostRow>;
+        Relationships: [];
+      };
+      exports: {
+        Row: ExportRow;
+        Insert: Partial<ExportRow> & { kind: string };
+        Update: Partial<ExportRow>;
+        Relationships: [];
+      };
+      tracking_events: {
+        Row: TrackingEventRow;
+        Insert: Partial<TrackingEventRow> & { entity: string; action: string };
+        Update: Partial<TrackingEventRow>;
+        Relationships: [];
+      };
+      notifications: {
+        Row: NotificationRow;
+        Insert: Partial<NotificationRow> & { title: string };
+        Update: Partial<NotificationRow>;
+        Relationships: [];
+      };
+      b2b_leads: {
+        Row: B2BLeadRow;
+        Insert: Partial<B2BLeadRow> & {
+          full_name: string; company: string; position: string; phone: string;
+        };
+        Update: Partial<B2BLeadRow>;
+        Relationships: [];
+      };
       script_submissions: {
         Row: ScriptSubmissionRow;
         Insert: Partial<ScriptSubmissionRow> & {
@@ -540,6 +683,7 @@ export type Database = {
       is_super_admin: { Args: Record<string, never>; Returns: boolean };
       is_staff: { Args: Record<string, never>; Returns: boolean };
       new_submission_count: { Args: Record<string, never>; Returns: number };
+      module_counts: { Args: Record<string, never>; Returns: Record<string, number> };
     };
     Enums: {
       app_role: AppRoleEnum;
@@ -549,6 +693,10 @@ export type Database = {
       drm_system: DrmSystemEnum;
       submission_status: SubmissionStatusEnum;
       submission_kind: SubmissionKindEnum;
+      library_kind: LibraryKindEnum;
+      social_platform: SocialPlatformEnum;
+      post_status: PostStatusEnum;
+      notification_level: NotificationLevelEnum;
     };
     CompositeTypes: Record<string, never>;
   };

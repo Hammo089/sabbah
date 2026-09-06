@@ -1,13 +1,13 @@
 # Security posture — CAP platform
 
-Verified against PostgreSQL 16 with all 9 migrations applied. Every result below is a real query, not an assertion.
+Verified against PostgreSQL 16 with all 11 migrations applied. Every result below is a real query, not an assertion.
 
 ## 1. Database (Supabase)
 
 | Check | Result |
 |---|---|
-| Tables in `public` | 16 |
-| Tables with RLS enabled | 16 / 16 |
+| Tables in `public` | 29 |
+| Tables with RLS enabled | 29 / 29 |
 | Tables with 0 policies | 0 |
 | `SECURITY DEFINER` functions | 13, all pinned to `search_path=public` |
 | `anon` write grant on content tables | none — `permission denied for table series` |
@@ -108,7 +108,42 @@ The assistant is grounded through `lib/ai/company-context.ts`, which builds its 
 
 On top of that, the system prompt forbids inventing dates or rights positions, forbids committing to commercial terms, forbids looking up individual submissions, and instructs it to ignore instructions embedded in a visitor's message. History is capped at 12 turns and 2000 characters per message.
 
-## 11. Open items
+## 11. Admin modules (0011)
+
+| Check | Result |
+|---|---|
+| RLS enabled on all 11 new tables | yes |
+| `anon` write to `tags` | `permission denied` |
+| `anon` read `tracking_events` | `permission denied` |
+| `anon` read `library_items` | `permission denied` |
+| `anon` insert a B2B lead | allowed (that is the gate) |
+| `editor` read `b2b_leads` | 0 rows |
+| `editor` read `tracking_events` | 0 rows |
+| `editor` append to `tracking_events` | allowed |
+| `admin` read `b2b_leads` | rows returned |
+
+Two deliberate narrowings, both tighter than `is_staff()`:
+
+- **`b2b_leads`** is admin-and-above. A lead row is a named buyer's direct phone line — commercial contact data, not catalogue content — so editors are excluded at the policy level, not just hidden from the page.
+- **`tracking_events`** is append-only for editors: they can write to the audit trail but cannot read it. A log everyone can read and edit is not a log.
+
+The generic module write path (`record-actions.ts`) is guarded by an allow-list: the table name must be a key of `TABLE_SCHEMAS`, every field passes that table's Zod schema, and non-content tables additionally require admin. It cannot be steered at `users_profiles` or `drm_licenses`.
+
+## 12. B2B access without an account
+
+Buyers are not registered. `/api/b2b-access` stores name, company, position and phone as a lead, then sets an HMAC-signed cookie (`B2B_ACCESS_SECRET`) carrying only a lead id and an expiry.
+
+- The cookie is a signed claim, not a bearer secret: it unlocks the public catalogue and nothing else.
+- Signature comparison is `timingSafeEqual`; expiry is checked server-side; 30-day lifetime.
+- `httpOnly`, `sameSite=lax`, `secure` in production.
+- `/api/generate-b2b-pdf` accepts either an authenticated staff/b2b_client session or a valid lead cookie — and returns 403 `IDENTIFY_REQUIRED`, not 401, because there is no login to send them to.
+- Honeypot field and a 10-per-10-minutes IP limit on the endpoint.
+
+## 13. Direct user creation
+
+`createUserDirect` is super_admin-only and uses the service-role key to call `auth.admin.createUser`. The temporary password is generated server-side from `randomBytes`, returned exactly once for the operator to hand over, and never stored by us. The role is set with the service-role client so the `guard_role_change` trigger permits the assignment; every creation is written to the audit trail.
+
+## 14. Open items
 
 1. CSP nonces to drop `'unsafe-inline'` from `script-src`.
 2. Global rate limiting (Redis) if traffic grows past one lambda instance.

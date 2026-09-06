@@ -205,6 +205,14 @@ export function LicenceManager({
   const [items, setItems] = React.useState(rows);
   const [editing, setEditing] = React.useState<string | null>(null);
   const [adding, setAdding] = React.useState(false);
+
+  // The server action revalidates and re-renders this component with fresh
+  // rows, but useState only reads its initial value once — so without this the
+  // list kept showing the pre-save snapshot: a licence you just created was
+  // invisible and could never be reopened.
+  React.useEffect(() => {
+    setItems(rows);
+  }, [rows]);
   const [isPending, startTransition] = React.useTransition();
 
   const alerts = items.filter(

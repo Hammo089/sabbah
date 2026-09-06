@@ -3,6 +3,8 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Clapperboard, Film, Tv, ListVideo,
   ShieldCheck, Landmark, Megaphone, Users, Settings, UserSquare2, Radio, Palette, Inbox,
+  Hash, Library, FileDown, Newspaper, Instagram, BellRing, Activity, Globe, Briefcase,
+  Clapperboard as Slate,
 } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
@@ -26,8 +28,18 @@ const NAV: NavItem[] = [
   { href: '/submissions', label: 'Submissions', icon: Inbox,      roles: ['super_admin', 'admin', 'editor'] },
   { href: '/drm',      label: 'DRM & Licensing', icon: ShieldCheck, roles: ['super_admin'] },
   { href: '/broadcasters', label: 'Broadcasters', icon: Radio,      roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/leads',    label: 'B2B Buyers', icon: Briefcase,      roles: ['super_admin', 'admin'] },
+  { href: '/tags',     label: 'Tags',      icon: Hash,            roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/library',  label: 'Library',   icon: Library,         roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/scenes',   label: 'Master Scenes', icon: Slate,       roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/news',     label: 'News & Press', icon: Newspaper,    roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/social',   label: 'Social Media', icon: Instagram,    roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/exports',  label: 'Exports',   icon: FileDown,        roles: ['super_admin', 'admin', 'editor'] },
   { href: '/legacy',   label: 'Legacy',    icon: Landmark,        roles: ['super_admin', 'admin'] },
   { href: '/ticker',   label: 'News Ticker', icon: Megaphone,     roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/notifications', label: 'Notifications', icon: BellRing, roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/tracking', label: 'Tracking',  icon: Activity,        roles: ['super_admin', 'admin'] },
+  { href: '/website',  label: 'Website',   icon: Globe,           roles: ['super_admin', 'admin'] },
   { href: '/users',    label: 'Users',     icon: Users,           roles: ['super_admin'] },
   { href: '/appearance', label: 'Appearance', icon: Palette,      roles: ['super_admin', 'admin'] },
   { href: '/settings', label: 'Settings',  icon: Settings,        roles: ['super_admin', 'admin'] },

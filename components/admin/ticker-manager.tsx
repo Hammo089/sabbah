@@ -182,6 +182,11 @@ export function TickerManager({
 }) {
   const [items, setItems] = React.useState(rows);
 
+  // Keep the list in step with the server after a save (see licence-manager).
+  React.useEffect(() => {
+    setItems(rows);
+  }, [rows]);
+
   return (
     <div className="max-w-4xl space-y-6">
       <div>

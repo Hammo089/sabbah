@@ -10,7 +10,7 @@ import { getDictionary } from '@/i18n/get-dictionary';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { getCatalog, getAllBroadcasters } from '@/lib/queries/catalog';
 import { MediaCard } from '@/components/site/media-card';
-import { B2BPdfButton } from '@/components/site/b2b-pdf-button';
+import { B2BGate } from '@/components/site/b2b-gate';
 import { Button } from '@/components/ui/button';
 
 export const revalidate = 3600;
@@ -82,12 +82,22 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{dict.b2b.lead}</p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <B2BPdfButton
+            <B2BGate
               lang={locale}
-              labels={{
+              dict={{
                 download: dict.b2b.downloadPdf,
-                hint: dict.b2b.pdfHint,
-                signIn: dict.b2b.signIn,
+                title: dict.b2b.gateTitle,
+                lead: dict.b2b.gateLead,
+                fullName: dict.b2b.gateName,
+                company: dict.b2b.gateCompany,
+                position: dict.b2b.gatePosition,
+                phone: dict.b2b.gatePhone,
+                email: dict.b2b.gateEmail,
+                interest: dict.b2b.gateInterest,
+                submit: dict.b2b.gateSubmit,
+                cancel: dict.b2b.gateCancel,
+                error: dict.b2b.gateError,
+                note: dict.b2b.gateNote,
               }}
             />
             <Button asChild variant="outline">
