@@ -1,10 +1,18 @@
 import Link from 'next/link';
+import type { Locale } from '@/i18n/config';
 
-export function SiteHeader() {
+interface HeaderProps {
+  lang: Locale;
+  dict: any;
+  headerStyle?: string;
+  glass?: boolean;
+}
+
+export function SiteHeader({ lang, dict, headerStyle, glass }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-xl bg-black/60 border-b border-white/10 shadow-lg">
       {/* شعار سيدرز الأصلي المرفوع على Supabase */}
-      <Link href="/" className="flex items-center gap-3">
+      <Link href={`/${lang}`} className="flex items-center gap-3">
         <img 
           src="https://rpzrafhjjpqmukbutaaj.supabase.co/storage/v1/object/public/video/10%20x%2010%20cedars%20without%20passion%20logo.png" 
           alt="Cedars Art Production - Sabbah Brothers" 
