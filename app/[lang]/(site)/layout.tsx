@@ -10,6 +10,7 @@ import { BrandLoader } from '@/components/site/brand-loader';
 import { AmbientFilm } from '@/components/site/ambient-film';
 import { SiteBackdrop } from '@/components/site/site-backdrop';
 import { AssistantChat } from '@/components/site/assistant-chat';
+import { cn } from '@/lib/utils';
 
 export default async function SiteLayout({
   children,
@@ -25,7 +26,14 @@ export default async function SiteLayout({
   const [dict, settings] = await Promise.all([getDictionary(locale), getSiteSettings()]);
 
   return (
-    <div className="relative flex min-h-dvh flex-col">
+    <div
+      className={cn(
+        'relative flex min-h-dvh flex-col',
+        // One switch. Every opaque band down the page turns to glass so the
+        // film behind is actually visible — see `.film-mode` in globals.css.
+        settings.backdrop_enabled && settings.glass_enabled && 'film-mode',
+      )}
+    >
       {/* The self-hosted anniversary film. Takes precedence over the older
           YouTube ambient layer — running both would decode two videos at once. */}
       {settings.backdrop_enabled && settings.backdrop_scope === 'all' && (

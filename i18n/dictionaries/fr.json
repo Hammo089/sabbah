@@ -450,7 +450,10 @@
     "glassBlur": "Flou (px)",
     "glassOpacity": "Remplissage (%)",
     "glassBorder": "Bordure (%)",
-    "glassNote": "Appliqué à l'en-tête, au pied de page et à un panneau par page — jamais aux cartes individuelles, qui re-flouteraient le film des dizaines de fois par image."
+    "glassNote": "Appliqué à l'en-tête, au pied de page et à un panneau par page — jamais aux cartes individuelles, qui re-flouteraient le film des dizaines de fois par image.",
+    "heroPicks": "Sélection du hero",
+    "heroPicksHint": "Les titres du cluster flottant sur l'accueil. Choisissez-en six à huit qui s'accordent — c'est la première chose que voit un visiteur.",
+    "heroPicksCount": "sélectionnés"
   },
   "legal": {
     "termsTitle": "Conditions d'utilisation",

@@ -8,7 +8,7 @@ export function BroadcasterStrip({ label, items }: { label: string; items: Broad
   if (items.length === 0) return null;
 
   return (
-    <section className="border-t border-primary/10 bg-[#0f0f0f] px-6 py-16 md:px-14">
+    <section className="band-solid border-t border-primary/10 bg-[#0f0f0f] px-6 py-16 md:px-14">
       <div className="mx-auto w-full max-w-[1280px]">
         <p className="sec-tag">{label}</p>
 

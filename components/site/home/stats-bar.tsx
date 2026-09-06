@@ -9,7 +9,7 @@ export function StatsBar({
   stats: { value: string; sup?: string; label: string }[];
 }) {
   return (
-    <div className="grid grid-cols-2 border-y border-primary/10 bg-card px-6 py-8 md:grid-cols-4 md:px-14">
+    <div className="band-solid grid grid-cols-2 border-y border-primary/10 bg-card px-6 py-8 md:grid-cols-4 md:px-14">
       {stats.map((s, i) => (
         <Reveal
           key={s.label}

@@ -6,8 +6,7 @@ import { PosterCollage } from './poster-collage';
 import type { CatalogCard } from '@/lib/queries/catalog';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
-import { AnniversaryButton } from '@/components/site/anniversary-button';
-import { cn } from '@/lib/utils';
+
 
 export function CinematicHero({
   lang,
@@ -16,8 +15,6 @@ export function CinematicHero({
   backdropUrl,
   align = 'start',
   showStrip = true,
-  glass = false,
-  anniversary,
 }: {
   lang: Locale;
   dict: Dictionary;
@@ -25,14 +22,11 @@ export function CinematicHero({
   backdropUrl: string | null;
   align?: 'start' | 'center';
   showStrip?: boolean;
-  /** Renders the copy inside a frosted panel over the backdrop film. */
-  glass?: boolean;
-  anniversary?: { filmUrl: string; posterUrl: string | null; label: string } | null;
 }) {
   const centered = align === 'center';
   return (
     <section className="on-media relative flex min-h-[640px] items-end overflow-hidden pb-20 pt-28 md:min-h-[700px] md:h-svh md:pb-24">
-      {!glass && backdropUrl && (
+      {backdropUrl && (
         <Image
           src={backdropUrl}
           alt=""
@@ -43,27 +37,20 @@ export function CinematicHero({
         />
       )}
 
-      {!glass && <div aria-hidden className="hero-grid-lines absolute inset-0" />}
+      <div aria-hidden className="hero-grid-lines absolute inset-0" />
 
       {/* Right-hand film strip — 48% wide, masked into the background */}
       {/* The drifting collage from the approved reference. `hero_show_strip`
           still governs it, so it can be switched off from /admin/appearance. */}
-      {!glass && showStrip && <PosterCollage posters={posters} />}
+      {showStrip && <PosterCollage posters={posters} />}
 
-      {!glass && <div aria-hidden className="hero-scrim absolute inset-0 z-[1]" />}
+      <div aria-hidden className="hero-scrim absolute inset-0 z-[1]" />
 
       <div
         className={
-          glass
-            ? cn(
-                'glass-panel relative z-[2] w-full rounded-[20px] p-8 sm:p-12',
-                centered
-                  ? 'mx-auto max-w-[640px] text-center'
-                  : 'ms-6 max-w-[560px] md:ms-14 lg:ms-[10%]',
-              )
-            : centered
-              ? 'relative z-[2] mx-auto w-full max-w-[880px] px-6 text-center md:px-14'
-              : 'relative z-[2] w-full max-w-[680px] px-6 md:px-14 lg:max-w-[52%] xl:max-w-[680px]'
+          centered
+            ? 'relative z-[2] mx-auto w-full max-w-[880px] px-6 text-center md:px-14'
+            : 'relative z-[2] w-full max-w-[680px] px-6 md:px-14 lg:max-w-[52%] xl:max-w-[680px]'
         }
       >
         <p
@@ -96,18 +83,6 @@ export function CinematicHero({
         >
           {dict.hero.subtitle}
         </p>
-
-        {anniversary && (
-          <div className={cn('mb-2', centered && 'flex justify-center')}>
-            <AnniversaryButton
-              filmUrl={anniversary.filmUrl}
-              posterUrl={anniversary.posterUrl}
-              label={anniversary.label}
-              cta={dict.home.anniversaryCta}
-              backLabel={dict.home.backToSite}
-            />
-          </div>
-        )}
 
         <div
           className={

@@ -109,3 +109,23 @@ export async function saveSeasonLinks(
   revalidatePath('/[lang]/admin/series/[id]', 'page');
   return { ok: true };
 }
+
+/** Adds or removes one title from the homepage hero cluster. */
+export async function setHeroPick(id: string, picked: boolean): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { ok: false, error: 'INVALID_ID' };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from('series')
+    .update({ is_featured_slider: picked })
+    .eq('id', parsed.data);
+
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]', 'layout');
+  return { ok: true };
+}

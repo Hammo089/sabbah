@@ -6,8 +6,11 @@ import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { getRails, getCatalog, getAllBroadcasters } from '@/lib/queries/catalog';
+import { getHeroPosters } from '@/lib/queries/home';
 import { getSiteSettings } from '@/lib/queries/settings';
 import { CinematicHero } from '@/components/site/home/cinematic-hero';
+import { GlassHero } from '@/components/site/home/glass-hero';
+import { PosterCollage } from '@/components/site/home/poster-collage';
 import { StatsBar } from '@/components/site/home/stats-bar';
 import { TitleMarquee } from '@/components/site/home/title-marquee';
 import { ShowcaseGrid } from '@/components/site/home/showcase-grid';
@@ -46,14 +49,36 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const locale = lang as Locale;
   const dict = await getDictionary(locale);
 
-  const [rails, featured, broadcasters, settings] = await Promise.all([
+  const [rails, featured, broadcasters, settings, heroPicks] = await Promise.all([
     getRails(locale),
     getCatalog(locale, {}, 24, 0),
     getAllBroadcasters(),
     getSiteSettings(),
+    // The hero cluster is CURATED: these are the titles flagged "featured" in
+    // /admin/series, not simply the newest rows. That flag is the operator's
+    // control over what greets a visitor.
+    getHeroPosters(locale),
   ]);
 
   const posters = featured.items.filter((i) => i.posterUrl);
+
+  // Shape the curated picks like catalogue cards so the collage can take either.
+  const heroCards = heroPicks.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    subtitle: '',
+    year: p.year,
+    seasons: 0,
+    posterUrl: p.posterUrl,
+    kind: 'series' as const,
+    region: 'levant' as const,
+    isNew: false,
+    isComingSoon: false,
+  }));
+
+  const collage = heroCards.length > 0 ? heroCards : posters;
+  const filmMode = settings.backdrop_enabled && Boolean(settings.backdrop_loop_url || settings.backdrop_poster_url);
   const showcase = (rails.hits.length > 0 ? rails.hits : featured.items).slice(0, 7);
 
   const labels = {
@@ -82,24 +107,44 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
         )}
 
-      <CinematicHero
-        lang={locale}
-        dict={dict}
-        posters={posters.slice(0, 10)}
-        backdropUrl={settings.hero_backdrop_url ?? posters[0]?.posterUrl ?? null}
-        align={settings.hero_align}
-        showStrip={settings.hero_show_strip}
-        glass={settings.glass_enabled && settings.backdrop_enabled}
-        anniversary={
-          settings.anniversary_cta && settings.anniversary_url
-            ? {
-                filmUrl: settings.anniversary_url,
-                posterUrl: settings.backdrop_poster_url,
-                label: settings.anniversary_label,
-              }
-            : null
-        }
-      />
+      {filmMode ? (
+        <>
+          <GlassHero
+            lang={locale}
+            dict={dict}
+            align={settings.hero_align}
+            anniversary={
+              settings.anniversary_cta && settings.anniversary_url
+                ? {
+                    filmUrl: settings.anniversary_url,
+                    posterUrl: settings.backdrop_poster_url,
+                    label: settings.anniversary_label,
+                  }
+                : null
+            }
+          />
+
+          {/* The curated cluster gets its own quiet section below the film
+              hero, rather than fighting the footage inside it. */}
+          {settings.hero_show_strip && collage.length >= 4 && (
+            <section className="relative h-[70vh] min-h-[420px] overflow-hidden">
+              <PosterCollage posters={collage.slice(0, 8)} fullWidth />
+            </section>
+          )}
+        </>
+      ) : (
+        <CinematicHero
+          lang={locale}
+          dict={dict}
+          posters={collage.slice(0, 10)}
+          // No image fallback: the first catalogue poster used to become a
+          // full-bleed backdrop, which is why one title's art was sitting
+          // behind the whole hero.
+          backdropUrl={settings.hero_backdrop_url}
+          align={settings.hero_align}
+          showStrip={settings.hero_show_strip}
+        />
+      )}
 
       {settings.show_stats && (
         <StatsBar

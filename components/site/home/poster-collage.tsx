@@ -40,9 +40,12 @@ const SLOTS: Slot[] = [
 export function PosterCollage({
   posters,
   className,
+  fullWidth = false,
 }: {
   posters: CatalogCard[];
   className?: string;
+  /** Fill the parent instead of hugging the right half of the hero. */
+  fullWidth?: boolean;
 }) {
   const { ambient, reveal } = useMotionAllowed();
   const visible = useTabVisible();
@@ -59,6 +62,10 @@ export function PosterCollage({
         'pointer-events-none absolute inset-y-0 end-0 hidden w-[46%] lg:block xl:w-[50%]',
         '[mask-image:linear-gradient(to_left,#000_58%,transparent)]',
         '[-webkit-mask-image:linear-gradient(to_left,#000_58%,transparent)]',
+        // In its own section the cluster fills the band and fades at both
+        // edges instead of only the left.
+        fullWidth &&
+          'inset-0 block w-full [mask-image:radial-gradient(120%_100%_at_50%_50%,#000_45%,transparent)] [-webkit-mask-image:radial-gradient(120%_100%_at_50%_50%,#000_45%,transparent)]',
         className,
       )}
     >

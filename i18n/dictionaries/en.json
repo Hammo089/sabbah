@@ -450,7 +450,10 @@
     "glassBlur": "Blur (px)",
     "glassOpacity": "Fill (%)",
     "glassBorder": "Edge (%)",
-    "glassNote": "Applied to the header, footer and one panel per page — never to individual cards, which would re-blur the film dozens of times per frame."
+    "glassNote": "Applied to the header, footer and one panel per page — never to individual cards, which would re-blur the film dozens of times per frame.",
+    "heroPicks": "Homepage hero picks",
+    "heroPicksHint": "The titles in the floating cluster on the homepage. Pick six to eight that look good together — this is the first thing a visitor sees.",
+    "heroPicksCount": "selected"
   },
   "legal": {
     "termsTitle": "Terms of use",

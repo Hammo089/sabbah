@@ -161,6 +161,43 @@
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
   }
 
+  /* -------------------------------------------------------------------
+     FILM MODE
+
+     When the anniversary film is the backdrop, the point is to SEE it. Every
+     opaque band down the page — the stats bar, the section grounds, the cards
+     — would hide it, so under `.film-mode` those surfaces give up their fill
+     and become glass or nothing at all.
+
+     This is one cascade rule rather than a `glass ? …` ternary in forty
+     components: the switch is at the top, and any section added later
+     inherits it without being told.
+     ------------------------------------------------------------------- */
+  .film-mode :where(section, .sec-band) {
+    background-color: transparent;
+  }
+
+  /* Bands that still need to read as a band — the stats strip, the marquee —
+     become frosted instead of solid. */
+  .film-mode :where(.band-solid) {
+    background-color: hsl(0 0% 0% / 0.35) !important;
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(1.25);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(1.25);
+    border-color: hsl(0 0% 100% / 0.08);
+  }
+
+  /* Cards keep a fill so posters stay legible, but a translucent one — the
+     film moves behind the grid instead of being blocked by it. */
+  .film-mode :where(.bg-card) {
+    background-color: hsl(0 0% 0% / 0.4);
+  }
+
+  /* Text sits directly on moving footage here, so it needs a shadow the dark
+     palette never required. */
+  .film-mode :where(h1, h2, h3, .sec-title, .display-title) {
+    text-shadow: 0 2px 24px rgb(0 0 0 / 0.55);
+  }
+
   /* Browsers without backdrop-filter (older Firefox with the flag off) would
      otherwise show unreadable text on a near-transparent panel. */
   @supports not (backdrop-filter: blur(1px)) {
