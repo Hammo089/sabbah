@@ -2,36 +2,26 @@
 
 // components/site/site-backdrop.tsx
 // The anniversary film, fixed behind the whole site, with the glass surfaces
-// layered on top of it.
+// layered on top of it. Accepts a YouTube link or a direct file URL — the same
+// field takes either.
 //
 // A fullscreen looping video on every page is the single most expensive thing a
 // site can do to a visitor, so the rules here are strict:
 //
 //  - Phones get the POSTER IMAGE, not the video, unless the operator has
-//    explicitly opted in. A 15 MB loop on mobile data, decoded continuously
-//    behind every page, is a battery and bandwidth bill the visitor did not
-//    agree to.
+//    explicitly opted in. A looping background on mobile data, decoded behind
+//    every page, is a battery and bandwidth bill the visitor did not agree to.
 //  - `prefers-reduced-motion` and Save-Data always get the poster.
 //  - The video pauses the moment the tab is hidden.
-//  - `preload="none"` until we have decided to play: the file is not even
-//    requested on a device that will never show it.
+//  - Nothing is requested at all on a device that will never show it — the
+//    <video> and the YouTube iframe are both mounted only after the checks pass.
 //
-// The poster is not a fallback bolted on afterwards — it is the base layer, and
-// the video is an enhancement painted over it. That way there is never a black
-// rectangle, and the design holds if the video never loads at all.
+// The poster is the BASE layer and the video is painted over it, not the other
+// way round. There is never a black rectangle, and the design holds if the film
+// never loads.
 import * as React from 'react';
 import { useMotionAllowed, useTabVisible } from '@/components/motion/use-motion-allowed';
-
-export type BackdropConfig = {
-  loopUrl: string | null;
-  webmUrl: string | null;
-  posterUrl: string | null;
-  /** 10–100; the film is dimmed so foreground text keeps its contrast. */
-  brightness: number;
-  /** 0–20 px. */
-  blur: number;
-  allowOnMobile: boolean;
-};
+import { resolveVideo, backdropEmbedUrl, youtubeThumb } from '@/lib/media/video-source';
 
 export function SiteBackdrop({
   loopUrl,
@@ -40,32 +30,55 @@ export function SiteBackdrop({
   brightness,
   blur,
   allowOnMobile,
-}: BackdropConfig) {
+}: {
+  /** YouTube link or direct MP4 URL. */
+  loopUrl: string | null;
+  webmUrl: string | null;
+  posterUrl: string | null;
+  brightness: number;
+  blur: number;
+  allowOnMobile: boolean;
+}) {
   const { ambient } = useMotionAllowed();
   const visible = useTabVisible();
   const videoRef = React.useRef<HTMLVideoElement>(null);
+  const frameRef = React.useRef<HTMLIFrameElement>(null);
 
-  const [playVideo, setPlayVideo] = React.useState(false);
+  const [play, setPlay] = React.useState(false);
+
+  const source = React.useMemo(() => resolveVideo(loopUrl), [loopUrl]);
+  const still = posterUrl ?? (source?.kind === 'youtube' ? youtubeThumb(source.id) : null);
 
   React.useEffect(() => {
-    if (!loopUrl || !ambient) return;
+    if (!source || !ambient) return;
 
     const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     const narrow = window.matchMedia('(max-width: 767px)').matches;
-
     if ((coarse || narrow) && !allowOnMobile) return;
 
-    setPlayVideo(true);
-  }, [loopUrl, ambient, allowOnMobile]);
+    setPlay(true);
+  }, [source, ambient, allowOnMobile]);
 
-  // A hidden tab must not decode video.
+  // A hidden tab must not decode video. The file player is paused directly; the
+  // YouTube iframe is asked over postMessage, which is why the embed carries
+  // `enablejsapi=1`.
   React.useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !playVideo) return;
+    if (!play) return;
 
-    if (visible) void video.play().catch(() => undefined);
-    else video.pause();
-  }, [visible, playVideo]);
+    if (source?.kind === 'file') {
+      const video = videoRef.current;
+      if (!video) return;
+      if (visible) void video.play().catch(() => undefined);
+      else video.pause();
+      return;
+    }
+
+    const win = frameRef.current?.contentWindow;
+    win?.postMessage(
+      JSON.stringify({ event: 'command', func: visible ? 'playVideo' : 'pauseVideo', args: [] }),
+      '*',
+    );
+  }, [visible, play, source]);
 
   const filter = `brightness(${Math.min(Math.max(brightness, 10), 100) / 100})${
     blur > 0 ? ` blur(${Math.min(blur, 20)}px)` : ''
@@ -73,19 +86,17 @@ export function SiteBackdrop({
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-black">
-      {/* Base layer: the still. Always painted, so the design never depends on
-          the video arriving. */}
-      {posterUrl && (
+      {still && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={posterUrl}
+          src={still}
           alt=""
           className="absolute inset-0 size-full object-cover"
           style={{ filter }}
         />
       )}
 
-      {playVideo && loopUrl && (
+      {play && source?.kind === 'file' && (
         <video
           ref={videoRef}
           autoPlay
@@ -93,18 +104,32 @@ export function SiteBackdrop({
           loop
           playsInline
           preload="auto"
-          poster={posterUrl ?? undefined}
+          poster={still ?? undefined}
           className="absolute inset-0 size-full object-cover"
           style={{ filter }}
         >
           {webmUrl && <source src={webmUrl} type="video/webm" />}
-          <source src={loopUrl} type="video/mp4" />
+          <source src={source.url} type="video/mp4" />
         </video>
       )}
 
+      {play && source?.kind === 'youtube' && (
+        // An iframe cannot object-fit, so the frame is overscanned past both
+        // axes and centred: whichever side is short gets cropped rather than
+        // letterboxed with black bars.
+        <iframe
+          ref={frameRef}
+          src={backdropEmbedUrl(source.id)}
+          title=""
+          tabIndex={-1}
+          allow="autoplay; encrypted-media"
+          className="absolute left-1/2 top-1/2 aspect-video h-[calc(100vh+120px)] w-[calc(100vw+120px)] min-h-[56.25vw] min-w-[177.78vh] -translate-x-1/2 -translate-y-1/2 border-0"
+          style={{ filter }}
+        />
+      )}
+
       {/* Contrast floor. Glass panels are translucent, so without this the film
-          decides how readable the page is — and a bright frame would wash the
-          text out completely. */}
+          decides how readable the page is — a bright frame would wash it out. */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/70" />
     </div>
   );

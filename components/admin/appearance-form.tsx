@@ -354,10 +354,11 @@ export function AppearanceForm({
             <Label className="text-xs text-muted-foreground">{dict.loopUrl}</Label>
             <input
               name="backdrop_loop_url"
-              type="url"
+              type="text"
+              inputMode="url"
               defaultValue={values.backdrop_loop_url ?? ''}
               dir="ltr"
-              placeholder="https://….supabase.co/storage/v1/object/public/video/71th-bg.mp4"
+              placeholder="https://www.youtube.com/watch?v=…"
               className={SELECT_CLASS}
             />
           </div>
@@ -412,10 +413,11 @@ export function AppearanceForm({
             <Label className="text-xs text-muted-foreground">{dict.filmUrl}</Label>
             <input
               name="anniversary_url"
-              type="url"
+              type="text"
+              inputMode="url"
               defaultValue={values.anniversary_url ?? ''}
               dir="ltr"
-              placeholder="https://….supabase.co/storage/v1/object/public/video/71th-full.mp4"
+              placeholder="https://www.youtube.com/watch?v=…"
               className={SELECT_CLASS}
             />
           </div>

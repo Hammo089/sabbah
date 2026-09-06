@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { randomBytes } from 'node:crypto';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 import { getCurrentProfile, isStaff, isSuperAdmin } from '@/lib/auth/rbac';
+import { youtubeId } from '@/lib/media/video-source';
 import type { ActionResult } from './actions';
 
 /** Ticker visibility + speed, editable straight from the ticker page. */
@@ -34,6 +35,20 @@ export async function saveTickerChrome(
 
   revalidatePath('/[lang]', 'layout');
   return { ok: true };
+}
+
+/**
+ * The video fields accept a YouTube link OR a direct file URL. A bare 11-char
+ * id is also a thing people paste, but the column only stores URLs — so widen
+ * it into one here rather than rejecting it with a validation error the
+ * operator cannot interpret.
+ */
+function normaliseVideo(raw: FormDataEntryValue | null): string {
+  const value = String(raw ?? '').trim();
+  if (!value) return '';
+
+  const id = youtubeId(value);
+  return id ? `https://www.youtube.com/watch?v=${id}` : value;
 }
 
 const SettingsSchema = z.object({
@@ -557,14 +572,14 @@ export async function saveTheme(_prev: ActionResult | null, formData: FormData):
     submissions_open: formData.get('submissions_open') === 'on',
     assistant_enabled: formData.get('assistant_enabled') === 'on',
     backdrop_enabled: formData.get('backdrop_enabled') === 'on',
-    backdrop_loop_url: String(formData.get('backdrop_loop_url') ?? '').trim(),
+    backdrop_loop_url: normaliseVideo(formData.get('backdrop_loop_url')),
     backdrop_webm_url: String(formData.get('backdrop_webm_url') ?? '').trim(),
     backdrop_poster_url: String(formData.get('backdrop_poster_url') ?? '').trim(),
     backdrop_scope: formData.get('backdrop_scope') ?? 'all',
     backdrop_brightness: formData.get('backdrop_brightness') ?? 45,
     backdrop_blur: formData.get('backdrop_blur') ?? 0,
     backdrop_on_mobile: formData.get('backdrop_on_mobile') === 'on',
-    anniversary_url: String(formData.get('anniversary_url') ?? '').trim(),
+    anniversary_url: normaliseVideo(formData.get('anniversary_url')),
     anniversary_label: String(formData.get('anniversary_label') ?? '71').trim(),
     anniversary_cta: formData.get('anniversary_cta') === 'on',
     glass_enabled: formData.get('glass_enabled') === 'on',

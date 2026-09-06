@@ -11,6 +11,7 @@ import * as React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { X, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { resolveVideo, filmEmbedUrl, youtubeThumb } from '@/lib/media/video-source';
 
 /** Locks the page behind the takeover. position:fixed, because iOS ignores overflow:hidden. */
 function useScrollLock(active: boolean) {
@@ -42,6 +43,7 @@ export function AnniversaryButton({
   backLabel,
   className,
 }: {
+  /** YouTube link or direct MP4 URL — the same field takes either. */
   filmUrl: string;
   posterUrl: string | null;
   /** The number on the button — "71" today, "72" next year. */
@@ -55,6 +57,9 @@ export function AnniversaryButton({
   const [muted, setMuted] = React.useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const reduce = useReducedMotion();
+
+  const source = React.useMemo(() => resolveVideo(filmUrl), [filmUrl]);
+  const still = posterUrl ?? (source?.kind === 'youtube' ? youtubeThumb(source.id) : null);
 
   useScrollLock(open);
 
@@ -79,7 +84,7 @@ export function AnniversaryButton({
   // but if the browser still refuses (some iOS low-power states do), fall back
   // to muted playback with an unmute control rather than a frozen frame.
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || source?.kind !== 'file') return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -92,7 +97,7 @@ export function AnniversaryButton({
       setMuted(true);
       void video.play().catch(() => undefined);
     });
-  }, [open]);
+  }, [open, source]);
 
   function toggleSound() {
     const video = videoRef.current;
@@ -138,17 +143,30 @@ export function AnniversaryButton({
             className="fixed inset-0 z-[400] bg-black"
             style={{ height: '100dvh' }}
           >
-            <video
-              ref={videoRef}
-              playsInline
-              controls={ready}
-              poster={posterUrl ?? undefined}
-              onCanPlay={() => setReady(true)}
-              onEnded={close}
-              className="size-full object-contain"
-            >
-              <source src={filmUrl} type="video/mp4" />
-            </video>
+            {source?.kind === 'youtube' ? (
+              // autoplay=1 inside a window the visitor just opened by clicking:
+              // the gesture carries, so the film starts with sound.
+              <iframe
+                src={filmEmbedUrl(source.id, typeof window !== 'undefined' ? window.location.origin : undefined)}
+                title={cta}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+                onLoad={() => setReady(true)}
+                className="size-full border-0"
+              />
+            ) : source?.kind === 'file' ? (
+              <video
+                ref={videoRef}
+                playsInline
+                controls={ready}
+                poster={still ?? undefined}
+                onCanPlay={() => setReady(true)}
+                onEnded={close}
+                className="size-full object-contain"
+              >
+                <source src={source.url} type="video/mp4" />
+              </video>
+            ) : null}
 
             {!ready && (
               <div className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -160,7 +178,7 @@ export function AnniversaryButton({
               className="absolute end-4 top-4 z-10 flex items-center gap-2 sm:end-8 sm:top-8"
               style={{ paddingTop: 'env(safe-area-inset-top)', paddingInlineEnd: 'env(safe-area-inset-right)' }}
             >
-              {muted && (
+              {source?.kind === 'file' && muted && (
                 <button
                   type="button"
                   onClick={toggleSound}
@@ -170,7 +188,7 @@ export function AnniversaryButton({
                   <VolumeX className="size-5" />
                 </button>
               )}
-              {!muted && ready && (
+              {source?.kind === 'file' && !muted && ready && (
                 <button
                   type="button"
                   onClick={toggleSound}
