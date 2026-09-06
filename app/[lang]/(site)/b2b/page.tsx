@@ -11,6 +11,7 @@ import { buildMetadata } from '@/lib/seo/metadata';
 import { getCatalog, getAllBroadcasters } from '@/lib/queries/catalog';
 import { MediaCard } from '@/components/site/media-card';
 import { B2BGate } from '@/components/site/b2b-gate';
+import { Reveal, RevealGroup, RevealItem } from '@/components/motion/reveal';
 import { Button } from '@/components/ui/button';
 
 export const revalidate = 3600;
@@ -112,15 +113,15 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
 
       {/* ── Value props ────────────────────────────────────────────────── */}
       <section className="mx-auto w-full max-w-[1200px] px-6 py-20 md:px-10">
-        <div className="grid gap-px overflow-hidden rounded-lg bg-border md:grid-cols-3">
+        <RevealGroup className="grid gap-px overflow-hidden rounded-lg bg-border md:grid-cols-3">
           {pitches.map(({ icon: Icon, title, body }) => (
-            <article key={title} className="group bg-background p-8 transition-colors hover:bg-muted/40">
+            <RevealItem key={title} as="article" className="group bg-background p-8 transition-colors hover:bg-muted/40">
               <Icon className="size-6 text-primary" />
               <h2 className="mt-5 text-display text-lg font-light text-foreground">{title}</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
-            </article>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </section>
 
       {/* ── Library ────────────────────────────────────────────────────── */}
@@ -136,11 +137,13 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
             </Link>
           </header>
 
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <RevealGroup className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {catalog.map((item) => (
-              <MediaCard key={item.id} lang={locale} item={item} labels={cardLabels} />
+              <RevealItem key={item.id}>
+                <MediaCard lang={locale} item={item} labels={cardLabels} />
+              </RevealItem>
             ))}
-          </div>
+          </RevealGroup>
         </section>
       )}
 
@@ -175,7 +178,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
 
       {/* ── CTA ────────────────────────────────────────────────────────── */}
       <section className="mx-auto w-full max-w-[1200px] px-6 py-24 md:px-10">
-        <div className="rounded-lg border border-primary/25 bg-gradient-to-br from-primary/10 to-transparent p-10 md:p-14">
+        <Reveal className="rounded-lg border border-primary/25 bg-gradient-to-br from-primary/10 to-transparent p-10 md:p-14">
           <h2 className="text-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-light text-foreground">
             {dict.b2b.ctaTitle}
           </h2>
@@ -186,7 +189,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
               <ArrowUpRight className="size-4" />
             </Link>
           </Button>
-        </div>
+        </Reveal>
       </section>
     </main>
   );

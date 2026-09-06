@@ -9,6 +9,7 @@ import { SITE_URL } from '@/lib/seo/metadata';
 import { getTitleBySlug } from '@/lib/queries/catalog';
 import { TitleTabs } from '@/components/site/title-tabs';
 import { WatchButton } from '@/components/site/watch-button';
+import { Reveal } from '@/components/motion/reveal';
 
 export async function TitleDetail({
   lang,
@@ -75,7 +76,7 @@ export async function TitleDetail({
             )}
           </div>
 
-          <div className="min-w-0 flex-1">
+          <Reveal className="min-w-0 flex-1" amount={0.1}>
             {title.isComingSoon && (
               <span className="inline-block rounded bg-primary/15 px-2 py-1 text-[0.65rem] uppercase tracking-[0.2em] text-primary">
                 {dict.catalog.comingSoon}
@@ -146,7 +147,7 @@ export async function TitleDetail({
                 </div>
               </div>
             )}
-          </div>
+          </Reveal>
         </div>
       </div>
 

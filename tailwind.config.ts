@@ -40,6 +40,10 @@ const config: Config = {
       keyframes: {
         'marquee-y': { from: { transform: 'translateY(0)' }, to: { transform: 'translateY(-50%)' } },
         'marquee-x': { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        // The two-row band: the track is duplicated, so -50% lands the second
+        // copy exactly where the first started — a seamless loop, no jump.
+        'marquee-x-half': { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        'marquee-x-reverse': { from: { transform: 'translateX(-50%)' }, to: { transform: 'translateX(0)' } },
         'film-scroll': { from: { transform: 'translateY(0)' }, to: { transform: 'translateY(-50%)' } },
         'marquee-y-reverse': { from: { transform: 'translateY(-50%)' }, to: { transform: 'translateY(0)' } },
         'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },

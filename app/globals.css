@@ -112,6 +112,17 @@
   }
 }
 
+/* Driven by inline `animationName` in the poster rows, so Tailwind's JIT never
+   sees a class to emit them from. */
+@keyframes marquee-x-half {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-x-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

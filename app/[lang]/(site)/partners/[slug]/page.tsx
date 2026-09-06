@@ -10,6 +10,7 @@ import { getDictionary } from '@/i18n/get-dictionary';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { getPartnerBySlug, getPartners } from '@/lib/queries/catalog';
 import { MediaCard } from '@/components/site/media-card';
+import { Reveal, RevealGroup, RevealItem } from '@/components/motion/reveal';
 
 export const revalidate = 3600;
 
@@ -67,7 +68,7 @@ export default async function Page({
         {dict.partners.title}
       </Link>
 
-      <header className="mt-6 flex flex-wrap items-end gap-x-10 gap-y-6 border-b border-border pb-10">
+      <Reveal as="header" className="mt-6 flex flex-wrap items-end gap-x-10 gap-y-6 border-b border-border pb-10">
         {partner.logoUrl && (
           <div className="flex h-16 items-center">
             <Image
@@ -100,7 +101,7 @@ export default async function Page({
             <ExternalLink className="size-3.5" />
           </a>
         )}
-      </header>
+      </Reveal>
 
       {partner.titles.length === 0 ? (
         <p className="mt-16 text-sm text-muted-foreground">{dict.partners.noTitles}</p>
@@ -110,11 +111,13 @@ export default async function Page({
             {dict.partners.acquired}
           </h2>
 
-          <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+          <RevealGroup className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
             {partner.titles.map((item, i) => (
-              <MediaCard key={item.id} lang={locale} item={item} labels={labels} priority={i < 6} />
+              <RevealItem key={item.id}>
+                <MediaCard lang={locale} item={item} labels={labels} priority={i < 6} />
+              </RevealItem>
             ))}
-          </div>
+          </RevealGroup>
         </>
       )}
     </main>

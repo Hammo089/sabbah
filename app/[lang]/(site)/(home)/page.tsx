@@ -15,6 +15,8 @@ import { AnniversaryFilm } from '@/components/site/home/anniversary-film';
 import { BroadcasterStrip } from '@/components/site/home/broadcaster-strip';
 import { MediaRail } from '@/components/site/media-rail';
 import { AmbientFilm } from '@/components/site/ambient-film';
+import { PosterRows } from '@/components/site/home/poster-rows';
+import { Reveal } from '@/components/motion/reveal';
 
 export const revalidate = 900;
 
@@ -90,10 +92,20 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <TitleMarquee names={featured.items.slice(0, 14).map((i) => i.title)} />
       )}
 
+      {settings.show_rails && posters.length >= 8 && (
+        <PosterRows
+          lang={locale}
+          items={featured.items.slice(0, 20)}
+          eyebrow={dict.catalog.hits}
+          title={dict.home.rowsTitle}
+          highlight={dict.home.rowsHighlight}
+        />
+      )}
+
       {settings.show_showcase && (
       <section className="px-6 py-20 md:px-14 md:py-28">
         <div className="mx-auto w-full max-w-[1600px]">
-          <header className="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <Reveal as="header" className="mb-12 flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="sec-tag">{dict.catalog.hits}</p>
               <h2 className="sec-title">{dict.home.showcaseTitle}</h2>
@@ -104,9 +116,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             >
               {dict.common.viewAll}
             </Link>
-          </header>
+          </Reveal>
 
-          <ShowcaseGrid lang={locale} items={showcase} labels={labels} />
+          <Reveal delay={0.1}>
+            <ShowcaseGrid lang={locale} items={showcase} labels={labels} />
+          </Reveal>
         </div>
       </section>
       )}

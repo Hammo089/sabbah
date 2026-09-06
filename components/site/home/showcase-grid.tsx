@@ -4,6 +4,7 @@ import Image from 'next/image';
 import type { CatalogCard } from '@/lib/queries/catalog';
 import type { Locale } from '@/i18n/config';
 import { cn } from '@/lib/utils';
+import { RevealGroup, RevealItem } from '@/components/motion/reveal';
 
 /** Editorial mosaic: the first card spans two rows, the rest are 2:3 tiles. */
 export function ShowcaseGrid({
@@ -18,17 +19,17 @@ export function ShowcaseGrid({
   if (items.length === 0) return null;
 
   return (
-    <div className="on-media grid grid-cols-2 gap-0.5 md:grid-cols-4">
+    <RevealGroup className="on-media grid grid-cols-2 gap-0.5 md:grid-cols-4">
       {items.map((item, i) => {
         const big = i === 0;
 
         return (
+          <RevealItem key={item.id} className={cn(big && 'row-span-2')}>
           <Link
-            key={item.id}
             href={`/${lang}/series/${item.slug}`}
             className={cn(
-              'group relative overflow-hidden bg-[#1a1a1a]',
-              big ? 'row-span-2 aspect-[3/4] md:aspect-auto' : 'aspect-[2/3]',
+              'group relative block size-full overflow-hidden bg-muted',
+              big ? 'aspect-[3/4] md:aspect-auto md:h-full' : 'aspect-[2/3]',
             )}
           >
             {item.posterUrl && (
@@ -71,8 +72,9 @@ export function ShowcaseGrid({
               </p>
             </div>
           </Link>
+          </RevealItem>
         );
       })}
-    </div>
+    </RevealGroup>
   );
 }

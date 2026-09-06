@@ -10,6 +10,7 @@ import { getDictionary } from '@/i18n/get-dictionary';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { getPartners } from '@/lib/queries/catalog';
 import { PageShell } from '@/components/site/page-shell';
+import { RevealGroup, RevealItem } from '@/components/motion/reveal';
 
 export const revalidate = 3600;
 
@@ -39,10 +40,10 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       {partners.length === 0 ? (
         <p className="mt-14 text-sm text-muted-foreground">{dict.partners.empty}</p>
       ) : (
-        <div className="mt-14 grid gap-px overflow-hidden rounded-lg bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup className="mt-14 grid gap-px overflow-hidden rounded-lg bg-border sm:grid-cols-2 lg:grid-cols-3">
           {partners.map((p) => (
+            <RevealItem key={p.id}>
             <Link
-              key={p.id}
               href={`/${locale}/partners/${p.slug}`}
               className="group flex min-h-[190px] flex-col justify-between bg-background p-7 transition-colors hover:bg-muted/40"
             >
@@ -68,8 +69,9 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
                 </p>
               </div>
             </Link>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       )}
     </PageShell>
   );

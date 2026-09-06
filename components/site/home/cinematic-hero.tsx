@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FilmStrip } from './film-strip';
+import { PosterCollage } from './poster-collage';
 import type { CatalogCard } from '@/lib/queries/catalog';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
@@ -38,7 +39,9 @@ export function CinematicHero({
       <div aria-hidden className="hero-grid-lines absolute inset-0" />
 
       {/* Right-hand film strip — 48% wide, masked into the background */}
-      {showStrip && <FilmStrip posters={posters} />}
+      {/* The drifting collage from the approved reference. `hero_show_strip`
+          still governs it, so it can be switched off from /admin/appearance. */}
+      {showStrip && <PosterCollage posters={posters} />}
 
       <div aria-hidden className="hero-scrim absolute inset-0 z-[1]" />
 
