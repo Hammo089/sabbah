@@ -1,35 +1,71 @@
+// components/site/header.tsx — SERVER COMPONENT (client bits are leaves)
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
+import type { Dictionary } from '@/i18n/get-dictionary';
+import { SearchTrigger } from '@/components/site/search/search-trigger';
+import { ThemeToggle } from '@/components/site/theme-toggle';
+import { LocaleSwitcher } from '@/components/site/locale-switcher';
+import { MobileNav } from '@/components/site/nav/mobile-nav';
+import { HeaderShell } from '@/components/site/nav/header-shell';
 
-interface HeaderProps {
-  lang: Locale;
-  dict: any;
-  headerStyle?: string;
-  glass?: boolean;
+export type NavItem = { href: string; label: string };
+
+export function buildNav(lang: Locale, dict: Dictionary): NavItem[] {
+  return [
+    { href: `/${lang}/catalog`, label: dict.nav.series },
+    { href: `/${lang}/scripts`, label: dict.nav.scripts },
+    { href: `/${lang}/about`, label: dict.nav.company },
+    { href: `/${lang}/services`, label: dict.nav.services },
+    { href: `/${lang}/partners`, label: dict.nav.partners },
+    { href: `/${lang}/press`, label: dict.nav.news },
+    { href: `/${lang}/contact`, label: dict.nav.contact },
+    { href: `/${lang}/submit`, label: dict.nav.submit },
+  ];
 }
 
-export function SiteHeader({ lang, dict, headerStyle, glass }: HeaderProps) {
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-xl bg-black/60 border-b border-white/10 shadow-lg">
-      {/* شعار سيدرز الأصلي المرفوع على Supabase */}
-      <Link href={`/${lang}`} className="flex items-center gap-3">
-        <img 
-          src="https://rpzrafhjjpqmukbutaaj.supabase.co/storage/v1/object/public/video/10%20x%2010%20cedars%20without%20passion%20logo.png" 
-          alt="Cedars Art Production - Sabbah Brothers" 
-          className="h-10 w-auto object-contain brightness-110 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
-        />
-      </Link>
+export function SiteHeader({
+  lang,
+  dict,
+  headerStyle = 'transparent',
+  glass = false,
+}: {
+  lang: Locale;
+  dict: Dictionary;
+  headerStyle?: 'transparent' | 'solid';
+  glass?: boolean;
+}) {
+  const nav = buildNav(lang, dict);
 
-      {/* زر الـ 71 المتحرك سينمائياً */}
-      <div className="flex items-center gap-4">
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-emerald-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-          <div className="relative px-4 py-2 bg-black/80 rounded-lg border border-amber-500/30 flex items-center space-x-2 space-x-reverse">
-            <span className="text-amber-400 font-bold tracking-wider text-base">71</span>
-            <span className="text-gray-200 text-xs font-medium hidden sm:inline">عاماً من الإبداع</span>
-          </div>
+  return (
+    <HeaderShell alwaysSolid={headerStyle === 'solid'} glass={glass}>
+      <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-6 px-6 md:px-10 xl:px-16">
+        <Link href={`/${lang}`} className="flex shrink-0 items-baseline gap-2">
+          <span className="text-display text-lg font-semibold text-primary">CAP</span>
+          <span className="hidden text-[0.6rem] uppercase tracking-[0.24em] text-muted-foreground lg:block">
+            {dict.meta.siteName}
+          </span>
+        </Link>
+
+        <nav className="hidden flex-1 items-center gap-6 lg:flex">
+          {nav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="ms-auto flex items-center gap-2">
+          <SearchTrigger lang={lang} dict={dict.search} className="hidden md:flex" />
+          <SearchTrigger lang={lang} dict={dict.search} variant="icon" className="md:hidden" />
+          <LocaleSwitcher currentLocale={lang} />
+          <ThemeToggle />
+          <MobileNav items={nav} label={dict.nav.menu} />
         </div>
       </div>
-    </header>
+    </HeaderShell>
   );
 }
