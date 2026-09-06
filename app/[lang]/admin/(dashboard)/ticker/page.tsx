@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { TickerManager } from '@/components/admin/ticker-manager';
+import { TickerManager, TickerControls } from '@/components/admin/ticker-manager';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +17,11 @@ export default async function AdminTickerPage({ params }: { params: Promise<{ la
   const supabase = await createSupabaseServerClient();
   const [{ data: rows }, { data: settings }] = await Promise.all([
     supabase.from('news_ticker').select('*').order('priority', { ascending: false }),
-    supabase.from('site_settings').select('ticker_enabled').eq('id', true).maybeSingle(),
+    supabase
+      .from('site_settings')
+      .select('ticker_enabled, ticker_speed')
+      .eq('id', true)
+      .maybeSingle(),
   ]);
 
   return (
@@ -26,6 +30,22 @@ export default async function AdminTickerPage({ params }: { params: Promise<{ la
       <p className="mt-1 text-sm text-muted-foreground">
         {settings?.ticker_enabled === false ? dict.admin.tickerHidden : dict.admin.tickerVisible}
       </p>
+
+      {/* Visibility and speed live here as well as in Appearance — this is the
+          page staff actually open when the strip is wrong. */}
+      <div className="mt-8 max-w-4xl">
+        <TickerControls
+          enabled={settings?.ticker_enabled ?? true}
+          speed={settings?.ticker_speed ?? 38}
+          dict={{
+            visible: dict.admin.tickerVisible,
+            speed: dict.appearance.tickerSpeed,
+            hint: dict.appearance.tickerSlower,
+            save: dict.admin.save,
+            saved: dict.admin.saved,
+          }}
+        />
+      </div>
 
       <div className="mt-8">
         <TickerManager

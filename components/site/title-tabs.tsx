@@ -37,7 +37,7 @@ export function TitleTabs({
 
   return (
     <section className="mx-auto w-full max-w-[1600px] px-6 pb-24 md:px-10 xl:px-16">
-      <div className="flex gap-1 overflow-x-auto border-b border-white/[0.07]">
+      <div className="flex gap-1 overflow-x-auto border-b border-border">
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -45,11 +45,11 @@ export function TitleTabs({
             onClick={() => setTab(t.key)}
             className={cn(
               'relative shrink-0 px-5 py-3 text-xs uppercase tracking-[0.16em] transition-colors',
-              tab === t.key ? 'text-primary' : 'text-neutral-500 hover:text-neutral-300',
+              tab === t.key ? 'text-primary' : 'text-muted-foreground hover:text-foreground/80',
             )}
           >
             {t.label}
-            {t.count ? <span className="ms-1.5 text-[0.65rem] text-neutral-600">{t.count}</span> : null}
+            {t.count ? <span className="ms-1.5 text-[0.65rem] text-muted-foreground/70">{t.count}</span> : null}
             {tab === t.key && (
               <motion.span
                 layoutId="tab-underline"
@@ -70,22 +70,22 @@ export function TitleTabs({
           className="pt-10"
         >
           {tab === 'about' && (
-            <p className="max-w-3xl text-[0.95rem] leading-relaxed text-neutral-300">
+            <p className="max-w-3xl text-[0.95rem] leading-relaxed text-foreground/80">
               {title.synopsis || '—'}
             </p>
           )}
 
           {tab === 'episodes' &&
             (title.episodes.length === 0 ? (
-              <p className="text-sm text-neutral-500">{dict.noEpisodes}</p>
+              <p className="text-sm text-muted-foreground">{dict.noEpisodes}</p>
             ) : (
               <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {title.episodes.map((ep) => (
                   <li
                     key={ep.id}
-                    className="flex gap-3 rounded-md border border-white/[0.07] p-3 transition-colors hover:border-primary/30"
+                    className="flex gap-3 rounded-md border border-border p-3 transition-colors hover:border-primary/30"
                   >
-                    <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded bg-neutral-900">
+                    <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded bg-muted">
                       {ep.thumbnailUrl && (
                         <Image src={ep.thumbnailUrl} alt="" fill sizes="112px" className="object-cover" />
                       )}
@@ -94,9 +94,9 @@ export function TitleTabs({
                       <p className="text-xs text-primary">
                         S{ep.season} · E{ep.number}
                       </p>
-                      <p className="mt-1 line-clamp-2 text-sm text-neutral-200">{ep.title}</p>
+                      <p className="mt-1 line-clamp-2 text-sm text-foreground/90">{ep.title}</p>
                       {ep.duration && (
-                        <p className="mt-1 text-xs text-neutral-600">{Math.round(ep.duration / 60)} min</p>
+                        <p className="mt-1 text-xs text-muted-foreground/70">{Math.round(ep.duration / 60)} min</p>
                       )}
                     </div>
                   </li>
@@ -106,7 +106,7 @@ export function TitleTabs({
 
           {tab === 'cast' &&
             (title.cast.length + title.crew.length === 0 ? (
-              <p className="text-sm text-neutral-500">{dict.noCast}</p>
+              <p className="text-sm text-muted-foreground">{dict.noCast}</p>
             ) : (
               <div className="space-y-12">
                 {title.cast.length > 0 && (
@@ -114,16 +114,16 @@ export function TitleTabs({
                     {title.cast.map((c) => (
                       <li key={c.id}>
                         <Link href={`/${lang}/people/${c.personSlug}`} className="group block text-center">
-                          <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full bg-neutral-900 ring-1 ring-white/[0.06] transition-all group-hover:ring-primary/50">
+                          <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full bg-muted ring-1 ring-border transition-all group-hover:ring-primary/50">
                             {c.photoUrl && (
                               <Image src={c.photoUrl} alt={c.name} fill sizes="140px" className="object-cover" />
                             )}
                           </div>
-                          <p className="mt-3 text-sm font-medium text-neutral-200 transition-colors group-hover:text-primary">
+                          <p className="mt-3 text-sm font-medium text-foreground/90 transition-colors group-hover:text-primary">
                             {c.name}
                           </p>
                           {c.character && (
-                            <p className="mt-0.5 text-xs text-neutral-500">
+                            <p className="mt-0.5 text-xs text-muted-foreground">
                               {dict.asCharacter} {c.character}
                             </p>
                           )}
@@ -137,10 +137,10 @@ export function TitleTabs({
                   <ul className="flex flex-wrap gap-x-10 gap-y-4">
                     {title.crew.map((c) => (
                       <li key={c.id}>
-                        <p className="text-[0.6rem] uppercase tracking-[0.18em] text-neutral-600">{c.role}</p>
+                        <p className="text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/70">{c.role}</p>
                         <Link
                           href={`/${lang}/people/${c.personSlug}`}
-                          className="text-sm text-neutral-200 transition-colors hover:text-primary"
+                          className="text-sm text-foreground/90 transition-colors hover:text-primary"
                         >
                           {c.name}
                         </Link>
@@ -153,11 +153,11 @@ export function TitleTabs({
 
           {tab === 'posters' &&
             (title.media.length === 0 ? (
-              <p className="text-sm text-neutral-500">{dict.noPosters}</p>
+              <p className="text-sm text-muted-foreground">{dict.noPosters}</p>
             ) : (
               <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                 {title.media.map((m) => (
-                  <li key={m.id} className="relative aspect-video overflow-hidden rounded-md bg-neutral-900">
+                  <li key={m.id} className="relative aspect-video overflow-hidden rounded-md bg-muted">
                     <Image src={m.url} alt={m.caption} fill sizes="(max-width:768px) 45vw, 24vw" className="object-cover" />
                   </li>
                 ))}

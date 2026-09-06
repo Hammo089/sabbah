@@ -28,20 +28,22 @@ export function SiteFooter({ lang, dict }: { lang: Locale; dict: Dictionary }) {
         { href: `/${lang}/press`, label: dict.nav.news },
         { href: `/${lang}/contact`, label: dict.nav.contact },
         { href: `/${lang}/b2b`, label: dict.nav.b2b },
+        { href: `/${lang}/partners`, label: dict.nav.partners },
+        { href: `/${lang}/submit`, label: dict.nav.submit },
       ],
     },
   ];
 
   return (
-    <footer className="border-t border-white/[0.07] bg-[#000000]">
+    <footer className="border-t border-border bg-background">
       <div className="mx-auto w-full max-w-[1600px] px-6 py-16 md:px-10 xl:px-16">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <p className="text-display text-xl font-semibold text-primary">CAP</p>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-neutral-500">
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
               {dict.meta.description}
             </p>
-            <p className="mt-5 text-[0.65rem] uppercase tracking-[0.22em] text-neutral-600">
+            <p className="mt-5 text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground/70">
               {dict.hero.offices}
             </p>
           </div>
@@ -54,7 +56,7 @@ export function SiteFooter({ lang, dict }: { lang: Locale; dict: Dictionary }) {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-neutral-400 transition-colors hover:text-primary"
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
                     >
                       {link.label}
                     </Link>
@@ -65,13 +67,13 @@ export function SiteFooter({ lang, dict }: { lang: Locale; dict: Dictionary }) {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-white/[0.06] pt-6 text-xs text-neutral-600 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-14 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground/70 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {dict.meta.siteName}</p>
           <div className="flex gap-5">
-            <Link href={`/${lang}/terms`} className="transition-colors hover:text-neutral-400">
+            <Link href={`/${lang}/terms`} className="transition-colors hover:text-muted-foreground">
               {dict.footer.terms}
             </Link>
-            <Link href={`/${lang}/privacy`} className="transition-colors hover:text-neutral-400">
+            <Link href={`/${lang}/privacy`} className="transition-colors hover:text-muted-foreground">
               {dict.footer.privacy}
             </Link>
           </div>

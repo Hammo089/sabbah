@@ -213,11 +213,11 @@ export function SearchDialog({
         )}
       >
         {/* Input row */}
-        <div className="flex items-center gap-3 border-b border-white/[0.07] px-4">
+        <div className="flex items-center gap-3 border-b border-border px-4">
           {loading ? (
             <Loader2 className="size-4 shrink-0 animate-spin text-primary" />
           ) : (
-            <Search className="size-4 shrink-0 text-neutral-500" />
+            <Search className="size-4 shrink-0 text-muted-foreground" />
           )}
 
           <input
@@ -230,8 +230,8 @@ export function SearchDialog({
             aria-autocomplete="list"
             aria-controls="search-results"
             className={cn(
-              'h-14 w-full bg-transparent text-[0.98rem] text-neutral-100',
-              'outline-none placeholder:text-neutral-600',
+              'h-14 w-full bg-transparent text-[0.98rem] text-foreground',
+              'outline-none placeholder:text-muted-foreground/70',
             )}
           />
 
@@ -239,7 +239,7 @@ export function SearchDialog({
             type="button"
             onClick={() => onOpenChange(false)}
             aria-label={dict.close}
-            className="rounded p-1 text-neutral-500 transition-colors hover:text-neutral-200"
+            className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground/90"
           >
             <X className="size-4" />
           </button>
@@ -249,7 +249,7 @@ export function SearchDialog({
         <div ref={listRef} id="search-results" role="listbox" className="max-h-[52vh] overflow-y-auto overscroll-contain">
           {showRecent && (
             <div className="p-2">
-              <p className="px-3 py-2 text-[0.65rem] uppercase tracking-[0.22em] text-neutral-600">
+              <p className="px-3 py-2 text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground/70">
                 {dict.recent}
               </p>
               {recent.map((term) => (
@@ -257,9 +257,9 @@ export function SearchDialog({
                   key={term}
                   type="button"
                   onClick={() => setQuery(term)}
-                  className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-start text-sm text-neutral-400 transition-colors hover:bg-white/[0.04] hover:text-neutral-100"
+                  className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-start text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
                 >
-                  <Search className="size-3.5 shrink-0 text-neutral-600" />
+                  <Search className="size-3.5 shrink-0 text-muted-foreground/70" />
                   {term}
                 </button>
               ))}
@@ -281,20 +281,20 @@ export function SearchDialog({
                     onClick={() => go(row)}
                     className={cn(
                       'flex w-full items-center gap-3 rounded-md p-2 text-start transition-colors',
-                      i === active ? 'bg-primary/10' : 'hover:bg-white/[0.04]',
+                      i === active ? 'bg-primary/10' : 'hover:bg-muted/60',
                     )}
                   >
-                    <div className="relative h-14 w-10 shrink-0 overflow-hidden rounded bg-neutral-900 ring-1 ring-white/[0.06]">
+                    <div className="relative h-14 w-10 shrink-0 overflow-hidden rounded bg-muted ring-1 ring-border">
                       {row.poster_url ? (
                         <Image src={row.poster_url} alt="" fill sizes="40px" className="object-cover" />
                       ) : (
-                        <Icon className="absolute inset-0 m-auto size-4 text-neutral-700" />
+                        <Icon className="absolute inset-0 m-auto size-4 text-muted-foreground/60" />
                       )}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-neutral-100">{row.title}</p>
-                      <p className="mt-0.5 flex items-center gap-1.5 text-[0.7rem] text-neutral-500">
+                      <p className="truncate text-sm font-medium text-foreground">{row.title}</p>
+                      <p className="mt-0.5 flex items-center gap-1.5 text-[0.7rem] text-muted-foreground">
                         <Icon className="size-3" />
                         {row.year ?? '—'}
                         {row.genres.length > 0 && <span className="truncate">· {row.genres.slice(0, 2).join(', ')}</span>}
@@ -318,11 +318,11 @@ export function SearchDialog({
 
           {!showRecent && !loading && query.trim().length >= MIN_LEN && results.length === 0 && (
             <div className="px-6 py-10 text-center">
-              <p className="text-sm text-neutral-400">{dict.empty}</p>
+              <p className="text-sm text-muted-foreground">{dict.empty}</p>
 
               {suggestions.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-[0.7rem] uppercase tracking-[0.2em] text-neutral-600">{dict.didYouMean}</p>
+                  <p className="text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground/70">{dict.didYouMean}</p>
                   <div className="mt-2 flex flex-wrap justify-center gap-2">
                     {suggestions.map((s) => (
                       <button
@@ -341,12 +341,12 @@ export function SearchDialog({
           )}
 
           {!showRecent && query.trim().length < MIN_LEN && recent.length === 0 && (
-            <p className="px-6 py-10 text-center text-sm text-neutral-600">{dict.hint}</p>
+            <p className="px-6 py-10 text-center text-sm text-muted-foreground/70">{dict.hint}</p>
           )}
         </div>
 
         {/* Footer legend */}
-        <div className="flex items-center gap-4 border-t border-white/[0.07] px-4 py-2.5 text-[0.65rem] text-neutral-600">
+        <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 text-[0.65rem] text-muted-foreground/70">
           <span className="flex items-center gap-1">
             <ArrowUp className="size-3" />
             <ArrowDown className="size-3" />

@@ -47,17 +47,17 @@ export default async function PersonPage({
   return (
     <main className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10 xl:px-16">
       <header className="flex flex-col gap-8 sm:flex-row sm:items-end">
-        <div className="relative size-36 shrink-0 overflow-hidden rounded-full bg-neutral-900 ring-1 ring-white/[0.08] md:size-44">
+        <div className="relative size-36 shrink-0 overflow-hidden rounded-full bg-muted ring-1 ring-border md:size-44">
           {person.photoUrl && (
             <Image src={person.photoUrl} alt={person.name} fill sizes="176px" className="object-cover" />
           )}
         </div>
 
         <div>
-          <h1 className="text-display text-[clamp(2rem,4vw,3rem)] font-light text-neutral-50">
+          <h1 className="text-display text-[clamp(2rem,4vw,3rem)] font-light text-foreground">
             {person.name}
           </h1>
-          <div className="mt-3 flex flex-wrap gap-6 text-xs text-neutral-500">
+          <div className="mt-3 flex flex-wrap gap-6 text-xs text-muted-foreground">
             {person.birthYear && (
               <span>
                 {dict.detail.born} {person.birthYear}
@@ -73,7 +73,7 @@ export default async function PersonPage({
       </header>
 
       {person.bio && (
-        <p className="mt-10 max-w-3xl text-[0.95rem] leading-relaxed text-neutral-300">{person.bio}</p>
+        <p className="mt-10 max-w-3xl text-[0.95rem] leading-relaxed text-foreground/80">{person.bio}</p>
       )}
 
       {person.titles.length > 0 && (
@@ -86,16 +86,16 @@ export default async function PersonPage({
             {person.titles.map((t) => (
               <li key={`${t.slug}-${t.role}`}>
                 <Link href={`/${locale}/series/${t.slug}`} className="group block">
-                  <div className="relative aspect-[2/3] overflow-hidden rounded-md bg-neutral-900 ring-1 ring-white/[0.06] transition-all group-hover:ring-primary/45">
+                  <div className="relative aspect-[2/3] overflow-hidden rounded-md bg-muted ring-1 ring-border transition-all group-hover:ring-primary/45">
                     {t.posterUrl && (
                       <Image src={t.posterUrl} alt={t.title} fill sizes="16vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                     )}
                   </div>
-                  <p className="mt-3 line-clamp-2 text-sm text-neutral-200 transition-colors group-hover:text-primary">
+                  <p className="mt-3 line-clamp-2 text-sm text-foreground/90 transition-colors group-hover:text-primary">
                     {t.title}
                   </p>
-                  {t.role && <p className="mt-0.5 line-clamp-1 text-xs text-neutral-500">{t.role}</p>}
-                  {t.year && <p className="text-xs text-neutral-600">{t.year}</p>}
+                  {t.role && <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{t.role}</p>}
+                  {t.year && <p className="text-xs text-muted-foreground/70">{t.year}</p>}
                 </Link>
               </li>
             ))}

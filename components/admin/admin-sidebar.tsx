@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import {
   LayoutDashboard, Clapperboard, Film, Tv, ListVideo,
-  ShieldCheck, Landmark, Megaphone, Users, Settings, UserSquare2, Radio,
+  ShieldCheck, Landmark, Megaphone, Users, Settings, UserSquare2, Radio, Palette, Inbox,
 } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/get-dictionary';
@@ -23,11 +23,13 @@ const NAV: NavItem[] = [
   { href: '/programs', label: 'Programs',  icon: Clapperboard,    roles: ['super_admin', 'admin', 'editor'] },
   { href: '/episodes', label: 'Episodes',  icon: ListVideo,       roles: ['super_admin', 'admin', 'editor'] },
   { href: '/people',   label: 'Cast & Crew', icon: UserSquare2,   roles: ['super_admin', 'admin', 'editor'] },
+  { href: '/submissions', label: 'Submissions', icon: Inbox,      roles: ['super_admin', 'admin', 'editor'] },
   { href: '/drm',      label: 'DRM & Licensing', icon: ShieldCheck, roles: ['super_admin'] },
   { href: '/broadcasters', label: 'Broadcasters', icon: Radio,      roles: ['super_admin', 'admin', 'editor'] },
   { href: '/legacy',   label: 'Legacy',    icon: Landmark,        roles: ['super_admin', 'admin'] },
   { href: '/ticker',   label: 'News Ticker', icon: Megaphone,     roles: ['super_admin', 'admin', 'editor'] },
   { href: '/users',    label: 'Users',     icon: Users,           roles: ['super_admin'] },
+  { href: '/appearance', label: 'Appearance', icon: Palette,      roles: ['super_admin', 'admin'] },
   { href: '/settings', label: 'Settings',  icon: Settings,        roles: ['super_admin', 'admin'] },
 ];
 
@@ -35,10 +37,16 @@ export function AdminSidebar({
   lang,
   role,
   dict,
+  expiringCount = 0,
+  newSubmissions = 0,
 }: {
   lang: Locale;
   role: AppRole;
   dict: Dictionary;
+  /** super_admin only — the RPC returns 0 for every other role. */
+  expiringCount?: number;
+  /** staff only — the RPC returns 0 for everyone else. */
+  newSubmissions?: number;
 }) {
   const items = NAV.filter((item) => item.roles.includes(role));
 
@@ -52,20 +60,30 @@ export function AdminSidebar({
       </div>
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
-        {items.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={`/${lang}/admin${href}`}
-            className={cn(
-              'flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground',
-              'transition-colors hover:bg-muted hover:text-foreground',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            )}
-          >
-            <Icon className="size-4 shrink-0" />
-            <span className="truncate">{label}</span>
-          </Link>
-        ))}
+        {items.map(({ href, label, icon: Icon }) => {
+          const badge =
+            href === '/drm' ? expiringCount : href === '/submissions' ? newSubmissions : 0;
+
+          return (
+            <Link
+              key={href}
+              href={`/${lang}/admin${href}`}
+              className={cn(
+                'flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground',
+                'transition-colors hover:bg-muted hover:text-foreground',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              )}
+            >
+              <Icon className="size-4 shrink-0" />
+              <span className="truncate">{label}</span>
+              {badge > 0 && (
+                <span className="ms-auto flex size-5 shrink-0 items-center justify-center rounded-full bg-red-500/90 text-[10px] font-semibold text-white">
+                  {badge > 9 ? '9+' : badge}
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="border-t border-border p-3">

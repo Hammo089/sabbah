@@ -9,12 +9,30 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: series }, { data: movies }] = await Promise.all([
-    supabase.from('series').select('slug, updated_at').eq('status', 'published'),
-    supabase.from('movies').select('slug, updated_at').eq('status', 'published'),
-  ]);
+  const { data: titles } = await supabase
+    .from('series')
+    .select('slug, updated_at, kind')
+    .eq('status', 'published');
 
-  const statics = ['', 'catalog', 'legacy', 'news', 'b2b', 'contact'];
+  const series = (titles ?? []).filter((r) => r.kind !== 'movie');
+  const movies = (titles ?? []).filter((r) => r.kind === 'movie');
+
+  const statics = [
+    '',
+    'catalog',
+    'scripts',
+    'legacy',
+    'about',
+    'about/team',
+    'services',
+    'press',
+    'b2b',
+    'partners',
+    'submit',
+    'contact',
+    'terms',
+    'privacy',
+  ];
 
   const entries: MetadataRoute.Sitemap = [];
 
@@ -33,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
 
-    for (const row of series ?? []) {
+    for (const row of series) {
       entries.push({
         url: `${SITE_URL}/${lang}/series/${row.slug}`,
         lastModified: new Date(row.updated_at),
@@ -42,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
 
-    for (const row of movies ?? []) {
+    for (const row of movies) {
       entries.push({
         url: `${SITE_URL}/${lang}/movies/${row.slug}`,
         lastModified: new Date(row.updated_at),

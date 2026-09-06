@@ -49,7 +49,7 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
           <a
             href="mailto:info@sabbah.com"
             dir="ltr"
-            className="mt-3 inline-block text-lg text-neutral-200 transition-colors hover:text-primary"
+            className="mt-3 inline-block text-lg text-foreground/90 transition-colors hover:text-primary"
           >
             info@sabbah.com
           </a>
@@ -62,9 +62,9 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
           </p>
           <ul className="mt-3 space-y-1.5">
             {OFFICES.map((o) => (
-              <li key={o.city} className="text-sm text-neutral-300">
+              <li key={o.city} className="text-sm text-foreground/80">
                 {o.city}
-                <span className="text-neutral-600"> — {o.country}</span>
+                <span className="text-muted-foreground/70"> — {o.country}</span>
               </li>
             ))}
           </ul>

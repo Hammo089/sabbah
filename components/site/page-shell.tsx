@@ -18,10 +18,10 @@ export function PageShell({
           {eyebrow}
         </p>
       )}
-      <h1 className="mt-5 text-display text-[clamp(2rem,5vw,3.6rem)] font-light leading-tight text-neutral-50">
+      <h1 className="mt-5 text-display text-[clamp(2rem,5vw,3.6rem)] font-light leading-tight text-foreground">
         {title}
       </h1>
-      {lead && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-neutral-400">{lead}</p>}
+      {lead && <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{lead}</p>}
       {children}
     </main>
   );

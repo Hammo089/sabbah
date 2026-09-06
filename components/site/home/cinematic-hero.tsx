@@ -11,14 +11,19 @@ export function CinematicHero({
   dict,
   posters,
   backdropUrl,
+  align = 'start',
+  showStrip = true,
 }: {
   lang: Locale;
   dict: Dictionary;
   posters: CatalogCard[];
   backdropUrl: string | null;
+  align?: 'start' | 'center';
+  showStrip?: boolean;
 }) {
+  const centered = align === 'center';
   return (
-    <section className="relative flex min-h-[700px] items-end overflow-hidden pb-24 md:h-svh">
+    <section className="on-media relative flex min-h-[640px] items-end overflow-hidden pb-20 pt-28 md:min-h-[700px] md:h-svh md:pb-24">
       {backdropUrl && (
         <Image
           src={backdropUrl}
@@ -33,17 +38,28 @@ export function CinematicHero({
       <div aria-hidden className="hero-grid-lines absolute inset-0" />
 
       {/* Right-hand film strip — 48% wide, masked into the background */}
-      <FilmStrip posters={posters} />
+      {showStrip && <FilmStrip posters={posters} />}
 
       <div aria-hidden className="hero-scrim absolute inset-0 z-[1]" />
 
-      <div className="relative z-[2] max-w-[680px] px-6 md:px-14">
-        <p className="mb-6 flex items-center gap-3.5 text-[10px] uppercase tracking-[0.5em] text-primary">
+      <div
+        className={
+          centered
+            ? 'relative z-[2] mx-auto w-full max-w-[880px] px-6 text-center md:px-14'
+            : 'relative z-[2] w-full max-w-[680px] px-6 md:px-14 lg:max-w-[52%] xl:max-w-[680px]'
+        }
+      >
+        <p
+          className={
+            'mb-6 flex flex-wrap items-center gap-3.5 text-[10px] uppercase tracking-[0.32em] text-primary sm:tracking-[0.5em]' +
+            (centered ? ' justify-center' : '')
+          }
+        >
           <span className="block h-px w-9 bg-primary" />
           {dict.hero.established} · {dict.hero.offices}
         </p>
 
-        <h1 className="display-title mb-3.5 text-[clamp(48px,7vw,96px)] text-white">
+        <h1 className="display-title mb-3.5 text-balance text-[clamp(40px,7vw,96px)] text-foreground">
           {dict.hero.titlesLine1}
           <br />
           <span className="text-primary">{dict.hero.titlesLine2}</span>
@@ -51,15 +67,24 @@ export function CinematicHero({
           {dict.hero.titlesLine3}
         </h1>
 
-        <p className="condensed mb-7 text-[clamp(13px,1.8vw,19px)] tracking-[0.5em] text-muted-foreground">
+        <p className="condensed mb-7 break-words text-[clamp(12px,1.8vw,19px)] tracking-[0.24em] text-muted-foreground sm:tracking-[0.5em]">
           {dict.hero.disciplines}
         </p>
 
-        <p className="mb-12 max-w-[460px] text-[15px] leading-[1.85] text-muted-foreground">
+        <p
+          className={
+            'mb-12 max-w-[460px] text-[15px] leading-[1.85] text-muted-foreground' +
+            (centered ? ' mx-auto' : '')
+          }
+        >
           {dict.hero.subtitle}
         </p>
 
-        <div className="flex flex-wrap items-center gap-5">
+        <div
+          className={
+            'flex flex-wrap items-center gap-5' + (centered ? ' justify-center' : '')
+          }
+        >
           <Link href={`/${lang}/catalog`} className="btn-gold">
             {dict.hero.ctaPrimary}
           </Link>

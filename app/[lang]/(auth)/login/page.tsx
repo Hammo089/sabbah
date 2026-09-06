@@ -41,10 +41,10 @@ export default async function LoginPage({
         <p className="text-[0.65rem] uppercase tracking-[0.34em] text-primary">
           {dict.meta.siteName}
         </p>
-        <h1 className="mt-4 text-display text-3xl font-light text-neutral-50">
+        <h1 className="mt-4 text-display text-3xl font-light text-foreground">
           {dict.auth.title}
         </h1>
-        <p className="mt-2 text-sm text-neutral-500">{dict.auth.subtitle}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{dict.auth.subtitle}</p>
       </div>
 
       <LoginForm lang={locale} dict={dict.auth} next={next} />

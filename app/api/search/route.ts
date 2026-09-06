@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 import { searchCatalog, MAX_QUERY_LENGTH } from '@/lib/queries/search';
 import { isLocale } from '@/i18n/config';
+import { limitRequest, tooMany } from '@/lib/security/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,6 +16,9 @@ const QuerySchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const gate = limitRequest(request, 'search', 60, 60_000);
+  if (!gate.ok) return tooMany(gate.retryAfter);
+
   const parsed = QuerySchema.safeParse(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   );

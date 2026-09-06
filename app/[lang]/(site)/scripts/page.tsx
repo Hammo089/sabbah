@@ -36,13 +36,13 @@ export default async function ScriptsPage({ params }: { params: Promise<{ lang: 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-6 py-16 md:px-10 md:py-24 xl:px-16">
       <h1 className="text-display text-[clamp(2rem,4vw,3.2rem)] font-light">{dict.catalog.scriptsTitle}</h1>
-      <p className="mt-3 max-w-2xl text-sm text-neutral-400">{dict.catalog.scriptsDesc}</p>
+      <p className="mt-3 max-w-2xl text-sm text-muted-foreground">{dict.catalog.scriptsDesc}</p>
 
       {items.length === 0 ? (
-        <p className="py-24 text-center text-sm text-neutral-500">{dict.catalog.empty}</p>
+        <p className="py-24 text-center text-sm text-muted-foreground">{dict.catalog.empty}</p>
       ) : (
         <>
-          <p className="mt-8 text-xs text-neutral-500">
+          <p className="mt-8 text-xs text-muted-foreground">
             {total} {dict.catalog.results}
           </p>
           <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">

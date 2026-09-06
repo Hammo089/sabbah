@@ -18,7 +18,7 @@ export function ShowcaseGrid({
   if (items.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-2 gap-0.5 md:grid-cols-4">
+    <div className="on-media grid grid-cols-2 gap-0.5 md:grid-cols-4">
       {items.map((item, i) => {
         const big = i === 0;
 
@@ -38,7 +38,7 @@ export function ShowcaseGrid({
                 fill
                 sizes={big ? '(max-width:768px) 50vw, 25vw' : '(max-width:768px) 50vw, 25vw'}
                 priority={i < 4}
-                className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(.25,.46,.45,.94)] group-hover:scale-[1.06]"
+                className="object-cover transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.06]"
               />
             )}
 
@@ -57,7 +57,7 @@ export function ShowcaseGrid({
               )}
             </div>
 
-            <div className="absolute inset-x-0 bottom-0 translate-y-1.5 p-5 opacity-85 transition-transform duration-[350ms] group-hover:translate-y-0 group-hover:opacity-100">
+            <div className="absolute inset-x-0 bottom-0 translate-y-1.5 p-5 opacity-85 transition-transform [transition-duration:350ms] group-hover:translate-y-0 group-hover:opacity-100">
               <h3
                 className={cn(
                   'display-title text-white',

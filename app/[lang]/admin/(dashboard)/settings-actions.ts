@@ -7,6 +7,34 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getCurrentProfile, isStaff, isSuperAdmin } from '@/lib/auth/rbac';
 import type { ActionResult } from './actions';
 
+/** Ticker visibility + speed, editable straight from the ticker page. */
+const TickerChromeSchema = z.object({
+  ticker_enabled: z.boolean(),
+  ticker_speed: z.coerce.number().int().min(10).max(240),
+});
+
+export async function saveTickerChrome(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const parsed = TickerChromeSchema.safeParse({
+    ticker_enabled: formData.get('ticker_enabled') === 'on',
+    ticker_speed: formData.get('ticker_speed') ?? 38,
+  });
+
+  if (!parsed.success) return { ok: false, error: 'INVALID_INPUT' };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('site_settings').update(parsed.data).eq('id', true);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]', 'layout');
+  return { ok: true };
+}
+
 const SettingsSchema = z.object({
   ticker_enabled: z.boolean(),
   anniversary_enabled: z.boolean(),
@@ -320,4 +348,279 @@ export async function deleteLegacy(id: string): Promise<ActionResult> {
 
   revalidatePath('/[lang]', 'layout');
   return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Licensing contracts
+// ---------------------------------------------------------------------------
+
+const LicenceSchema = z.object({
+  id: z.string().uuid().optional(),
+  seriesId: z.string().uuid().nullable(),
+  licenseeId: z.string().uuid().nullable(),
+  licenseeName: z.string().min(1).max(160),
+  territory: z.array(z.string()),
+  rights: z.array(z.string()),
+  drm: z.enum(['widevine', 'fairplay', 'playready', 'none']),
+  status: z.enum(['available', 'optioned', 'licensed', 'expired', 'withdrawn']),
+  exclusivity: z.boolean(),
+  signedOn: z.string().nullable(),
+  startsOn: z.string().nullable(),
+  endsOn: z.string().nullable(),
+  reminderDays: z.coerce.number().int().min(0).max(365),
+  feeUsd: z.coerce.number().nonnegative().nullable(),
+  currency: z.string().length(3),
+  contractRef: z.string().max(120).nullable(),
+  notes: z.string().max(2000).nullable(),
+});
+
+function csvList(v: FormDataEntryValue | null): string[] {
+  return String(v ?? '').split(',').map((s) => s.trim().toUpperCase()).filter(Boolean);
+}
+
+function nullOr(v: FormDataEntryValue | null): string | null {
+  const s = String(v ?? '').trim();
+  return s === '' ? null : s;
+}
+
+/** Licences carry fees and contract references — super_admin only. */
+export async function saveLicence(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isSuperAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const parsed = LicenceSchema.safeParse({
+    id: (formData.get('id') as string) || undefined,
+    seriesId: nullOr(formData.get('series_id')),
+    licenseeId: nullOr(formData.get('licensee_id')),
+    licenseeName: String(formData.get('licensee_name') ?? '').trim(),
+    territory: csvList(formData.get('territory')),
+    rights: csvList(formData.get('rights')),
+    drm: formData.get('drm'),
+    status: formData.get('status'),
+    exclusivity: formData.get('exclusivity') === 'on',
+    signedOn: nullOr(formData.get('signed_on')),
+    startsOn: nullOr(formData.get('starts_on')),
+    endsOn: nullOr(formData.get('ends_on')),
+    reminderDays: formData.get('reminder_days') || 30,
+    feeUsd: nullOr(formData.get('fee_usd')),
+    currency: String(formData.get('currency') ?? 'USD').toUpperCase(),
+    contractRef: nullOr(formData.get('contract_ref')),
+    notes: nullOr(formData.get('notes')),
+  });
+
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(' · ') };
+  }
+
+  const d = parsed.data;
+
+  if (d.startsOn && d.endsOn && d.endsOn < d.startsOn) {
+    return { ok: false, error: 'END_BEFORE_START' };
+  }
+  if (!d.seriesId) return { ok: false, error: 'TITLE_REQUIRED' };
+
+  const payload = {
+    series_id: d.seriesId,
+    movie_id: null,
+    licensee_id: d.licenseeId,
+    licensee_name: d.licenseeName,
+    territory: d.territory,
+    rights: d.rights,
+    drm: d.drm,
+    status: d.status,
+    exclusivity: d.exclusivity,
+    signed_on: d.signedOn,
+    starts_on: d.startsOn,
+    ends_on: d.endsOn,
+    reminder_days: d.reminderDays,
+    reminder_ack: false,
+    fee_usd: d.feeUsd,
+    currency: d.currency,
+    contract_ref: d.contractRef,
+    notes: d.notes,
+  };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = d.id
+    ? await supabase.from('drm_licenses').update(payload).eq('id', d.id)
+    : await supabase.from('drm_licenses').insert(payload);
+
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]/admin', 'layout');
+  return { ok: true };
+}
+
+export async function deleteLicence(id: string): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isSuperAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('drm_licenses').delete().eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]/admin', 'layout');
+  return { ok: true };
+}
+
+/** Dismiss one expiry reminder until the contract is renewed. */
+export async function acknowledgeReminder(id: string): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isSuperAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('drm_licenses').update({ reminder_ack: true }).eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]/admin', 'layout');
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Appearance
+// ---------------------------------------------------------------------------
+
+const HEX = /^#[0-9a-fA-F]{6}$/;
+
+const ThemeSchema = z.object({
+  theme_primary: z.string().regex(HEX),
+  theme_accent: z.string().regex(HEX),
+  theme_background: z.string().regex(HEX),
+  theme_foreground: z.string().regex(HEX),
+  theme_muted: z.string().regex(HEX),
+  theme_radius: z.string().max(12),
+  header_style: z.enum(['transparent', 'solid']),
+  hero_align: z.enum(['start', 'center']),
+  hero_show_strip: z.boolean(),
+  show_stats: z.boolean(),
+  show_marquee: z.boolean(),
+  show_showcase: z.boolean(),
+  show_rails: z.boolean(),
+  show_partners: z.boolean(),
+  ticker_speed: z.coerce.number().int().min(10).max(240),
+  loader_enabled: z.boolean(),
+  loader_style: z.enum(['ring', 'sweep', 'pulse', 'none']),
+  loader_speed: z.coerce.number().int().min(400).max(6000),
+  loader_logo_url: z.string().url().nullable().or(z.literal('')),
+  bg_video_enabled: z.boolean(),
+  bg_video_youtube: z.string().trim().max(32).regex(/^[A-Za-z0-9_-]*$/, 'INVALID_YOUTUBE_ID'),
+  bg_video_opacity: z.coerce.number().int().min(0).max(60),
+  bg_video_scope: z.enum(['home', 'all']),
+  submissions_open: z.boolean(),
+  assistant_enabled: z.boolean(),
+});
+
+export async function saveTheme(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const parsed = ThemeSchema.safeParse({
+    theme_primary: formData.get('theme_primary'),
+    theme_accent: formData.get('theme_accent'),
+    theme_background: formData.get('theme_background'),
+    theme_foreground: formData.get('theme_foreground'),
+    theme_muted: formData.get('theme_muted'),
+    theme_radius: formData.get('theme_radius'),
+    header_style: formData.get('header_style'),
+    hero_align: formData.get('hero_align'),
+    hero_show_strip: formData.get('hero_show_strip') === 'on',
+    show_stats: formData.get('show_stats') === 'on',
+    show_marquee: formData.get('show_marquee') === 'on',
+    show_showcase: formData.get('show_showcase') === 'on',
+    show_rails: formData.get('show_rails') === 'on',
+    show_partners: formData.get('show_partners') === 'on',
+    ticker_speed: formData.get('ticker_speed') ?? 38,
+    loader_enabled: formData.get('loader_enabled') === 'on',
+    loader_style: formData.get('loader_style') ?? 'ring',
+    loader_speed: formData.get('loader_speed') ?? 1400,
+    loader_logo_url: String(formData.get('loader_logo_url') ?? '').trim() || null,
+    bg_video_enabled: formData.get('bg_video_enabled') === 'on',
+    bg_video_youtube: String(formData.get('bg_video_youtube') ?? '').trim(),
+    bg_video_opacity: formData.get('bg_video_opacity') ?? 18,
+    bg_video_scope: formData.get('bg_video_scope') ?? 'home',
+    submissions_open: formData.get('submissions_open') === 'on',
+    assistant_enabled: formData.get('assistant_enabled') === 'on',
+  });
+
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? 'INVALID_APPEARANCE' };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from('site_settings')
+    .update({ ...parsed.data, loader_logo_url: parsed.data.loader_logo_url || null })
+    .eq('id', true);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]', 'layout');
+  return { ok: true };
+}
+
+
+// ---------------------------------------------------------------------------
+// Script submissions — staff only. Reading a submitted file goes through a
+// short-lived signed URL so the private bucket is never made public.
+// ---------------------------------------------------------------------------
+
+const SubmissionSchema = z.object({
+  id: z.string().uuid(),
+  status: z.enum(['new', 'reviewing', 'shortlisted', 'rejected', 'optioned']),
+  staff_notes: z.string().max(4000).nullable(),
+});
+
+export async function updateSubmission(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const profile = await getCurrentProfile();
+  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const parsed = SubmissionSchema.safeParse({
+    id: formData.get('id'),
+    status: formData.get('status'),
+    staff_notes: String(formData.get('staff_notes') ?? '').trim() || null,
+  });
+
+  if (!parsed.success) return { ok: false, error: 'INVALID_INPUT' };
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from('script_submissions')
+    .update({
+      status: parsed.data.status,
+      staff_notes: parsed.data.staff_notes,
+      reviewed_by: profile?.id ?? null,
+    })
+    .eq('id', parsed.data.id);
+
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]/admin/submissions', 'page');
+  return { ok: true };
+}
+
+export async function getSubmissionFileUrl(
+  id: string,
+): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  const profile = await getCurrentProfile();
+  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  const supabase = await createSupabaseServerClient();
+
+  const { data: row } = await supabase
+    .from('script_submissions')
+    .select('file_path')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (!row?.file_path) return { ok: false, error: 'NO_FILE' };
+
+  const { data, error } = await supabase.storage
+    .from('submissions')
+    .createSignedUrl(row.file_path, 120);
+
+  if (error || !data) return { ok: false, error: error?.message ?? 'SIGN_FAILED' };
+
+  return { ok: true, url: data.signedUrl };
 }

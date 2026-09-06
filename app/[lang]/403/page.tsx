@@ -16,11 +16,11 @@ export default async function ForbiddenPage({ params }: { params: Promise<{ lang
   return (
     <main
       dir={localeDirection[lang]}
-      className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[#000000] px-6 text-center"
+      className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-background px-6 text-center"
     >
       <ShieldAlert className="size-10 text-primary" />
-      <h1 className="text-display text-3xl font-light text-neutral-50">{dict.auth.forbidden}</h1>
-      <p className="max-w-md text-sm text-neutral-500">{dict.auth.forbiddenHint}</p>
+      <h1 className="text-display text-3xl font-light text-foreground">{dict.auth.forbidden}</h1>
+      <p className="max-w-md text-sm text-muted-foreground">{dict.auth.forbiddenHint}</p>
       <Link
         href={`/${lang}`}
         className="mt-2 rounded-md border border-primary/35 px-5 py-2 text-sm text-primary transition-colors hover:bg-primary/10"

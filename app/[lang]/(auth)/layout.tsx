@@ -15,7 +15,7 @@ export default async function AuthLayout({
   return (
     <div
       dir={localeDirection[lang]}
-      className="grain relative flex min-h-dvh items-center justify-center bg-[#000000] px-6"
+      className="grain relative flex min-h-dvh items-center justify-center bg-background px-6"
     >
       <div
         aria-hidden

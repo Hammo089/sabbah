@@ -5,6 +5,7 @@
 
 @layer base {
   :root {
+    color-scheme: light;
     /* Light — archival paper */
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
@@ -29,6 +30,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     /* Dark — Cedars Art Production identity read off sabbah.com:
        #000000 ground, #ffffff text, #2c845c accent, #767676 dim */
     --background: 0 0% 0%;          /* #000000 — sabbah.com html background */
@@ -50,6 +52,23 @@
     --border: 0 0% 13%;             /* #222 */
     --input: 0 0% 13%;
     --ring: 154 50% 34%;
+  }
+
+  /* Any block that paints text over imagery or a forced-dark scrim. Re-declares
+     the tokens locally so the SAME markup stays legible in light mode without a
+     single hardcoded colour. */
+  .on-media {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --muted: 0 0% 11%;
+    --muted-foreground: 0 0% 72%;
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --secondary: 0 0% 11%;
+    --secondary-foreground: 0 0% 100%;
+    color: hsl(var(--foreground));
   }
 
   * {

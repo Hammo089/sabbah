@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
 
   return (
     <PageShell eyebrow={dict.nav.company} title={dict.pages.servicesTitle}>
-      <p className="mt-12 text-sm text-neutral-500">{dict.pages.comingSoonPage}</p>
+      <p className="mt-12 text-sm text-muted-foreground">{dict.pages.comingSoonPage}</p>
     </PageShell>
   );
 }

@@ -68,13 +68,13 @@ export default async function LegacyPage({ params }: { params: Promise<{ lang: s
         <ol className="mt-20">
           {rows.map((row, i) => (
             <Reveal key={row.id} as="li" delay={i * 0.04}>
-              <div className="grid grid-cols-[auto_1fr] gap-6 border-t border-white/[0.07] py-8">
+              <div className="grid grid-cols-[auto_1fr] gap-6 border-t border-border py-8">
                 <span className="text-display text-2xl font-light text-primary md:text-3xl">
                   {row.year ?? '—'}
                 </span>
                 <div>
-                  <h2 className="text-lg text-neutral-100">{t(row.title, locale, '')}</h2>
-                  <p className="mt-2 text-[0.95rem] leading-relaxed text-neutral-400">
+                  <h2 className="text-lg text-foreground">{t(row.title, locale, '')}</h2>
+                  <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-foreground">
                     {t(row.description, locale, '')}
                   </p>
                 </div>

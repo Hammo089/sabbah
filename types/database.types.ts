@@ -144,7 +144,12 @@ export type DrmLicensesRow = {
   id: string;
   series_id: string | null;
   movie_id: string | null;
+  licensee_id: string | null;
   licensee_name: string;
+  signed_on: string | null;
+  reminder_days: number;
+  reminder_ack: boolean;
+  currency: string;
   licensee_email: string | null;
   territory: string[] | null;
   rights: string[] | null;
@@ -260,6 +265,59 @@ export type MediaAssetsRow = {
 // Schema
 // ---------------------------------------------------------------------------
 
+export type SubmissionStatusEnum = 'new' | 'reviewing' | 'shortlisted' | 'rejected' | 'optioned';
+export type SubmissionKindEnum = 'series' | 'film' | 'format' | 'novel' | 'idea' | 'other';
+
+export type ScriptSubmissionRow = {
+  id: string;
+  ref: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  country: string | null;
+  agent_or_company: string | null;
+  portfolio_url: string | null;
+  work_title: string;
+  kind: SubmissionKindEnum;
+  language: string;
+  episodes_planned: number | null;
+  logline: string;
+  synopsis: string | null;
+  file_path: string | null;
+  file_name: string | null;
+  file_size: number | null;
+  file_mime: string | null;
+  ai_summary: string | null;
+  ai_themes: string[] | null;
+  ai_genre: string | null;
+  ai_comparables: string | null;
+  ai_audience: string | null;
+  ai_strength: string | null;
+  ai_risk: string | null;
+  ai_score: number | null;
+  ai_model: string | null;
+  ai_processed_at: string | null;
+  ai_error: string | null;
+  status: SubmissionStatusEnum;
+  staff_notes: string | null;
+  reviewed_by: string | null;
+  consent_terms: boolean;
+  source_ip_hash: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AssistantKnowledgeRow = {
+  id: string;
+  topic: string;
+  question: Json;
+  answer: Json;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -346,6 +404,33 @@ export type Database = {
           stat_productions: string;
           stat_offices: string;
           stat_partners: string;
+          theme_primary: string;
+          theme_accent: string;
+          theme_background: string;
+          theme_foreground: string;
+          theme_muted: string;
+          theme_radius: string;
+          header_style: 'transparent' | 'solid';
+          hero_align: 'start' | 'center';
+          hero_show_strip: boolean;
+          show_stats: boolean;
+          show_marquee: boolean;
+          show_showcase: boolean;
+          show_rails: boolean;
+          show_partners: boolean;
+          section_order: string[];
+          cta_primary_href: string | null;
+          ticker_speed: number;
+          loader_enabled: boolean;
+          loader_logo_url: string | null;
+          loader_style: 'ring' | 'sweep' | 'pulse' | 'none';
+          loader_speed: number;
+          bg_video_enabled: boolean;
+          bg_video_youtube: string;
+          bg_video_opacity: number;
+          bg_video_scope: 'home' | 'all';
+          submissions_open: boolean;
+          assistant_enabled: boolean;
           updated_at: string;
         };
         Insert: Partial<Database['public']['Tables']['site_settings']['Row']>;
@@ -364,6 +449,24 @@ export type Database = {
         Update: Partial<{ email: string; role: AppRoleEnum; accepted_at: string | null }>;
         Relationships: [];
       };
+      script_submissions: {
+        Row: ScriptSubmissionRow;
+        Insert: Partial<ScriptSubmissionRow> & {
+          full_name: string;
+          email: string;
+          work_title: string;
+          logline: string;
+          consent_terms: boolean;
+        };
+        Update: Partial<ScriptSubmissionRow>;
+        Relationships: [];
+      };
+      assistant_knowledge: {
+        Row: AssistantKnowledgeRow;
+        Insert: Partial<AssistantKnowledgeRow> & { topic: string };
+        Update: Partial<AssistantKnowledgeRow>;
+        Relationships: [];
+      };
       company_legacy: {
         Row: CompanyLegacyRow;
         Insert: Partial<CompanyLegacyRow>;
@@ -372,6 +475,25 @@ export type Database = {
       };
     };
     Views: {
+      expiring_licenses: {
+        Row: {
+          id: string;
+          licensee_name: string;
+          licensee_company: string | null;
+          status: LicenseStatusEnum;
+          starts_on: string | null;
+          ends_on: string | null;
+          reminder_days: number;
+          reminder_ack: boolean;
+          days_left: number;
+          expired: boolean;
+          series_slug: string | null;
+          series_title: Json | null;
+          movie_slug: string | null;
+          movie_title: Json | null;
+        };
+        Relationships: [];
+      };
       b2b_available_titles: {
         Row: Pick<
           SeriesRow,
@@ -404,6 +526,7 @@ export type Database = {
         };
         Returns: SearchResultRow[];
       };
+      expiring_license_count: { Args: Record<string, never>; Returns: number };
       search_people: {
         Args: { q: string; lang?: string; max_results?: number };
         Returns: { id: string; slug: string; name: string; photo_url: string | null; title_count: number }[];
@@ -416,6 +539,7 @@ export type Database = {
       latin_skeleton: { Args: { input: string }; Returns: string };
       is_super_admin: { Args: Record<string, never>; Returns: boolean };
       is_staff: { Args: Record<string, never>; Returns: boolean };
+      new_submission_count: { Args: Record<string, never>; Returns: number };
     };
     Enums: {
       app_role: AppRoleEnum;
@@ -423,6 +547,8 @@ export type Database = {
       program_kind: ProgramKindEnum;
       license_status: LicenseStatusEnum;
       drm_system: DrmSystemEnum;
+      submission_status: SubmissionStatusEnum;
+      submission_kind: SubmissionKindEnum;
     };
     CompositeTypes: Record<string, never>;
   };

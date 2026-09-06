@@ -20,7 +20,7 @@ export function FilmStrip({ posters }: { posters: CatalogCard[] }) {
     <div
       aria-hidden
       className={cn(
-        'absolute inset-y-0 end-0 z-0 hidden w-[48%] overflow-hidden lg:block',
+        'absolute inset-y-0 end-0 z-0 hidden w-[42%] overflow-hidden lg:block xl:w-[48%]',
         '[mask-image:linear-gradient(to_left,rgba(0,0,0,.6)_30%,transparent)]',
         '[-webkit-mask-image:linear-gradient(to_left,rgba(0,0,0,.6)_30%,transparent)]',
       )}
@@ -32,13 +32,13 @@ export function FilmStrip({ posters }: { posters: CatalogCard[] }) {
         )}
       >
         {loop.map((p, i) => (
-          <div key={`${p.id}-${i}`} className="relative aspect-video w-full shrink-0 bg-[#1a1a1a]">
+          <div key={`${p.id}-${i}`} className="relative aspect-video w-full shrink-0 bg-muted">
             {p.posterUrl && (
               <Image
                 src={p.posterUrl}
                 alt=""
                 fill
-                sizes="48vw"
+                sizes="(max-width:1280px) 42vw, 48vw"
                 className="object-cover opacity-70"
                 priority={i < 2}
               />

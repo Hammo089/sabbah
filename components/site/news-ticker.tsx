@@ -36,10 +36,13 @@ export async function NewsTicker({ lang }: { lang: Locale }) {
   const loop = [...items, ...items];
 
   return (
-    <div className="relative overflow-hidden border-b border-white/[0.06] bg-primary/[0.07]">
-      <div className="flex w-max animate-[marquee-x_38s_linear_infinite] gap-10 py-2 hover:[animation-play-state:paused]">
+    <div className="relative overflow-hidden border-b border-border bg-primary/[0.07]">
+      <div
+        style={{ animationDuration: `${settings.ticker_speed}s` }}
+        className="flex w-max animate-[marquee-x_38s_linear_infinite] gap-10 py-2 hover:[animation-play-state:paused] motion-reduce:animate-none"
+      >
         {loop.map((item, i) => (
-          <span key={`${item.id}-${i}`} className="flex shrink-0 items-center gap-3 text-xs text-neutral-300">
+          <span key={`${item.id}-${i}`} className="flex shrink-0 items-center gap-3 text-xs text-foreground/80">
             <span className="size-1 rounded-full bg-primary" />
             {item.href ? (
               <Link href={item.href} className="transition-colors hover:text-primary">

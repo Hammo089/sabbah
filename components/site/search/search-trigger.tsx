@@ -87,15 +87,15 @@ export function SearchTrigger({
           onClick={() => setOpen(true)}
           className={cn(
             'group flex h-9 w-full max-w-xs items-center gap-2.5 rounded-md',
-            'border border-white/[0.09] bg-white/[0.03] px-3 text-start',
-            'transition-colors hover:border-primary/40 hover:bg-white/[0.06]',
+            'border border-border bg-muted/60 px-3 text-start',
+            'transition-colors hover:border-primary/40 hover:bg-muted/60',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             className,
           )}
         >
-          <Search className="size-3.5 shrink-0 text-neutral-500 transition-colors group-hover:text-primary" />
-          <span className="truncate text-xs text-neutral-500">{dict.placeholder}</span>
-          <kbd className="ms-auto hidden shrink-0 rounded border border-white/10 px-1.5 py-0.5 font-mono text-[0.6rem] text-neutral-600 sm:block">
+          <Search className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+          <span className="truncate text-xs text-muted-foreground">{dict.placeholder}</span>
+          <kbd className="ms-auto hidden shrink-0 rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] text-muted-foreground/70 sm:block">
             {isMac ? '⌘K' : 'Ctrl K'}
           </kbd>
         </button>

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildB2BCatalogPdf, type CatalogTitle } from '@/lib/pdf/b2b-catalog';
 import { t } from '@/lib/utils';
+import { limitRequest, tooMany } from '@/lib/security/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,9 @@ type LicenseRow = {
 };
 
 export async function GET(request: NextRequest) {
+  const gate = limitRequest(request, 'b2b-pdf', 10, 60_000);
+  if (!gate.ok) return tooMany(gate.retryAfter);
+
   const parsed = QuerySchema.safeParse(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   );

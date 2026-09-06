@@ -48,7 +48,7 @@ export function LoginForm({
       {next && <input type="hidden" name="next" value={next} />}
 
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-neutral-400">
+        <Label htmlFor="email" className="text-muted-foreground">
           {dict.email}
         </Label>
         <Input
@@ -58,12 +58,12 @@ export function LoginForm({
           required
           autoComplete="email"
           dir="ltr"
-          className="border-white/10 bg-white/[0.03] text-neutral-100"
+          className="border-border bg-muted/60 text-foreground"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password" className="text-neutral-400">
+        <Label htmlFor="password" className="text-muted-foreground">
           {dict.password}
         </Label>
         <Input
@@ -73,7 +73,7 @@ export function LoginForm({
           required
           autoComplete="current-password"
           dir="ltr"
-          className="border-white/10 bg-white/[0.03] text-neutral-100"
+          className="border-border bg-muted/60 text-foreground"
         />
       </div>
 

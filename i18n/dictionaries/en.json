@@ -17,7 +17,9 @@
     "scripts": "Scripts",
     "company": "Company",
     "services": "Services",
-    "menu": "Menu"
+    "menu": "Menu",
+    "partners": "Partners",
+    "submit": "Submit your work"
   },
   "hero": {
     "eyebrow": "Est. 1955",
@@ -42,7 +44,22 @@
   "b2b": {
     "title": "Content Licensing",
     "subtitle": "Acquire premium Arabic drama for your platform.",
-    "downloadPdf": "Download catalog (PDF)"
+    "downloadPdf": "Download catalog (PDF)",
+    "eyebrow": "For broadcasters & platforms",
+    "lead": "Seven decades of Arabic drama, formats and film — cleared, subtitled and ready for linear, VOD and AVOD windows worldwide.",
+    "pitch1Title": "Fully cleared rights",
+    "pitch1Body": "Music, talent and underlying rights cleared for worldwide exploitation. Chain-of-title documentation supplied with every deal.",
+    "pitch2Title": "Delivery ready",
+    "pitch2Body": "ProRes and H.264 masters, 5.1 and stereo stems, KDM/DRM-protected screeners, and subtitle files in Arabic, English and French.",
+    "pitch3Title": "Territory flexible",
+    "pitch3Body": "Exclusive and non-exclusive windows across MENA, Europe, the Americas, Africa and Asia — negotiated per title or per package.",
+    "libraryTitle": "Available for licensing",
+    "partnersTitle": "They already broadcast us",
+    "ctaTitle": "Request the full rights list",
+    "ctaBody": "Send us your territory, window and platform. We reply with an availability grid within two business days.",
+    "ctaButton": "Contact licensing",
+    "pdfHint": "Sign in with a B2B account to generate the live availability catalog.",
+    "signIn": "Sign in"
   },
   "common": {
     "loading": "Loading",
@@ -145,7 +162,23 @@
     "noBroadcasters": "No broadcasters yet — add them from the Broadcasters page.",
     "comingSoonSection": "This section is not built yet.",
     "creditsHint": "Add the person once under Cast & Crew, then attach them here with their character name.",
-    "noPersonFound": "No match. Add them under Cast & Crew first."
+    "noPersonFound": "No match. Add them under Cast & Crew first.",
+    "submissions": "Submissions",
+    "appearance": "Appearance",
+    "partners": "Partners",
+    "aiSummary": "AI reading",
+    "downloadFile": "Download script",
+    "noSubmissions": "No submissions yet.",
+    "reference": "Ref",
+    "applicant": "Applicant",
+    "received": "Received",
+    "reread": "Re-read with AI",
+    "statusNew": "New",
+    "statusReviewing": "Reviewing",
+    "statusShortlisted": "Shortlisted",
+    "statusRejected": "Rejected",
+    "statusOptioned": "Optioned",
+    "notes": "Internal notes"
   },
   "footer": {
     "about": "About us",
@@ -254,5 +287,219 @@
     "backdrop": "Backdrop (16:9)",
     "photo": "Photo",
     "logo": "Logo"
+  },
+  "licence": {
+    "save": "Save",
+    "saved": "Saved",
+    "remove": "Delete",
+    "add": "Add licence",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "title": "Title",
+    "company": "Company (from Broadcasters)",
+    "otherCompany": "Company name",
+    "signed": "Signed on",
+    "from": "Starts",
+    "to": "Expires",
+    "remind": "Remind me before",
+    "days": "days",
+    "fee": "Fee",
+    "territory": "Territory",
+    "rights": "Rights",
+    "contract": "Contract ref",
+    "notes": "Notes",
+    "exclusive": "Exclusive",
+    "status": "Status",
+    "expiresIn": "expires in {n} days",
+    "expired": "EXPIRED",
+    "dismiss": "Dismiss",
+    "noLicences": "No licences yet.",
+    "endBeforeStart": "The expiry date is before the start date.",
+    "titleRequired": "Choose a title."
+  },
+  "appearance": {
+    "title": "Appearance",
+    "hint": "Control colors, layout and which homepage sections are visible.",
+    "colors": "Colors",
+    "presets": "Presets",
+    "layout": "Layout",
+    "sections": "Homepage sections",
+    "primary": "Primary",
+    "accent": "Accent",
+    "background": "Background",
+    "foreground": "Text",
+    "muted": "Muted",
+    "radius": "Corner radius",
+    "headerStyle": "Header style",
+    "transparent": "Transparent",
+    "solid": "Solid",
+    "heroAlign": "Hero alignment",
+    "alignStart": "Left",
+    "alignCenter": "Center",
+    "filmStrip": "Show hero poster strip",
+    "stats": "Statistics band",
+    "marquee": "Scrolling marquee",
+    "showcase": "Anniversary showcase",
+    "rails": "Catalog rails",
+    "partners": "Partner logos",
+    "preview": "Live preview",
+    "reset": "Reset to Sabbah defaults",
+    "chrome": "Motion & chrome",
+    "tickerSpeed": "Ticker speed (seconds per loop)",
+    "tickerSlower": "Higher = slower",
+    "loader": "Transition loader",
+    "loaderStyle": "Loader style",
+    "loaderRing": "Gold ring",
+    "loaderSweep": "Gold sweep",
+    "loaderPulse": "Pulse",
+    "loaderNone": "Off",
+    "loaderSpeed": "Loader duration (ms)",
+    "loaderLogo": "Loader logo",
+    "bgVideo": "Background film",
+    "bgVideoOn": "Run the film behind the site",
+    "bgVideoId": "YouTube ID",
+    "bgVideoOpacity": "Film opacity (%)",
+    "bgVideoScope": "Where",
+    "scopeHome": "Homepage only",
+    "scopeAll": "Every page",
+    "bgVideoNote": "Desktop only. Never loads on phones, on reduced-motion, on Save-Data, or on low-memory devices.",
+    "publicPages": "Public pages",
+    "submissionsOpen": "Accept script submissions",
+    "assistantOn": "Show the AI assistant"
+  },
+  "legal": {
+    "termsTitle": "Terms of use",
+    "privacyTitle": "Privacy policy",
+    "updated": "Last updated",
+    "termsBody": [
+      [
+        "Acceptance",
+        "By accessing this website you agree to these terms. If you do not agree, do not use the site."
+      ],
+      [
+        "Intellectual property",
+        "All titles, artwork, trailers, scripts, logos and text on this site are owned by Cedars Art Production — Sabbah Brothers or its licensors and are protected by copyright and trademark law. No part may be copied, reproduced, streamed, framed, sold or redistributed without prior written permission."
+      ],
+      [
+        "Permitted use",
+        "The site is provided for information and business-to-business licensing purposes. Screeners, catalogs and rights documents made available to registered partners are confidential and may only be used to evaluate a licensing opportunity."
+      ],
+      [
+        "Accounts",
+        "Accounts are issued by invitation. You are responsible for keeping your credentials secure and for all activity under your account. We may suspend an account at any time for misuse."
+      ],
+      [
+        "No warranty",
+        "Availability data, delivery specifications and territory information are indicative and may change. Nothing on this site constitutes an offer or a binding licence. Only a signed licence agreement creates rights."
+      ],
+      [
+        "Liability",
+        "To the extent permitted by law, we are not liable for indirect or consequential loss arising from use of the site."
+      ],
+      [
+        "Governing law",
+        "These terms are governed by the laws of Lebanon, and the courts of Beirut have exclusive jurisdiction."
+      ]
+    ],
+    "privacyBody": [
+      [
+        "What we collect",
+        "Account data you give us (name, company, business email, role), messages you send through the contact form, and technical data such as IP address, browser type and pages visited."
+      ],
+      [
+        "Why we use it",
+        "To operate your account, respond to licensing enquiries, generate rights and availability documents, secure the platform, and meet legal obligations."
+      ],
+      [
+        "Legal basis",
+        "Performance of a contract with you or your company, our legitimate interest in running and securing the business, and your consent where required."
+      ],
+      [
+        "Sharing",
+        "We use service providers for hosting, database and email delivery. They process data on our instructions only. We do not sell personal data and we do not use advertising trackers."
+      ],
+      [
+        "Cookies",
+        "We set a session cookie for authentication and a preference cookie for your language. No third-party advertising or profiling cookies are used."
+      ],
+      [
+        "Retention",
+        "Account records are kept for the life of the business relationship plus the period required by Lebanese commercial and tax law. Contact-form messages are kept for 24 months."
+      ],
+      [
+        "Your rights",
+        "You may request access to, correction of, or deletion of your personal data, and object to processing. Write to us and we will answer within 30 days."
+      ],
+      [
+        "Contact",
+        "Cedars Art Production — Sabbah Brothers, Beirut, Lebanon."
+      ]
+    ]
+  },
+  "partners": {
+    "title": "Where we air",
+    "lead": "The broadcasters, platforms and distributors carrying Cedars Art Production titles.",
+    "titles": "titles",
+    "acquired": "Titles they acquired",
+    "noTitles": "No published titles are linked to this partner yet.",
+    "visit": "Visit site",
+    "empty": "No partners have been added yet."
+  },
+  "submit": {
+    "eyebrow": "Submissions",
+    "title": "Submit your work",
+    "lead": "Send us a series, a film, a format or a novel. Every submission is logged, read by our team, and never published anywhere on this site.",
+    "closedTitle": "Submissions are closed",
+    "closedBody": "We are not accepting new material right now. Please check back soon.",
+    "stepYou": "About you",
+    "stepWork": "About the work",
+    "stepFile": "The material",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "country": "Country",
+    "agent": "Agent or company",
+    "portfolio": "Portfolio or IMDb link",
+    "workTitle": "Title of the work",
+    "kind": "Type",
+    "kindSeries": "Drama series",
+    "kindFilm": "Feature film",
+    "kindFormat": "Format",
+    "kindNovel": "Novel / book",
+    "kindIdea": "Idea / treatment",
+    "kindOther": "Other",
+    "language": "Language of the work",
+    "episodes": "Planned episodes",
+    "logline": "Logline",
+    "loglineHint": "One or two sentences. What happens, to whom, and what is at stake.",
+    "synopsis": "Synopsis",
+    "synopsisHint": "Optional. Paste as much as you like — our reader summarises it automatically.",
+    "file": "Script file",
+    "fileHint": "PDF, Word or plain text. Up to 25 MB. Stored privately.",
+    "consent": "I confirm this work is mine to submit and I accept the terms of use.",
+    "submitBtn": "Send submission",
+    "sending": "Sending",
+    "successTitle": "Received",
+    "successBody": "Your reference number is below. Keep it — quote it in any follow-up.",
+    "successAgain": "Submit another work",
+    "errorRequired": "Please fill in the required fields.",
+    "errorFile": "That file type or size is not accepted.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "privacyNote": "Only our reading team can open what you send. Nothing here is public."
+  },
+  "assistant": {
+    "title": "Ask us",
+    "subtitle": "Questions about submitting, our slate or the company.",
+    "open": "Ask a question",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "thinking": "Typing",
+    "greeting": "Hello — I answer on behalf of Cedars Art Production. Ask me about submitting your work, what we produce, or how we license.",
+    "error": "I could not answer just now. Please try again, or use the contact page.",
+    "disclaimer": "Automated assistant. For a binding answer, contact the team.",
+    "suggest1": "What do you accept?",
+    "suggest2": "How long until I hear back?",
+    "suggest3": "Is my script confidential?",
+    "clear": "Clear chat"
   }
 }

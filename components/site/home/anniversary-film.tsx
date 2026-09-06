@@ -41,7 +41,7 @@ export function AnniversaryFilm({
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden border-y border-primary/10 bg-[#0f0f0f] py-24 md:py-32"
+      className="on-media relative overflow-hidden border-y border-primary/10 bg-[#0f0f0f] py-24 md:py-32"
     >
       {/* Sprocket rails — the film-perforation motif from the brand */}
       <div aria-hidden className="pointer-events-none absolute inset-y-0 start-0 hidden w-10 flex-col justify-around py-6 md:flex">

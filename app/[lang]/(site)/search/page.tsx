@@ -136,7 +136,7 @@ export default async function SearchPage({
             return (
               <li key={`${row.entity_type}-${row.entity_id}`}>
                 <Link href={resultHref(locale, row)} className="group block">
-                  <div className="relative aspect-[2/3] overflow-hidden rounded-md bg-neutral-900 ring-1 ring-white/[0.06] transition-all duration-500 group-hover:ring-primary/45">
+                  <div className="relative aspect-[2/3] overflow-hidden rounded-md bg-muted ring-1 ring-border transition-all duration-500 group-hover:ring-primary/45">
                     {row.poster_url ? (
                       <Image
                         src={row.poster_url}
@@ -146,7 +146,7 @@ export default async function SearchPage({
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     ) : (
-                      <Icon className="absolute inset-0 m-auto size-6 text-neutral-700" />
+                      <Icon className="absolute inset-0 m-auto size-6 text-muted-foreground/60" />
                     )}
                   </div>
 

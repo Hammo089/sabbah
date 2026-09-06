@@ -280,6 +280,120 @@ export const getAllPublishedSlugs = cache(async (): Promise<string[]> => {
   }
 });
 
+export const getPublishedSlugsByKind = cache(async (kind: TitleKind): Promise<string[]> => {
+  if (!guard()) return [];
+  try {
+    const supabase = createSupabaseAnonClient();
+    const { data } = await supabase
+      .from('series')
+      .select('slug')
+      .eq('status', 'published')
+      .eq('kind', kind)
+      .limit(1000);
+    return (data ?? []).map((r) => r.slug);
+  } catch {
+    return [];
+  }
+});
+
+
+export type PartnerCard = {
+  id: string;
+  slug: string;
+  name: string;
+  logoUrl: string | null;
+  siteUrl: string | null;
+  titleCount: number;
+};
+
+/** Every broadcaster/platform that carries our work, with how much they hold. */
+export const getPartners = cache(async (): Promise<PartnerCard[]> => {
+  if (!guard()) return [];
+  try {
+    const supabase = createSupabaseAnonClient();
+    const { data } = await supabase
+      .from('broadcasters')
+      .select('id, slug, name, logo_url, site_url, title_broadcasters(broadcaster_id)')
+      .order('sort_order');
+
+    return (data ?? []).map((row) => {
+      const r = row as unknown as {
+        id: string;
+        slug: string;
+        name: string;
+        logo_url: string | null;
+        site_url: string | null;
+        title_broadcasters: unknown[] | null;
+      };
+
+      return {
+        id: r.id,
+        slug: r.slug,
+        name: r.name,
+        logoUrl: r.logo_url,
+        siteUrl: r.site_url,
+        titleCount: r.title_broadcasters?.length ?? 0,
+      };
+    });
+  } catch (error) {
+    console.error('[partners]', error);
+    return [];
+  }
+});
+
+/** One platform plus every published title it acquired from us. */
+export const getPartnerBySlug = cache(
+  async (slug: string, lang: Locale) => {
+    if (!guard()) return null;
+    try {
+      const supabase = createSupabaseAnonClient();
+
+      const { data: partner } = await supabase
+        .from('broadcasters')
+        .select('id, slug, name, logo_url, site_url')
+        .eq('slug', slug)
+        .maybeSingle();
+
+      if (!partner) return null;
+
+      const { data: links } = await supabase
+        .from('title_broadcasters')
+        .select('series_id')
+        .eq('broadcaster_id', partner.id);
+
+      const ids = (links ?? [])
+        .map((l) => (l as { series_id: string | null }).series_id)
+        .filter((id): id is string => Boolean(id));
+
+      let titles: CatalogCard[] = [];
+
+      if (ids.length > 0) {
+        const { data: rows } = await supabase
+          .from('series')
+          .select(SELECT)
+          .in('id', ids)
+          .eq('status', 'published')
+          .order('year', { ascending: false, nullsFirst: false })
+          .limit(200);
+
+        titles = (rows ?? []).map((row) => toCard(row as Record<string, unknown>, lang));
+      }
+
+      return {
+        id: partner.id,
+        slug: partner.slug,
+        name: partner.name,
+        logoUrl: partner.logo_url,
+        siteUrl: partner.site_url,
+        titles,
+      };
+    } catch (error) {
+      console.error('[partner]', error);
+      return null;
+    }
+  },
+);
+
 export const getAllBroadcasters = cache(async () => {
   if (!guard()) return [];
   try {

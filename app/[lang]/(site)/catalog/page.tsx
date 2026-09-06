@@ -71,19 +71,19 @@ export default async function CatalogPage({
       'rounded-full border px-4 py-1.5 text-xs uppercase tracking-[0.12em] transition-colors',
       active
         ? 'border-primary bg-primary text-primary-foreground'
-        : 'border-white/12 text-neutral-400 hover:border-primary/50 hover:text-neutral-100',
+        : 'border-white/12 text-muted-foreground hover:border-primary/50 hover:text-foreground',
     );
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-6 py-16 md:px-10 md:py-24 xl:px-16">
       <header>
         <h1 className="text-display text-[clamp(2rem,4vw,3.2rem)] font-light">{dict.catalog.title}</h1>
-        <p className="mt-3 max-w-2xl text-sm text-neutral-400">{dict.catalog.description}</p>
+        <p className="mt-3 max-w-2xl text-sm text-muted-foreground">{dict.catalog.description}</p>
       </header>
 
       <div className="mt-10 space-y-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="me-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-600">
+          <span className="me-1 text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground/70">
             {dict.catalog.kind}
           </span>
           <Link href={build({ kind: undefined })} className={chip(!filters.kind)}>
@@ -97,7 +97,7 @@ export default async function CatalogPage({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="me-1 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-600">
+          <span className="me-1 text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground/70">
             {dict.catalog.region}
           </span>
           <Link href={build({ region: undefined })} className={chip(!filters.region)}>
@@ -111,13 +111,13 @@ export default async function CatalogPage({
         </div>
       </div>
 
-      <p className="mt-8 text-xs text-neutral-500">
+      <p className="mt-8 text-xs text-muted-foreground">
         {total} {dict.catalog.results}
       </p>
 
       {items.length === 0 ? (
         <div className="py-24 text-center">
-          <p className="text-sm text-neutral-500">{dict.catalog.empty}</p>
+          <p className="text-sm text-muted-foreground">{dict.catalog.empty}</p>
           <Link href={`/${locale}/catalog`} className="mt-4 inline-block text-sm text-primary hover:underline">
             {dict.catalog.clear}
           </Link>
@@ -139,7 +139,7 @@ export default async function CatalogPage({
               ‹
             </Link>
           )}
-          <span className="px-3 py-2 text-sm text-neutral-500">
+          <span className="px-3 py-2 text-sm text-muted-foreground">
             {pageNumber} / {Math.ceil(total / PAGE_SIZE)}
           </span>
           {pageNumber * PAGE_SIZE < total && (

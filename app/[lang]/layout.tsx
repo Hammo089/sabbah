@@ -8,6 +8,8 @@ import { i18n, isLocale, localeDirection, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { buildMetadata, SITE_URL } from '@/lib/seo/metadata';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { ThemeVars } from '@/components/providers/theme-vars';
+import { getSiteSettings } from '@/lib/queries/settings';
 import { cn } from '@/lib/utils';
 
 import '@/app/globals.css';
@@ -97,7 +99,7 @@ export default async function LocaleLayout({
 
   const locale = lang as Locale;
   const dir = localeDirection[locale];
-  const dict = await getDictionary(locale);
+  const [dict, settings] = await Promise.all([getDictionary(locale), getSiteSettings()]);
 
   const organizationLd = {
     '@context': 'https://schema.org',
@@ -133,6 +135,8 @@ export default async function LocaleLayout({
           locale === 'ar' && 'font-arabic',
         )}
       >
+        <ThemeVars settings={settings} />
+
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -17,7 +17,9 @@
     "scripts": "Scénarios",
     "company": "Société",
     "services": "Services",
-    "menu": "Menu"
+    "menu": "Menu",
+    "partners": "Partenaires",
+    "submit": "Proposer un projet"
   },
   "hero": {
     "eyebrow": "Depuis 1955",
@@ -42,7 +44,22 @@
   "b2b": {
     "title": "Licences de contenu",
     "subtitle": "Acquérez des drames arabes premium pour votre plateforme.",
-    "downloadPdf": "Télécharger le catalogue (PDF)"
+    "downloadPdf": "Télécharger le catalogue (PDF)",
+    "eyebrow": "Pour diffuseurs et plateformes",
+    "lead": "Sept décennies de fiction, de formats et de cinéma arabes — droits libérés, sous-titrés et prêts pour le linéaire, la VOD et l'AVOD dans le monde entier.",
+    "pitch1Title": "Droits entièrement libérés",
+    "pitch1Body": "Musique, artistes et droits sous-jacents libérés pour une exploitation mondiale. Chaîne de titres fournie pour chaque contrat.",
+    "pitch2Title": "Prêt à livrer",
+    "pitch2Body": "Masters ProRes et H.264, stems 5.1 et stéréo, screeners protégés par DRM, et sous-titres en arabe, anglais et français.",
+    "pitch3Title": "Territoires flexibles",
+    "pitch3Body": "Fenêtres exclusives et non exclusives sur la région MENA, l'Europe, les Amériques, l'Afrique et l'Asie — négociées par titre ou par package.",
+    "libraryTitle": "Disponible en licence",
+    "partnersTitle": "Ils nous diffusent déjà",
+    "ctaTitle": "Demandez la liste complète des droits",
+    "ctaBody": "Indiquez-nous votre territoire, votre fenêtre et votre plateforme. Nous répondons avec une grille de disponibilité sous deux jours ouvrés.",
+    "ctaButton": "Contacter les licences",
+    "pdfHint": "Connectez-vous avec un compte B2B pour générer le catalogue de disponibilité en direct.",
+    "signIn": "Se connecter"
   },
   "common": {
     "loading": "Chargement",
@@ -145,7 +162,23 @@
     "noBroadcasters": "Aucun diffuseur — ajoutez-en depuis la page Diffuseurs.",
     "comingSoonSection": "Cette section n'est pas encore construite.",
     "creditsHint": "Ajoutez la personne une fois dans Distribution, puis rattachez-la ici avec son personnage.",
-    "noPersonFound": "Aucun résultat. Ajoutez-la d'abord dans Distribution."
+    "noPersonFound": "Aucun résultat. Ajoutez-la d'abord dans Distribution.",
+    "submissions": "Soumissions",
+    "appearance": "Apparence",
+    "partners": "Partenaires",
+    "aiSummary": "Lecture IA",
+    "downloadFile": "Télécharger le scénario",
+    "noSubmissions": "Aucune soumission.",
+    "reference": "Réf",
+    "applicant": "Auteur",
+    "received": "Reçu",
+    "reread": "Relire avec l'IA",
+    "statusNew": "Nouveau",
+    "statusReviewing": "En lecture",
+    "statusShortlisted": "Présélectionné",
+    "statusRejected": "Refusé",
+    "statusOptioned": "Optionné",
+    "notes": "Notes internes"
   },
   "footer": {
     "about": "À propos",
@@ -254,5 +287,219 @@
     "backdrop": "Image de fond (16:9)",
     "photo": "Photo",
     "logo": "Logo"
+  },
+  "licence": {
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "remove": "Supprimer",
+    "add": "Ajouter un contrat",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "title": "Titre",
+    "company": "Société (Diffuseurs)",
+    "otherCompany": "Nom de la société",
+    "signed": "Signé le",
+    "from": "Début",
+    "to": "Expire",
+    "remind": "Me rappeler",
+    "days": "jours avant",
+    "fee": "Montant",
+    "territory": "Territoires",
+    "rights": "Droits",
+    "contract": "Réf. contrat",
+    "notes": "Notes",
+    "exclusive": "Exclusif",
+    "status": "Statut",
+    "expiresIn": "expire dans {n} jours",
+    "expired": "EXPIRÉ",
+    "dismiss": "Ignorer",
+    "noLicences": "Aucun contrat.",
+    "endBeforeStart": "La date de fin précède la date de début.",
+    "titleRequired": "Choisissez un titre."
+  },
+  "appearance": {
+    "title": "Apparence",
+    "hint": "Contrôlez les couleurs, la mise en page et les sections visibles sur l'accueil.",
+    "colors": "Couleurs",
+    "presets": "Préréglages",
+    "layout": "Mise en page",
+    "sections": "Sections de l'accueil",
+    "primary": "Primaire",
+    "accent": "Accent",
+    "background": "Arrière-plan",
+    "foreground": "Texte",
+    "muted": "Atténué",
+    "radius": "Rayon des angles",
+    "headerStyle": "Style d'en-tête",
+    "transparent": "Transparent",
+    "solid": "Opaque",
+    "heroAlign": "Alignement du hero",
+    "alignStart": "Gauche",
+    "alignCenter": "Centre",
+    "filmStrip": "Afficher la bande d'affiches",
+    "stats": "Bandeau de statistiques",
+    "marquee": "Bandeau défilant",
+    "showcase": "Vitrine anniversaire",
+    "rails": "Rails du catalogue",
+    "partners": "Logos partenaires",
+    "preview": "Aperçu en direct",
+    "reset": "Rétablir les couleurs Sabbah",
+    "chrome": "Animation & habillage",
+    "tickerSpeed": "Vitesse du bandeau (secondes par boucle)",
+    "tickerSlower": "Plus élevé = plus lent",
+    "loader": "Transition de page",
+    "loaderStyle": "Style",
+    "loaderRing": "Anneau doré",
+    "loaderSweep": "Balayage doré",
+    "loaderPulse": "Pulsation",
+    "loaderNone": "Désactivé",
+    "loaderSpeed": "Durée (ms)",
+    "loaderLogo": "Logo de transition",
+    "bgVideo": "Film d'arrière-plan",
+    "bgVideoOn": "Lancer le film derrière le site",
+    "bgVideoId": "ID YouTube",
+    "bgVideoOpacity": "Opacité du film (%)",
+    "bgVideoScope": "Portée",
+    "scopeHome": "Accueil seulement",
+    "scopeAll": "Toutes les pages",
+    "bgVideoNote": "Ordinateur uniquement. Jamais chargé sur mobile, en mode animation réduite, en économie de données, ou sur un appareil à faible mémoire.",
+    "publicPages": "Pages publiques",
+    "submissionsOpen": "Accepter les soumissions",
+    "assistantOn": "Afficher l'assistant IA"
+  },
+  "legal": {
+    "termsTitle": "Conditions d'utilisation",
+    "privacyTitle": "Politique de confidentialité",
+    "updated": "Dernière mise à jour",
+    "termsBody": [
+      [
+        "Acceptation",
+        "En accédant à ce site, vous acceptez les présentes conditions. Si vous ne les acceptez pas, n'utilisez pas le site."
+      ],
+      [
+        "Propriété intellectuelle",
+        "Tous les titres, visuels, bandes-annonces, scénarios, logos et textes de ce site appartiennent à Cedars Art Production — Sabbah Brothers ou à ses concédants et sont protégés par le droit d'auteur et le droit des marques. Aucune reproduction, diffusion, revente ou redistribution n'est autorisée sans accord écrit préalable."
+      ],
+      [
+        "Usage autorisé",
+        "Le site est destiné à l'information et aux licences interentreprises. Les screeners, catalogues et documents de droits mis à disposition des partenaires enregistrés sont confidentiels et ne peuvent servir qu'à l'évaluation d'une opportunité de licence."
+      ],
+      [
+        "Comptes",
+        "Les comptes sont délivrés sur invitation. Vous êtes responsable de la confidentialité de vos identifiants et de toute activité effectuée sous votre compte. Nous pouvons suspendre un compte en cas d'usage abusif."
+      ],
+      [
+        "Absence de garantie",
+        "Les données de disponibilité, les spécifications de livraison et les informations de territoire sont indicatives et peuvent changer. Rien sur ce site ne constitue une offre ni une licence contraignante. Seul un contrat signé crée des droits."
+      ],
+      [
+        "Responsabilité",
+        "Dans la limite permise par la loi, nous ne sommes pas responsables des dommages indirects résultant de l'utilisation du site."
+      ],
+      [
+        "Droit applicable",
+        "Les présentes conditions sont régies par le droit libanais et les tribunaux de Beyrouth sont seuls compétents."
+      ]
+    ],
+    "privacyBody": [
+      [
+        "Données collectées",
+        "Les données de compte que vous nous fournissez (nom, société, e-mail professionnel, fonction), les messages envoyés via le formulaire de contact, et des données techniques telles que l'adresse IP, le navigateur et les pages consultées."
+      ],
+      [
+        "Finalités",
+        "Gérer votre compte, répondre aux demandes de licence, générer les documents de droits et de disponibilité, sécuriser la plateforme et respecter nos obligations légales."
+      ],
+      [
+        "Base légale",
+        "L'exécution d'un contrat avec vous ou votre société, notre intérêt légitime à exploiter et sécuriser l'activité, et votre consentement lorsqu'il est requis."
+      ],
+      [
+        "Partage",
+        "Nous recourons à des prestataires d'hébergement, de base de données et d'envoi d'e-mails. Ils traitent les données uniquement sur nos instructions. Nous ne vendons aucune donnée personnelle et n'utilisons aucun traceur publicitaire."
+      ],
+      [
+        "Cookies",
+        "Un cookie de session est utilisé pour l'authentification et un cookie de préférence pour votre langue. Aucun cookie publicitaire ou de profilage n'est utilisé."
+      ],
+      [
+        "Conservation",
+        "Les dossiers de compte sont conservés pendant la relation d'affaires plus la durée exigée par le droit commercial et fiscal libanais. Les messages du formulaire de contact sont conservés 24 mois."
+      ],
+      [
+        "Vos droits",
+        "Vous pouvez demander l'accès, la rectification ou la suppression de vos données, et vous opposer au traitement. Écrivez-nous : nous répondons sous 30 jours."
+      ],
+      [
+        "Contact",
+        "Cedars Art Production — Sabbah Brothers, Beyrouth, Liban."
+      ]
+    ]
+  },
+  "partners": {
+    "title": "Où nous sommes diffusés",
+    "lead": "Les diffuseurs, plateformes et distributeurs qui portent les titres de Cedars Art Production.",
+    "titles": "titres",
+    "acquired": "Titres acquis",
+    "noTitles": "Aucun titre publié n'est encore associé à ce partenaire.",
+    "visit": "Visiter le site",
+    "empty": "Aucun partenaire n'a encore été ajouté."
+  },
+  "submit": {
+    "eyebrow": "Soumissions",
+    "title": "Proposez votre projet",
+    "lead": "Envoyez-nous une série, un film, un format ou un roman. Chaque envoi est enregistré, lu par notre équipe, et n'est jamais publié sur ce site.",
+    "closedTitle": "Les soumissions sont fermées",
+    "closedBody": "Nous n'acceptons pas de nouveaux projets pour le moment. Revenez bientôt.",
+    "stepYou": "À propos de vous",
+    "stepWork": "À propos du projet",
+    "stepFile": "Le document",
+    "fullName": "Nom complet",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "country": "Pays",
+    "agent": "Agent ou société",
+    "portfolio": "Lien portfolio ou IMDb",
+    "workTitle": "Titre du projet",
+    "kind": "Type",
+    "kindSeries": "Série dramatique",
+    "kindFilm": "Long métrage",
+    "kindFormat": "Format",
+    "kindNovel": "Roman / livre",
+    "kindIdea": "Idée / traitement",
+    "kindOther": "Autre",
+    "language": "Langue du projet",
+    "episodes": "Épisodes prévus",
+    "logline": "Logline",
+    "loglineHint": "Une ou deux phrases : ce qui arrive, à qui, et ce qui est en jeu.",
+    "synopsis": "Synopsis",
+    "synopsisHint": "Facultatif. Collez ce que vous voulez — notre lecteur le résume automatiquement.",
+    "file": "Fichier du scénario",
+    "fileHint": "PDF, Word ou texte brut. Jusqu'à 25 Mo. Stocké de façon privée.",
+    "consent": "Je confirme détenir les droits de ce projet et j'accepte les conditions d'utilisation.",
+    "submitBtn": "Envoyer",
+    "sending": "Envoi",
+    "successTitle": "Bien reçu",
+    "successBody": "Votre numéro de référence est ci-dessous. Conservez-le pour tout suivi.",
+    "successAgain": "Envoyer un autre projet",
+    "errorRequired": "Merci de remplir les champs obligatoires.",
+    "errorFile": "Ce type ou cette taille de fichier n'est pas accepté.",
+    "errorGeneric": "Une erreur est survenue. Merci de réessayer.",
+    "privacyNote": "Seule notre équipe de lecture peut ouvrir ce que vous envoyez. Rien n'est public."
+  },
+  "assistant": {
+    "title": "Posez-nous une question",
+    "subtitle": "Sur les soumissions, notre catalogue ou la société.",
+    "open": "Poser une question",
+    "placeholder": "Écrivez votre question…",
+    "send": "Envoyer",
+    "thinking": "Rédaction",
+    "greeting": "Bonjour — je réponds au nom de Cedars Art Production. Interrogez-moi sur les soumissions, nos productions ou nos licences.",
+    "error": "Je n'ai pas pu répondre. Réessayez ou passez par la page contact.",
+    "disclaimer": "Assistant automatisé. Pour une réponse engageante, contactez l'équipe.",
+    "suggest1": "Qu'acceptez-vous ?",
+    "suggest2": "Quel est le délai de réponse ?",
+    "suggest3": "Mon scénario est-il confidentiel ?",
+    "clear": "Effacer"
   }
 }

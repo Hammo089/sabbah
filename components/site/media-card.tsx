@@ -20,12 +20,13 @@ export function MediaCard({
   priority?: boolean;
 }) {
   const Icon = KIND_ICON[item.kind] ?? Tv;
+  const base = item.kind === 'movie' ? 'movies' : 'series';
 
   return (
-    <Link href={`/${lang}/series/${item.slug}`} className="group block">
+    <Link href={`/${lang}/${base}/${item.slug}`} className="group block">
       <div
         className={cn(
-          'relative aspect-[2/3] overflow-hidden rounded-md bg-neutral-900',
+          'on-media relative aspect-[2/3] overflow-hidden rounded-md bg-muted',
           'ring-1 ring-white/[0.06] transition-all duration-500',
           'group-hover:ring-primary/45 group-hover:shadow-[0_18px_50px_-18px_rgba(44,132,92,0.5)]',
         )}
@@ -40,7 +41,7 @@ export function MediaCard({
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
-          <Icon className="absolute inset-0 m-auto size-6 text-neutral-700" />
+          <Icon className="absolute inset-0 m-auto size-6 text-muted-foreground/60" />
         )}
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -49,7 +50,7 @@ export function MediaCard({
           <span
             className={cn(
               'absolute top-2 start-2 rounded px-1.5 py-0.5 text-[0.6rem] font-medium uppercase tracking-wider',
-              item.isComingSoon ? 'bg-neutral-900/90 text-primary' : 'bg-primary text-primary-foreground',
+              item.isComingSoon ? 'bg-black/80 text-primary' : 'bg-primary text-primary-foreground',
             )}
           >
             {item.isComingSoon ? labels.comingSoon : labels.new}
@@ -57,7 +58,7 @@ export function MediaCard({
         )}
 
         {item.seasons > 1 && (
-          <span className="absolute bottom-2 end-2 rounded bg-black/70 px-1.5 py-0.5 text-[0.6rem] text-neutral-200">
+          <span className="absolute bottom-2 end-2 rounded bg-black/70 px-1.5 py-0.5 text-[0.6rem] text-white">
             S{item.seasons}
           </span>
         )}

@@ -9,6 +9,7 @@ import { STAFF_ROLES, type Profile } from '@/lib/auth/rbac';
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
 import { AdminTopbar } from '@/components/admin/admin-topbar';
 import { Toaster } from '@/components/ui/sonner';
+import { getExpiringLicenceCount, getNewSubmissionCount } from '@/lib/queries/licences';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -60,9 +61,20 @@ export default async function AdminLayout({
   const dict = await getDictionary(locale);
   const dir = localeDirection[locale];
 
+  const [expiringCount, newSubmissions] = await Promise.all([
+    getExpiringLicenceCount(),
+    getNewSubmissionCount(),
+  ]);
+
   return (
     <div className="flex min-h-dvh bg-muted/30" dir={dir}>
-      <AdminSidebar lang={locale} role={profile.role} dict={dict} />
+      <AdminSidebar
+        lang={locale}
+        role={profile.role}
+        dict={dict}
+        expiringCount={expiringCount}
+        newSubmissions={newSubmissions}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminTopbar

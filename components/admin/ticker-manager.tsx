@@ -4,7 +4,11 @@
 import * as React from 'react';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { saveTicker, deleteTicker } from '@/app/[lang]/admin/(dashboard)/settings-actions';
+import {
+  saveTicker,
+  deleteTicker,
+  saveTickerChrome,
+} from '@/app/[lang]/admin/(dashboard)/settings-actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -99,6 +103,72 @@ function Row({
           </Button>
         )}
       </div>
+    </form>
+  );
+}
+
+/**
+ * Visibility + scroll speed, on the page staff actually open when the strip is
+ * running too fast. Writes the same two columns the Appearance page writes.
+ */
+export function TickerControls({
+  enabled,
+  speed,
+  dict,
+}: {
+  enabled: boolean;
+  speed: number;
+  dict: { visible: string; speed: string; hint: string; save: string; saved: string };
+}) {
+  const [value, setValue] = React.useState(speed);
+  const [isPending, startTransition] = React.useTransition();
+
+  function submit(formData: FormData) {
+    startTransition(async () => {
+      const res = await saveTickerChrome(null, formData);
+      if (!res.ok) toast.error(res.error);
+      else toast.success(dict.saved);
+    });
+  }
+
+  return (
+    <form action={submit} className="space-y-5 rounded-lg border border-border bg-card p-5">
+      <label className="flex cursor-pointer items-center justify-between gap-4">
+        <span className="text-sm">{dict.visible}</span>
+        <Switch name="ticker_enabled" defaultChecked={enabled} />
+      </label>
+
+      <div className="space-y-1.5 border-t border-border pt-5">
+        <Label className="text-xs text-muted-foreground">{dict.speed}</Label>
+        <div className="flex items-center gap-3">
+          <input
+            type="range"
+            min={10}
+            max={240}
+            step={2}
+            value={value}
+            onChange={(e) => setValue(Number(e.target.value))}
+            className="h-2 flex-1 cursor-pointer accent-[hsl(var(--primary))]"
+            aria-label={dict.speed}
+          />
+          <Input
+            name="ticker_speed"
+            type="number"
+            min={10}
+            max={240}
+            value={value}
+            onChange={(e) => setValue(Number(e.target.value))}
+            dir="ltr"
+            className="w-20 text-center"
+          />
+        </div>
+        <p className="text-[0.7rem] text-muted-foreground/70">{dict.hint}</p>
+      </div>
+
+      <Button type="submit" variant="gold" size="sm" disabled={isPending}>
+        {isPending ? <Loader2 className="animate-spin" /> : null}
+        {dict.save}
+      </Button>
     </form>
   );
 }

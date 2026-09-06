@@ -44,9 +44,9 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
       <ol className="mt-20 space-y-0">
         {MILESTONES.map((m, i) => (
           <Reveal key={m.year} as="li" delay={i * 0.05}>
-            <div className="grid grid-cols-[auto_1fr] gap-6 border-t border-white/[0.07] py-8">
+            <div className="grid grid-cols-[auto_1fr] gap-6 border-t border-border py-8">
               <span className="text-display text-2xl font-light text-primary md:text-3xl">{m.year}</span>
-              <p className="text-[0.95rem] leading-relaxed text-neutral-300">
+              <p className="text-[0.95rem] leading-relaxed text-foreground/80">
                 {dict.milestones[m.key]}
               </p>
             </div>
@@ -54,9 +54,9 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
         ))}
       </ol>
 
-      <section className="mt-20 border-t border-white/[0.07] pt-10">
+      <section className="mt-20 border-t border-border pt-10">
         <p className="text-[0.65rem] uppercase tracking-[0.24em] text-primary">{dict.pages.offices}</p>
-        <p className="mt-4 text-lg text-neutral-300">{dict.hero.offices}</p>
+        <p className="mt-4 text-lg text-foreground/80">{dict.hero.offices}</p>
       </section>
     </PageShell>
   );

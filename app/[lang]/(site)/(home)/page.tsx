@@ -14,6 +14,7 @@ import { ShowcaseGrid } from '@/components/site/home/showcase-grid';
 import { AnniversaryFilm } from '@/components/site/home/anniversary-film';
 import { BroadcasterStrip } from '@/components/site/home/broadcaster-strip';
 import { MediaRail } from '@/components/site/media-rail';
+import { AmbientFilm } from '@/components/site/ambient-film';
 
 export const revalidate = 900;
 
@@ -61,24 +62,35 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
+      {settings.bg_video_enabled && settings.bg_video_scope === 'home' && (
+        <AmbientFilm youtubeId={settings.bg_video_youtube} opacity={settings.bg_video_opacity} />
+      )}
+
       <CinematicHero
         lang={locale}
         dict={dict}
         posters={posters.slice(0, 10)}
         backdropUrl={settings.hero_backdrop_url ?? posters[0]?.posterUrl ?? null}
+        align={settings.hero_align}
+        showStrip={settings.hero_show_strip}
       />
 
-      <StatsBar
-        stats={[
-          { value: settings.stat_years, sup: '+', label: dict.stats.years },
-          { value: settings.stat_productions, sup: '+', label: dict.stats.productions },
-          { value: settings.stat_offices, label: dict.stats.offices },
-          { value: settings.stat_partners, sup: '+', label: dict.stats.partners },
-        ]}
-      />
+      {settings.show_stats && (
+        <StatsBar
+          stats={[
+            { value: settings.stat_years, sup: '+', label: dict.stats.years },
+            { value: settings.stat_productions, sup: '+', label: dict.stats.productions },
+            { value: settings.stat_offices, label: dict.stats.offices },
+            { value: settings.stat_partners, sup: '+', label: dict.stats.partners },
+          ]}
+        />
+      )}
 
-      <TitleMarquee names={featured.items.slice(0, 14).map((i) => i.title)} />
+      {settings.show_marquee && (
+        <TitleMarquee names={featured.items.slice(0, 14).map((i) => i.title)} />
+      )}
 
+      {settings.show_showcase && (
       <section className="px-6 py-20 md:px-14 md:py-28">
         <div className="mx-auto w-full max-w-[1600px]">
           <header className="mb-12 flex flex-wrap items-end justify-between gap-6">
@@ -97,6 +109,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <ShowcaseGrid lang={locale} items={showcase} labels={labels} />
         </div>
       </section>
+      )}
 
       {settings.anniversary_enabled && settings.anniversary_youtube && (
         <AnniversaryFilm
@@ -111,10 +124,14 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         />
       )}
 
-      <MediaRail lang={locale} title={dict.catalog.fresh} items={rails.fresh} href={`/${locale}/catalog`} labels={labels} />
-      <MediaRail lang={locale} title={dict.catalog.soon} items={rails.soon} labels={labels} />
+      {settings.show_rails && (
+        <>
+          <MediaRail lang={locale} title={dict.catalog.fresh} items={rails.fresh} href={`/${locale}/catalog`} labels={labels} />
+          <MediaRail lang={locale} title={dict.catalog.soon} items={rails.soon} labels={labels} />
+        </>
+      )}
 
-      <BroadcasterStrip label={dict.home.partners} items={broadcasters} />
+      {settings.show_partners && <BroadcasterStrip label={dict.home.partners} items={broadcasters} />}
     </>
   );
 }

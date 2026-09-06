@@ -45,14 +45,14 @@ export function MobileNav({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] bg-[#000000] lg:hidden"
+            className="fixed inset-0 z-[80] bg-background lg:hidden"
           >
             <div className="flex h-16 items-center justify-end px-6">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="close"
-                className="inline-flex size-9 items-center justify-center rounded-md border border-white/10 text-neutral-400"
+                className="inline-flex size-9 items-center justify-center rounded-md border border-border text-muted-foreground"
               >
                 <X className="size-4" />
               </button>
@@ -69,7 +69,7 @@ export function MobileNav({
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="block border-b border-white/[0.06] py-4 text-display text-2xl font-light text-neutral-100"
+                    className="block border-b border-border py-4 text-display text-2xl font-light text-foreground"
                   >
                     {item.label}
                   </Link>
