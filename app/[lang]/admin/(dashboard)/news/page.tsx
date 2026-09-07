@@ -54,6 +54,9 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     remove: dict.admin.remove,
     cancel: dict.admin.cancel,
     empty: dict.admin.noRecords,
+    edit: dict.admin.edit,
+    delete: dict.admin.delete,
+    confirmDelete: dict.admin.confirmDelete,
   };
 
   return (

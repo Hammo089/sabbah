@@ -1,7 +1,8 @@
 // app/[lang]/admin/(dashboard)/legacy/page.tsx — SERVER COMPONENT
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
+import { getCurrentProfile, isAdmin } from '@/lib/auth/rbac';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { LegacyManager } from '@/components/admin/legacy-manager';
 
@@ -12,6 +13,11 @@ export default async function AdminLegacyPage({ params }: { params: Promise<{ la
   if (!isLocale(lang)) notFound();
 
   const locale = lang as Locale;
+
+  // The sidebar hides this module from editors; a guessable URL is not access
+  // control, so the page enforces the same rule the actions do.
+  const profile = await getCurrentProfile();
+  if (!isAdmin(profile)) redirect(`/${locale}/403`);
   const dict = await getDictionary(locale);
 
   const supabase = await createSupabaseServerClient();

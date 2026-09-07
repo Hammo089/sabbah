@@ -39,3 +39,14 @@ export function isStaff(profile: Profile | null): boolean {
 export function isSuperAdmin(profile: Profile | null): boolean {
   return hasRole(profile, 'super_admin');
 }
+
+/**
+ * Site-wide configuration — theme, hero copy, logos, section visibility,
+ * company legacy. An editor curates content; changing what every visitor sees
+ * on the homepage is an owner decision, which is why the sidebar and the
+ * dashboard tiles already hide these. Pages must enforce it too: hiding a link
+ * is not access control, and the routes are guessable.
+ */
+export function isAdmin(profile: Profile | null): boolean {
+  return hasRole(profile, 'super_admin', 'admin');
+}

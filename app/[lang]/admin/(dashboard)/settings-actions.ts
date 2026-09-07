@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { randomBytes } from 'node:crypto';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase/server';
-import { getCurrentProfile, isStaff, isSuperAdmin } from '@/lib/auth/rbac';
+import { getCurrentProfile, isStaff, isAdmin, isSuperAdmin } from '@/lib/auth/rbac';
 import { youtubeId } from '@/lib/media/video-source';
 import type { ActionResult } from './actions';
 
@@ -64,7 +64,7 @@ const SettingsSchema = z.object({
 
 export async function saveSettings(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const profile = await getCurrentProfile();
-  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+  if (!isAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
 
   const parsed = SettingsSchema.safeParse({
     ticker_enabled: formData.get('ticker_enabled') === 'on',
@@ -314,7 +314,7 @@ const LegacySchema = z.object({
 
 export async function saveLegacy(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const profile = await getCurrentProfile();
-  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+  if (!isAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
 
   const parsed = LegacySchema.safeParse({
     id: (formData.get('id') as string) || undefined,
@@ -356,7 +356,7 @@ export async function saveLegacy(_prev: ActionResult | null, formData: FormData)
 
 export async function deleteLegacy(id: string): Promise<ActionResult> {
   const profile = await getCurrentProfile();
-  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+  if (!isAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from('company_legacy').delete().eq('id', id);
@@ -575,7 +575,7 @@ function heroCopy(formData: FormData): Record<string, Record<string, string>> | 
 
 export async function saveTheme(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const profile = await getCurrentProfile();
-  if (!isStaff(profile)) return { ok: false, error: 'FORBIDDEN' };
+  if (!isAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
 
   const parsed = ThemeSchema.safeParse({
     theme_primary: formData.get('theme_primary'),

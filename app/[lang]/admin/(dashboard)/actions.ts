@@ -100,3 +100,41 @@ export async function setUserRole(input: z.infer<typeof RoleSchema>): Promise<Ac
   revalidatePath('/[lang]/admin', 'layout');
   return { ok: true };
 }
+
+const ActiveSchema = z.object({
+  userId: z.string().uuid(),
+  isActive: z.boolean(),
+});
+
+/**
+ * Deactivate or reactivate an account.
+ *
+ * `is_active` is what `hasRole` actually gates on (lib/auth/rbac.ts), so this
+ * is the real revocation switch — without it, removing a departed staff
+ * member's access meant demoting them by hand or editing the database.
+ *
+ * Deactivating yourself is refused for the same reason demoting yourself is:
+ * the last super_admin can otherwise lock the whole organisation out.
+ */
+export async function setUserActive(input: z.infer<typeof ActiveSchema>): Promise<ActionResult> {
+  const parsed = ActiveSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'INVALID_INPUT' };
+
+  const profile = await getCurrentProfile();
+  if (!isSuperAdmin(profile)) return { ok: false, error: 'FORBIDDEN' };
+
+  if (profile && profile.id === parsed.data.userId && !parsed.data.isActive) {
+    return { ok: false, error: 'CANNOT_DEACTIVATE_SELF' };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from('users_profiles')
+    .update({ is_active: parsed.data.isActive })
+    .eq('id', parsed.data.userId);
+
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/[lang]/admin', 'layout');
+  return { ok: true };
+}

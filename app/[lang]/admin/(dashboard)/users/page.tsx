@@ -1,6 +1,7 @@
 // app/[lang]/admin/(dashboard)/users/page.tsx — SERVER COMPONENT
 // super_admin only. The admin layout already blocks non-staff; this page adds
 // the narrower super_admin gate because roles are the keys to the whole system.
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
@@ -9,10 +10,19 @@ import { getCurrentProfile, isSuperAdmin } from '@/lib/auth/rbac';
 import { RoleSelect } from '@/components/admin/role-select';
 import { InviteUser } from '@/components/admin/invite-user';
 import { CreateUser } from '@/components/admin/create-user';
+import { ActiveToggle } from '@/components/admin/active-toggle';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminUsersPage({ params }: { params: Promise<{ lang: string }> }) {
+const PAGE_SIZE = 50;
+
+export default async function AdminUsersPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ lang: string }>;
+  searchParams: Promise<{ page?: string }>;
+}) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
 
@@ -24,24 +34,34 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ lan
   const dict = await getDictionary(locale);
   const supabase = await createSupabaseServerClient();
 
-  const [{ data }, { data: invites }] = await Promise.all([
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const from = (page - 1) * PAGE_SIZE;
+
+  // This is the one admin table that grows with every signup — b2b_client and
+  // viewer rows included — so it is the one that must not fetch unbounded.
+  const [{ data, count }, { data: invites }] = await Promise.all([
     supabase
       .from('users_profiles')
-      .select('id, email, full_name, role, is_active, created_at')
-      .order('created_at', { ascending: true }),
+      .select('id, email, full_name, role, is_active, created_at', { count: 'exact' })
+      .order('created_at', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1),
     supabase
       .from('user_invitations')
       .select('email, role, created_at')
       .is('accepted_at', null)
-      .order('created_at', { ascending: false }),
+      .order('created_at', { ascending: false })
+      .limit(100),
   ]);
 
   const rows = data ?? [];
+  const total = count ?? rows.length;
+  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <div>
       <h1 className="text-display text-2xl font-light">{dict.admin.users}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{rows.length}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{total}</p>
 
       <div className="mt-8">
         <CreateUser
@@ -80,6 +100,8 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ lan
             <tr>
               <th className="p-3 text-start font-medium">{dict.admin.users}</th>
               <th className="w-52 p-3 text-start font-medium">{dict.admin.role}</th>
+              <th className="w-32 p-3 text-start font-medium">{dict.admin.active}</th>
+              <th className="w-36 p-3 text-start font-medium">{dict.admin.joined}</th>
             </tr>
           </thead>
 
@@ -111,11 +133,59 @@ export default async function AdminUsersPage({ params }: { params: Promise<{ lan
                     }}
                   />
                 </td>
+
+                <td className="p-3">
+                  <ActiveToggle
+                    userId={row.id}
+                    defaultValue={row.is_active}
+                    isSelf={row.id === profile?.id}
+                    labels={{
+                      active: dict.admin.active,
+                      inactive: dict.admin.inactive,
+                      deactivate: dict.admin.deactivate,
+                      activate: dict.admin.activate,
+                    }}
+                  />
+                </td>
+
+                <td className="p-3 text-xs text-muted-foreground" dir="ltr">
+                  {new Date(row.created_at).toLocaleDateString(locale)}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {lastPage > 1 && (
+        <nav className="mt-5 flex items-center justify-between text-sm" aria-label="Pagination">
+          {page > 1 ? (
+            <Link
+              href={`?page=${page - 1}`}
+              className="rounded-md border border-border px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              ‹
+            </Link>
+          ) : (
+            <span />
+          )}
+
+          <span className="text-xs text-muted-foreground">
+            {page} / {lastPage}
+          </span>
+
+          {page < lastPage ? (
+            <Link
+              href={`?page=${page + 1}`}
+              className="rounded-md border border-border px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              ›
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
     </div>
   );
 }

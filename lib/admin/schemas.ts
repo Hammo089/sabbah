@@ -22,8 +22,36 @@ const nullableUrl = z.string().url().max(600).nullable().or(z.literal('')).trans
 const nullableText = (max: number) =>
   z.string().max(max).nullable().or(z.literal('')).transform((v) => (v ? v : null));
 const nullableUuid = z.string().uuid().nullable().or(z.literal('')).transform((v) => v || null);
+/**
+ * A blank numeric field means "not set", not zero.
+ *
+ * The previous shape put `z.coerce.number()` FIRST, and coercion turns '' into
+ * 0 — so the first branch always succeeded, the `.or(z.literal(''))` fallback
+ * and the `v === ''` transform were both unreachable, and clearing a duration
+ * or a follower count silently stored 0. Checking for the empty string before
+ * coercing is what makes the null path reachable.
+ */
 const nullableInt = (min: number, max: number) =>
-  z.coerce.number().int().min(min).max(max).nullable().or(z.literal('')).transform((v) => (v === '' ? null : v));
+  z
+    .union([z.literal(''), z.null(), z.coerce.number().int().min(min).max(max)])
+    .transform((v) => (v === '' || v === null ? null : v));
+
+/**
+ * A DATE column: anything ≤10 characters used to pass Zod and then fail in
+ * Postgres, surfacing a raw driver error to the operator. Validate the shape
+ * AND that it is a real calendar date — '2026-02-31' is neither.
+ */
+const nullableDate = z
+  .union([z.literal(''), z.null(), z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD')])
+  .transform((v) => (v ? v : null))
+  .refine((v) => {
+    if (v === null) return true;
+    // Round-trip rather than trusting Date to reject: V8 happily rolls
+    // '2026-02-31' forward to March 3 instead of returning Invalid Date, so the
+    // only reliable check is that the parsed date prints back as what was typed.
+    const parsed = new Date(`${v}T00:00:00Z`);
+    return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === v;
+  }, 'INVALID_DATE');
 
 export const TABLE_SCHEMAS = {
   tags: z.object({
@@ -66,7 +94,7 @@ export const TABLE_SCHEMAS = {
     cover_url: nullableUrl,
     outlet: nullableText(120),
     external_url: nullableUrl,
-    published_on: nullableText(10),
+    published_on: nullableDate,
     is_published: z.boolean().default(false),
     sort_order: z.coerce.number().int().min(0).max(999).default(0),
   }),

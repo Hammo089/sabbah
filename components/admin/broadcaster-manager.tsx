@@ -119,6 +119,13 @@ export function BroadcasterManager({
 }) {
   const [items, setItems] = React.useState(rows);
 
+  // Pick up the server's fresh rows after a save — without this a record you
+  // just created is invisible until a hard reload, and cannot be reopened.
+  React.useEffect(() => {
+    setItems(rows);
+  }, [rows]);
+
+
   return (
     <div className="space-y-4">
       <div>

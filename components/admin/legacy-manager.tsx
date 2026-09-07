@@ -158,6 +158,13 @@ export function LegacyManager({
 }) {
   const [items, setItems] = React.useState(rows);
 
+  // Pick up the server's fresh rows after a save — without this a record you
+  // just created is invisible until a hard reload, and cannot be reopened.
+  React.useEffect(() => {
+    setItems(rows);
+  }, [rows]);
+
+
   return (
     <div className="max-w-4xl space-y-6">
       <div>

@@ -86,6 +86,9 @@ export default async function AdminLayout({
             role: profile.role,
           }}
           signOutLabel={dict.auth.signOut}
+          dict={dict}
+          expiringCount={expiringCount}
+          newSubmissions={newSubmissions}
         />
 
         <main className="flex-1 overflow-x-hidden px-4 py-6 md:px-8 md:py-8">

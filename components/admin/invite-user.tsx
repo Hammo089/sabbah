@@ -34,6 +34,13 @@ export function InviteUser({
 }) {
   const [state, formAction] = useActionState<ActionResult | null, FormData>(inviteUser, null);
   const [list, setList] = React.useState(pending);
+
+  // Pick up the server's fresh invitations after inviteUser succeeds — without
+  // this the operator gets no confirmation the invite exists and re-sends it.
+  React.useEffect(() => {
+    setList(pending);
+  }, [pending]);
+
   const [isPending, startTransition] = React.useTransition();
   const formRef = React.useRef<HTMLFormElement>(null);
 

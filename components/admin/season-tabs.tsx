@@ -9,7 +9,8 @@ import { cn } from '@/lib/utils';
 
 export type TabKey =
   | 'summary' | 'details' | 'broadcast' | 'images' | 'posters' | 'gallery'
-  | 'synopsis' | 'episodes' | 'watch' | 'cast' | 'crew' | 'website'
+  | 'synopsis' | 'episodes' | 'watch'
+  | 'videos' | 'cast' | 'crew' | 'website'
   | 'social' | 'tracking';
 
 export type TabDef = { key: TabKey; label: string; badge?: number };

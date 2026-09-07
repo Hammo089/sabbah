@@ -6,6 +6,7 @@ import { Plus, User } from 'lucide-react';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { localizedSearchFilter } from '@/lib/admin/search';
 import { Button } from '@/components/ui/button';
 import { t } from '@/lib/utils';
 
@@ -32,7 +33,10 @@ export default async function AdminPeoplePage({
     .order('created_at', { ascending: false })
     .limit(100);
 
-  if (q?.trim()) query = query.ilike('slug', `%${q.trim()}%`);
+  // Search the slug AND every language of the jsonb column: an operator
+  // types the title they know, not the transliterated slug.
+  const filter = q ? localizedSearchFilter(q, 'name') : null;
+  if (filter) query = query.or(filter);
 
   const { data, count } = await query;
   const rows = data ?? [];

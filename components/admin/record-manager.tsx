@@ -6,6 +6,7 @@
 // near-identical editors that drift apart.
 import * as React from 'react';
 import { Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { ConfirmButton } from '@/components/admin/confirm-button';
 import { toast } from 'sonner';
 import { saveRecord, deleteRecord } from '@/app/[lang]/admin/(dashboard)/record-actions';
 import { Input } from '@/components/ui/input';
@@ -44,6 +45,9 @@ export type ManagerDict = {
   remove: string;
   cancel: string;
   empty: string;
+  edit: string;
+  delete: string;
+  confirmDelete: string;
 };
 
 const INPUT =
@@ -271,16 +275,23 @@ export function RecordManager({
                   </span>
                 )}
 
-                <div className="ms-auto flex gap-1">
-                  <Button variant="ghost" size="sm" onClick={() => setEditing(row.id)}>
-                    <Pencil className="size-3.5" />
-                  </Button>
+                <div className="ms-auto flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="sm"
+                    aria-label={`${dict.edit} — ${row.primary}`}
+                    title={dict.edit}
+                    onClick={() => setEditing(row.id)}
+                  >
+                    <Pencil className="size-3.5" />
+                  </Button>
+                  <ConfirmButton
+                    label={`${dict.delete} — ${row.primary}`}
+                    confirmLabel={dict.confirmDelete}
+                    cancelLabel={dict.cancel}
                     disabled={pending}
-                    className="text-destructive hover:bg-destructive/10"
-                    onClick={() =>
+                    className="inline-flex h-8 items-center rounded-md px-2 text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
+                    onConfirm={() =>
                       start(async () => {
                         const res = await deleteRecord(table, row.id);
                         if (!res.ok) toast.error(res.error);
@@ -289,7 +300,7 @@ export function RecordManager({
                     }
                   >
                     <Trash2 className="size-3.5" />
-                  </Button>
+                  </ConfirmButton>
                 </div>
               </div>
             ),

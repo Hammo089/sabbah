@@ -6,7 +6,7 @@ import { Loader2, Plus, Trash2, AlertTriangle, BellOff, Pencil, X } from 'lucide
 import { toast } from 'sonner';
 import { saveLicence, deleteLicence, acknowledgeReminder } from '@/app/[lang]/admin/(dashboard)/settings-actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/admin/field';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
@@ -46,15 +46,6 @@ type Dict = {
   notes: string; exclusive: string; status: string; expiresIn: string; expired: string;
   dismiss: string; noLicences: string; endBeforeStart: string; titleRequired: string;
 };
-
-function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={cn('space-y-1.5', className)}>
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      {children}
-    </div>
-  );
-}
 
 function LicenceForm({
   row,

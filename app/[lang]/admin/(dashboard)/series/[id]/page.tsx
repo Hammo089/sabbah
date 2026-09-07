@@ -16,6 +16,7 @@ import { CreditsEditor } from '@/components/admin/credits-editor';
 import { TitleBroadcasters } from '@/components/admin/title-broadcasters';
 import { SeasonTabs, type TabDef } from '@/components/admin/season-tabs';
 import { SeasonDetails } from '@/components/admin/season-details';
+import { VideoManager, type VideoRow } from '@/components/admin/video-manager';
 import { SeasonLinks } from '@/components/admin/season-links';
 import { t } from '@/lib/utils';
 
@@ -80,7 +81,7 @@ export default async function SeasonEditorPage({
   const { data } = await supabase.from('series').select('*').eq('id', id).maybeSingle();
   if (!data) notFound();
 
-  const [{ data: bcs }, { data: links }, { data: episodes }, { data: assets }, { data: events }, { data: socials }] =
+  const [{ data: bcs }, { data: links }, { data: episodes }, { data: assets }, { data: events }, { data: socials }, { data: videos }] =
     await Promise.all([
       supabase.from('broadcasters').select('id, name').order('sort_order'),
       supabase.from('title_broadcasters').select('broadcaster_id').eq('series_id', id),
@@ -88,6 +89,13 @@ export default async function SeasonEditorPage({
       supabase.from('media_assets').select('id, url, asset_type').eq('series_id', id).order('sort_order').limit(200),
       supabase.from('tracking_events').select('*').eq('entity_id', id).order('created_at', { ascending: false }).limit(50),
       supabase.from('social_accounts').select('id, platform, handle, profile_url, followers').eq('series_id', id),
+      supabase
+        .from('title_videos')
+        .select('id, kind, label, youtube_id, url, thumbnail_url, duration_seconds, is_primary, sort_order')
+        .eq('series_id', id)
+        .order('is_primary', { ascending: false })
+        .order('sort_order')
+        .limit(100),
     ]);
 
   const values: TitleFormValues = {
@@ -131,6 +139,7 @@ export default async function SeasonEditorPage({
     { key: 'synopsis', label: dict.season.synopsis },
     { key: 'episodes', label: dict.season.episodes, badge: episodes?.length ?? 0 },
     { key: 'watch', label: dict.season.watch },
+    { key: 'videos', label: dict.admin.videos, badge: videos?.length ?? 0 },
     { key: 'cast', label: dict.season.cast },
     { key: 'crew', label: dict.season.crew },
     { key: 'website', label: dict.season.website },
@@ -227,6 +236,32 @@ export default async function SeasonEditorPage({
           </tbody>
         </table>
       </div>
+    ),
+
+    videos: (
+      <VideoManager
+        seriesId={data.id}
+        rows={(videos ?? []) as VideoRow[]}
+        dict={{
+          videos: dict.admin.videos,
+          addVideo: dict.admin.addVideo,
+          kind: dict.admin.videoKind,
+          label: dict.admin.videoLabel,
+          youtube: dict.admin.videoYoutube,
+          url: dict.admin.videoUrl,
+          thumb: dict.admin.videoThumb,
+          duration: dict.admin.videoDuration,
+          primary: dict.admin.videoPrimary,
+          empty: dict.admin.noVideos,
+          save: dict.admin.save,
+          saved: dict.admin.saved,
+          cancel: dict.admin.cancel,
+          edit: dict.admin.edit,
+          delete: dict.admin.delete,
+          confirmDelete: dict.admin.confirmDelete,
+          kinds: dict.detail.kinds as Record<string, string>,
+        }}
+      />
     ),
 
     watch: (

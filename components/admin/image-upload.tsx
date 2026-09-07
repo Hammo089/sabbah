@@ -66,6 +66,15 @@ export function ImageUpload({
 }) {
   const [url, setUrl] = React.useState(defaultValue ?? '');
   const [busy, setBusy] = React.useState(false);
+
+  // Re-seed when the row this control edits changes, and — the case that bites
+  // — when an "add new" form is cleared with form.reset(). reset() restores
+  // native inputs only; a React-controlled hidden input keeps whatever it held,
+  // so without this the NEXT record created silently inherits the previous
+  // record's image. defaultValue flips back to '' on reset, which lands here.
+  React.useEffect(() => {
+    setUrl(defaultValue ?? '');
+  }, [defaultValue]);
   const [dragging, setDragging] = React.useState(false);
   const [showUrlField, setShowUrlField] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -138,8 +147,12 @@ export function ImageUpload({
         </button>
       </div>
 
-      {/* The value the form actually submits */}
-      <input type="hidden" name={name} value={url} />
+      {/*
+        The value the form actually submits. `key` forces a fresh node whenever
+        the incoming default changes, so the browser's own reset baseline for
+        this field is re-established rather than frozen at first mount.
+      */}
+      <input key={defaultValue ?? ''} type="hidden" name={name} value={url} readOnly />
 
       <div
         onDragOver={(e) => {

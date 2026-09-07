@@ -5,9 +5,11 @@ import { Tv } from 'lucide-react';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/get-dictionary';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { localizedSearchFilter } from '@/lib/admin/search';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DeleteTitleButton } from '@/components/admin/delete-title-button';
 import { FeaturedSliderSwitch } from '@/components/admin/featured-slider-switch';
 import { StatusSelect } from '@/components/admin/status-select';
 import { t, cn } from '@/lib/utils';
@@ -44,7 +46,10 @@ export default async function AdminSeriesPage({
     .order('sort_order', { ascending: true })
     .range(from, from + PAGE_SIZE - 1);
 
-  if (q?.trim()) query = query.ilike('slug', `%${q.trim()}%`);
+  // Search the slug AND every language of the jsonb column: an operator
+  // types the title they know, not the transliterated slug.
+  const filter = q ? localizedSearchFilter(q, 'title') : null;
+  if (filter) query = query.or(filter);
 
   const { data, count } = await query;
   const rows = data ?? [];
@@ -95,6 +100,7 @@ export default async function AdminSeriesPage({
                 <th className="w-24 p-3 text-start font-medium">{dict.admin.seasons}</th>
                 <th className="w-40 p-3 text-start font-medium">{dict.admin.status}</th>
                 <th className="w-44 p-3 text-start font-medium">{dict.admin.featured}</th>
+                <th className="w-16 p-3" />
               </tr>
             </thead>
 
@@ -144,6 +150,18 @@ export default async function AdminSeriesPage({
                       title={t(row.title, locale, row.slug)}
                     />
                   </td>
+
+                  <td className="p-3 text-end">
+                    <DeleteTitleButton
+                      id={row.id}
+                      title={t(row.title, locale, row.slug)}
+                      labels={{
+                        delete: dict.admin.delete,
+                        confirmDelete: dict.admin.confirmDelete,
+                        cancel: dict.admin.cancel,
+                      }}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -154,23 +172,23 @@ export default async function AdminSeriesPage({
       {total > PAGE_SIZE && (
         <nav className="mt-8 flex justify-center gap-3">
           {pageNumber > 1 && (
-            <a
+            <Link
               href={`?page=${pageNumber - 1}${q ? `&q=${encodeURIComponent(q)}` : ''}`}
               className="rounded-md border border-border px-4 py-2 text-sm hover:border-primary/50"
             >
               ‹
-            </a>
+            </Link>
           )}
           <span className="px-3 py-2 text-sm text-muted-foreground">
             {pageNumber} / {Math.ceil(total / PAGE_SIZE)}
           </span>
           {from + PAGE_SIZE < total && (
-            <a
+            <Link
               href={`?page=${pageNumber + 1}${q ? `&q=${encodeURIComponent(q)}` : ''}`}
               className="rounded-md border border-border px-4 py-2 text-sm hover:border-primary/50"
             >
               ›
-            </a>
+            </Link>
           )}
         </nav>
       )}

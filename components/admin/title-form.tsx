@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { saveTitle } from '@/app/[lang]/admin/(dashboard)/title-actions';
 import type { ActionResult } from '@/app/[lang]/admin/(dashboard)/actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/admin/field';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { ImageUpload } from '@/components/admin/image-upload';
@@ -59,14 +59,6 @@ function SaveBar({ label }: { label: string }) {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      {children}
-    </div>
-  );
-}
 
 export function TitleForm({
   lang,
