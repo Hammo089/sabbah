@@ -235,6 +235,9 @@ export type PeopleRow = {
   birth_year: number | null;
   nationality: string | null;
   is_published: boolean;
+  is_team: boolean;
+  job_title: Json;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 };
@@ -269,6 +272,45 @@ export type MediaAssetsRow = {
   asset_type: 'poster' | 'still' | 'keyart' | 'logo';
   sort_order: number;
   created_at: string;
+};
+
+export type ServicesRow = {
+  id: string;
+  slug: string;
+  title: Json;
+  summary: Json;
+  body: Json;
+  icon: string | null;
+  image_url: string | null;
+  is_published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type VideoKind =
+  | 'trailer'
+  | 'teaser'
+  | 'clip'
+  | 'opening'
+  | 'behind_scenes'
+  | 'interview'
+  | 'promo';
+
+export type TitleVideosRow = {
+  id: string;
+  series_id: string | null;
+  movie_id: string | null;
+  kind: VideoKind;
+  label: Json;
+  youtube_id: string | null;
+  url: string | null;
+  thumbnail_url: string | null;
+  duration_seconds: number | null;
+  is_primary: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -466,6 +508,18 @@ export type Database = {
         Row: MediaAssetsRow;
         Insert: Partial<MediaAssetsRow> & { url: string };
         Update: Partial<MediaAssetsRow>;
+        Relationships: [];
+      };
+      title_videos: {
+        Row: TitleVideosRow;
+        Insert: Partial<TitleVideosRow>;
+        Update: Partial<TitleVideosRow>;
+        Relationships: [];
+      };
+      services: {
+        Row: ServicesRow;
+        Insert: Partial<ServicesRow> & { slug: string };
+        Update: Partial<ServicesRow>;
         Relationships: [];
       };
       site_settings: {

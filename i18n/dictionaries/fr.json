@@ -300,7 +300,26 @@
     "filmography": "Filmographie",
     "born": "Naissance",
     "nationality": "Nationalité",
-    "asCharacter": "dans le rôle de"
+    "asCharacter": "dans le rôle de",
+    "videos": "Vidéos",
+    "watchTrailer": "Voir la bande-annonce",
+    "more": "Plus sur ce titre",
+    "resume": "Reprendre",
+    "replay": "Revoir",
+    "close": "Fermer",
+    "noVideos": "Aucune vidéo pour le moment",
+    "crew": "Équipe",
+    "starring": "Avec",
+    "overview": "Aperçu",
+    "kinds": {
+      "trailer": "Bande-annonce",
+      "teaser": "Teaser",
+      "clip": "Extrait",
+      "opening": "Générique",
+      "behind_scenes": "Coulisses",
+      "interview": "Entretien",
+      "promo": "Promo"
+    }
   },
   "pages": {
     "aboutTitle": "Depuis 1954",
@@ -313,7 +332,14 @@
     "offices": "Bureaux",
     "email": "E-mail",
     "phone": "Téléphone",
-    "comingSoonPage": "Cette section est en préparation."
+    "comingSoonPage": "Cette section est en préparation.",
+    "pressLead": "Actualités, annonces et matériel de presse de Cedars Art Production.",
+    "pressEmpty": "Aucun élément de presse publié.",
+    "pressRead": "Lire",
+    "servicesLead": "Production, post-production et distribution intégrées — dans nos quatre bureaux.",
+    "teamLead": "Celles et ceux qui développent, produisent et livrent nos programmes.",
+    "teamEmpty": "Profils de l’équipe bientôt disponibles.",
+    "viewAll": "Tout voir"
   },
   "milestones": {
     "founded": "Ali-Hussein Sabbah fonde la société entre Le Caire et Beyrouth.",

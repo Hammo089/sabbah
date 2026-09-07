@@ -300,7 +300,26 @@
     "filmography": "Filmography",
     "born": "Born",
     "nationality": "Nationality",
-    "asCharacter": "as"
+    "asCharacter": "as",
+    "videos": "Videos",
+    "watchTrailer": "Watch trailer",
+    "more": "More from this title",
+    "resume": "Resume",
+    "replay": "Replay",
+    "close": "Close",
+    "noVideos": "No videos yet",
+    "crew": "Crew",
+    "starring": "Starring",
+    "overview": "Overview",
+    "kinds": {
+      "trailer": "Trailer",
+      "teaser": "Teaser",
+      "clip": "Clip",
+      "opening": "Opening titles",
+      "behind_scenes": "Behind the scenes",
+      "interview": "Interview",
+      "promo": "Promo"
+    }
   },
   "pages": {
     "aboutTitle": "Since 1954",
@@ -313,7 +332,14 @@
     "offices": "Offices",
     "email": "Email",
     "phone": "Phone",
-    "comingSoonPage": "This section is being prepared."
+    "comingSoonPage": "This section is being prepared.",
+    "pressLead": "Coverage, announcements and press material from Cedars Art Production.",
+    "pressEmpty": "No press items published yet.",
+    "pressRead": "Read",
+    "servicesLead": "End-to-end production, post and distribution — built in-house across four offices.",
+    "teamLead": "The people who develop, produce and deliver our slate.",
+    "teamEmpty": "Team profiles coming soon.",
+    "viewAll": "View all"
   },
   "milestones": {
     "founded": "Ali-Hussein Sabbah establishes the company between Cairo and Beirut.",

@@ -5,6 +5,16 @@ import * as React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { X, Volume2, VolumeX, Loader2 } from 'lucide-react';
 
+import {
+  loadYouTubeApi,
+  isTouchDevice,
+  ENDED,
+  PLAYING,
+  PAUSED,
+  type PlayerState,
+  type YTPlayer,
+} from '@/lib/youtube-player';
+
 /**
  * Full-bleed YouTube "theatre".
  *
@@ -30,60 +40,6 @@ import { X, Volume2, VolumeX, Loader2 } from 'lucide-react';
  *
  * Nothing from youtube.com is requested until the theatre actually opens.
  */
-
-type PlayerState = -1 | 0 | 1 | 2 | 3 | 5;
-const ENDED: PlayerState = 0;
-const PLAYING: PlayerState = 1;
-const PAUSED: PlayerState = 2;
-
-type YTPlayer = {
-  destroy: () => void;
-  playVideo: () => void;
-  pauseVideo: () => void;
-  mute: () => void;
-  unMute: () => void;
-  isMuted: () => boolean;
-  getCurrentTime: () => number;
-};
-
-declare global {
-  interface Window {
-    YT?: {
-      Player: new (el: HTMLElement | string, options: Record<string, unknown>) => YTPlayer;
-      loaded?: number;
-    };
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
-
-let apiPromise: Promise<void> | null = null;
-
-/** Loads the IFrame API once per page, no matter how many theatres exist. */
-function loadYouTubeApi(): Promise<void> {
-  if (typeof window === 'undefined') return Promise.resolve();
-  if (window.YT?.Player) return Promise.resolve();
-
-  apiPromise ??= new Promise<void>((resolve) => {
-    const previous = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      previous?.();
-      resolve();
-    };
-
-    const script = document.createElement('script');
-    script.src = 'https://www.youtube.com/iframe_api';
-    script.async = true;
-    document.head.appendChild(script);
-  });
-
-  return apiPromise;
-}
-
-/** iOS/Android need a muted first frame far more often than desktop does. */
-function isTouchDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-}
 
 /**
  * Locks the page behind the theatre. `overflow:hidden` on <body> is ignored by

@@ -28,6 +28,35 @@ export type CatalogFilters = {
   script?: boolean;
 };
 
+export type VideoKind =
+  | 'trailer'
+  | 'teaser'
+  | 'clip'
+  | 'opening'
+  | 'behind_scenes'
+  | 'interview'
+  | 'promo';
+
+export type TitleVideo = {
+  id: string;
+  kind: VideoKind;
+  label: string;
+  youtubeId: string | null;
+  url: string | null;
+  thumbnailUrl: string | null;
+  duration: number | null;
+  isPrimary: boolean;
+};
+
+/**
+ * YouTube publishes a predictable thumbnail for every video, so a row that
+ * skipped the optional thumbnail field still gets a poster on the rail.
+ * maxres is missing on older uploads; hqdefault always exists.
+ */
+function youtubeThumb(id: string | null): string | null {
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
+}
+
 function guard(): boolean {
   return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
@@ -122,7 +151,7 @@ export const getTitleBySlug = cache(async (slug: string, lang: Locale) => {
 
     if (!row) return null;
 
-    const [credits, episodes, media, casters] = await Promise.all([
+    const [credits, episodes, media, casters, videos] = await Promise.all([
       supabase
         .from('credits')
         .select('id, kind, role, character, sort_order, people(id, slug, name, photo_url)')
@@ -144,6 +173,12 @@ export const getTitleBySlug = cache(async (slug: string, lang: Locale) => {
         .from('title_broadcasters')
         .select('broadcasters(id, name, logo_url, site_url)')
         .eq('series_id', row.id),
+      supabase
+        .from('title_videos')
+        .select('id, kind, label, youtube_id, url, thumbnail_url, duration_seconds, is_primary, sort_order')
+        .eq('series_id', row.id)
+        .order('is_primary', { ascending: false })
+        .order('sort_order'),
     ]);
 
     type CreditRow = {
@@ -212,6 +247,18 @@ export const getTitleBySlug = cache(async (slug: string, lang: Locale) => {
       broadcasters: (casters.data ?? [])
         .map((b) => (b as unknown as { broadcasters: { id: string; name: string; logo_url: string | null; site_url: string | null } | null }).broadcasters)
         .filter(Boolean) as { id: string; name: string; logo_url: string | null; site_url: string | null }[],
+      videos: (videos.data ?? []).map((v) => ({
+        id: v.id as string,
+        kind: v.kind as VideoKind,
+        // Falls back to the kind label so a video with no title still reads
+        // as something ("Teaser") rather than an empty chip.
+        label: t(v.label, lang, ''),
+        youtubeId: v.youtube_id as string | null,
+        url: v.url as string | null,
+        thumbnailUrl: (v.thumbnail_url as string | null) ?? youtubeThumb(v.youtube_id as string | null),
+        duration: v.duration_seconds as number | null,
+        isPrimary: Boolean(v.is_primary),
+      })),
     };
   } catch (error) {
     console.error('[title]', error);
